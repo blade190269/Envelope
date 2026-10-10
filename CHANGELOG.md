@@ -13,6 +13,7 @@ Misc
 ### Changes and Fixes
 - Updated all item textures
 - Small update to hanging letter block textures
+- Sealed Package is no longer placeable as a block
 
 ## 0.8.0-Snapshot2
 ### New Features
