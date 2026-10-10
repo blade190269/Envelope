@@ -11,6 +11,7 @@ import io.github.mortuusars.envelope.world.item.PaybackPackageItem;
 import io.github.mortuusars.mortaar.client.gui.Sprites;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -40,15 +41,14 @@ public class PaybackPackingScreen extends AbstractInHandContainerScreen<PaybackP
         imageHeight = 178;
         super.init();
 
-        packButton = new ImageButton(leftPos + 126, topPos + 40, 26, 20,
+        packButton = addRenderableWidget(new ImageButton(leftPos + 126, topPos + 39, 26, 21,
               PACK_BUTTON_SPRITES,
-              button -> pack(),
-              Component.translatable("gui.envelope.packing.pack"));
+              this::pack,
+              Component.translatable("gui.envelope.packing.pack")));
         packButton.setTooltip(Tooltip.create(Component.translatable("gui.envelope.packing.pack")));
-        addRenderableWidget(packButton);
     }
 
-    protected void pack() {
+    protected void pack(Button button) {
         getMenu().clickMenuButton(getMenu().getPlayer(), PaybackPackingMenu.PACK_BUTTON_ID);
         Minecrft.gameMode().handleInventoryButtonClick(getMenu().containerId, PaybackPackingMenu.PACK_BUTTON_ID);
         onClose();
