@@ -7,6 +7,7 @@ import io.github.mortuusars.mortaar.Platform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -48,6 +49,7 @@ public class PaybackBoxItem extends Item {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
+            stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
             Platform.openMenu(serverPlayer, new SimpleMenuProvider((id, inventory, pl) ->
                         new PaybackPackingMenu(id, inventory, hand), stack.getHoverName()),
                   buffer -> buffer.writeEnum(hand));

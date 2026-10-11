@@ -6,6 +6,7 @@ import io.github.mortuusars.envelope.world.inventory.PackingMenu;
 import io.github.mortuusars.mortaar.Platform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -45,6 +46,7 @@ public class PaperBoxItem extends BlockItem {
 
     public boolean openPackingMenu(Player player, InteractionHand hand, ItemStack stack) {
         if (player instanceof ServerPlayer serverPlayer) {
+            stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
             SimpleMenuProvider menuProvider = new SimpleMenuProvider((id, inventory, pl) ->
                   new PackingMenu(id, inventory, hand), stack.getHoverName());
             Platform.openMenu(serverPlayer, menuProvider, buffer -> buffer.writeEnum(hand));

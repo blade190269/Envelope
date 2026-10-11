@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.mortaar.client.Minecrft;
-import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundLetterViewScreenClosedPacket;
+import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundItemClosedPacket;
 import io.github.mortuusars.envelope.world.item.LetterItem;
 import io.github.mortuusars.envelope.world.item.component.LetterContent;
 import io.github.mortuusars.mortaar.util.ItemAndStack;
@@ -156,7 +156,7 @@ public class LetterViewScreen extends Screen {
         super.onClose();
         if (hand != null) {
             int slot = this.hand == InteractionHand.MAIN_HAND ? Minecrft.player().getInventory().selected : Inventory.SLOT_OFFHAND;
-            new ServerboundLetterViewScreenClosedPacket(slot).sendToServer();
+            new ServerboundItemClosedPacket(slot).sendToServer();
         }
     }
 

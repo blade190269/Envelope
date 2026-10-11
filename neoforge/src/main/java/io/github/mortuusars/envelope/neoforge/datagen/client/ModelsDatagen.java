@@ -83,7 +83,7 @@ public class ModelsDatagen extends BlockStateProvider {
 
         itemModels().basicItem(Envelope.Items.LETTER_AND_QUILL.get())
               .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 1)
+              .predicate(EnvelopeClient.ItemModelOverrides.HAS_CONTENT, 1)
               .model(model(Envelope.resource("letter_and_quill_content")))
               .end();
 
@@ -98,40 +98,31 @@ public class ModelsDatagen extends BlockStateProvider {
         itemModels().basicItem(Envelope.Items.SEALED_SERVICE_LETTER.get())
               .texture("layer1", Envelope.resource("item/sealed_letter_overlay"));
 
-//        itemModels().getBuilder(Envelope.resource("sealed_letter").toString())
-//              .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//              .texture("layer0", Envelope.resource("item/sealed_letter"))
-//              .texture("layer1", Envelope.resource("item/sealed_letter_overlay"));
-//
-//        itemModels().getBuilder(Envelope.resource("sealed_tattered_letter").toString())
-//              .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//              .texture("layer0", Envelope.resource("item/sealed_tattered_letter"))
-//              .texture("layer1", Envelope.resource("item/sealed_letter_overlay"));
-//
-//        itemModels().getBuilder(Envelope.resource("sealed_service_letter").toString())
-//              .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//              .texture("layer0", Envelope.resource("item/sealed_service_letter"))
-//              .texture("layer1", Envelope.resource("item/sealed_letter_overlay"));
-
-//        itemModels().getBuilder(Envelope.resource("sealed_letter").toString())
-//              .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//              .texture("layer0", Envelope.resource("item/sealed_letter"))
-//              .texture("layer1", Envelope.resource("item/sealed_letter_overlay"))
-//              .override()
-//              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 1)
-//              .model(itemModels().getBuilder(Envelope.resource("sealed_letter_tattered").toString())
-//                    .parent(new ModelFile.UncheckedModelFile("item/generated"))
-//                    .texture("layer0", Envelope.resource("item/sealed_tattered_letter"))
-//                    .texture("layer1", Envelope.resource("item/sealed_letter_overlay")))
-//              .end();
-
         itemModels().getBuilder(Envelope.resource("sealed_package").toString())
               .parent(new ModelFile.UncheckedModelFile("item/generated"))
               .texture("layer0", Envelope.resource("item/sealed_package"))
               .texture("layer1", Envelope.resource("item/sealed_package_overlay"));
 
-        itemModels().basicItem(Envelope.Items.PAPER_BOX.get());
-        itemModels().basicItem(Envelope.Items.PACKAGE.get());
+        itemModels().basicItem(Envelope.Items.PAPER_BOX.get())
+              .override()
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .model(model(Envelope.resource("paper_box_open")))
+              .end();
+        itemModels().basicItem(Envelope.Items.PACKAGE.get())
+              .override()
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .model(model(Envelope.resource("package_open")))
+              .end();
+        itemModels().basicItem(Envelope.Items.PAYBACK_BOX.get())
+              .override()
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .model(model(Envelope.resource("payback_box_open")))
+              .end();
+        itemModels().basicItem(Envelope.Items.PAYBACK_PACKAGE.get())
+              .override()
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .model(model(Envelope.resource("payback_package_open")))
+              .end();
 
         // -- Payback Tag
         {
@@ -163,9 +154,6 @@ public class ModelsDatagen extends BlockStateProvider {
                   .end();
         }
 
-        itemModels().basicItem(Envelope.Items.PAYBACK_BOX.get());
-        itemModels().basicItem(Envelope.Items.PAYBACK_PACKAGE.get());
-
         itemModels().spawnEggItem(Envelope.Items.PIGEON_SPAWN_EGG.get());
         itemModels().spawnEggItem(Envelope.Items.CHARRED_PIGEON_SPAWN_EGG.get());
     }
@@ -174,49 +162,14 @@ public class ModelsDatagen extends BlockStateProvider {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
         return itemModels().basicItem(id)
               .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 0)
-              .model(model(id.withSuffix("_unfolded")))
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .predicate(EnvelopeClient.ItemModelOverrides.HAS_CONTENT, 0)
+              .model(model(id.withSuffix("_open")))
               .end()
               .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 1)
-              .model(model(id.withSuffix("_unfolded_content")))
-              .end();
-    }
-
-    protected ItemModelBuilder letterTatteredUnfoldedContent(Item item) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-        return itemModels().basicItem(id)
-              .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 0)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 0)
-              .model(model(id.withSuffix("_unfolded")))
-              .end()
-              .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 0)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 1)
-              .model(model(id.withSuffix("_unfolded_content")))
-              .end()
-              .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 0)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 0)
-              .model(model(id.withSuffix("_tattered")))
-              .end()
-              .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 0)
-              .model(model(id.withSuffix("_tattered_unfolded")))
-              .end()
-              .override()
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_TATTERED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_UNFOLDED, 1)
-              .predicate(EnvelopeClient.ItemModelOverrides.LETTER_CONTENT, 1)
-              .model(model(id.withSuffix("_tattered_unfolded_content")))
+              .predicate(EnvelopeClient.ItemModelOverrides.OPEN, 1)
+              .predicate(EnvelopeClient.ItemModelOverrides.HAS_CONTENT, 1)
+              .model(model(id.withSuffix("_open_content")))
               .end();
     }
 

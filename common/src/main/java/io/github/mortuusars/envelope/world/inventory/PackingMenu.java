@@ -144,6 +144,10 @@ public class PackingMenu extends AbstractInHandContainerMenu {
             clearContainer(player, getContainer());
         }
 
+        if (getItemInHand().remove(Envelope.DataComponents.OPEN) != null) {
+            player.resetAttackStrengthTicker();
+        }
+
         super.removed(player);
     }
 }

@@ -63,6 +63,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +71,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -123,7 +125,7 @@ public class Envelope {
 
         Register.serverboundPacket(ServerboundMailboxMenuInboxActionPacket.TYPE, ServerboundMailboxMenuInboxActionPacket.STREAM_CODEC);
         Register.serverboundPacket(ServerboundLetterEditPacket.TYPE, ServerboundLetterEditPacket.STREAM_CODEC);
-        Register.serverboundPacket(ServerboundLetterViewScreenClosedPacket.TYPE, ServerboundLetterViewScreenClosedPacket.STREAM_CODEC);
+        Register.serverboundPacket(ServerboundItemClosedPacket.TYPE, ServerboundItemClosedPacket.STREAM_CODEC);
         Register.serverboundPacket(ServerboundAddressTagApplyPacket.TYPE, ServerboundAddressTagApplyPacket.STREAM_CODEC);
         Register.serverboundPacket(ServerboundPackingMenuPresetAddressPacket.TYPE, ServerboundPackingMenuPresetAddressPacket.STREAM_CODEC);
         Register.serverboundPacket(ServerboundMailboxPlacePacket.TYPE, ServerboundMailboxPlacePacket.STREAM_CODEC);
@@ -467,14 +469,14 @@ public class Envelope {
         // -- Letter
 
         public static final DataComponentType<LetterAndQuillContent> LETTER_AND_QUILL_CONTENT =
-              REGISTRAR.dataComponentType("letter_and_quill_content", b ->
-                    b.persistent(LetterAndQuillContent.CODEC).networkSynchronized(LetterAndQuillContent.STREAM_CODEC));
+              REGISTRAR.dataComponentType("letter_and_quill_content",
+                    b -> b.persistent(LetterAndQuillContent.CODEC).networkSynchronized(LetterAndQuillContent.STREAM_CODEC));
         public static final DataComponentType<LetterContent> LETTER_CONTENT =
-              REGISTRAR.dataComponentType("letter_content", b ->
-                    b.persistent(LetterContent.CODEC).networkSynchronized(LetterContent.STREAM_CODEC).cacheEncoding());
+              REGISTRAR.dataComponentType("letter_content",
+                    b -> b.persistent(LetterContent.CODEC).networkSynchronized(LetterContent.STREAM_CODEC).cacheEncoding());
         public static final DataComponentType<ServiceLetterMeaning> SERVICE_LETTER_MEANING =
-              REGISTRAR.dataComponentType("service_letter_meaning", b ->
-                    b.persistent(ServiceLetterMeaning.CODEC).networkSynchronized(ServiceLetterMeaning.STREAM_CODEC));
+              REGISTRAR.dataComponentType("service_letter_meaning",
+                    b -> b.persistent(ServiceLetterMeaning.CODEC).networkSynchronized(ServiceLetterMeaning.STREAM_CODEC));
 
         // -- Package
 
@@ -500,8 +502,11 @@ public class Envelope {
               b -> b.persistent(PaybackSubject.CODEC).networkSynchronized(PaybackSubject.STREAM_CODEC).cacheEncoding());
 
         // -- Misc
-        public static final DataComponentType<List<Occupant>> PIGEONS = REGISTRAR.dataComponentType("pigeons", b ->
-              b.persistent(Occupant.LIST_CODEC).networkSynchronized(Occupant.STREAM_CODEC.apply(ByteBufCodecs.list())).cacheEncoding());
+
+        public static final DataComponentType<Unit> OPEN = REGISTRAR.dataComponentType("open",
+              b -> b.networkSynchronized(StreamCodec.unit(Unit.INSTANCE)));
+        public static final DataComponentType<List<Occupant>> PIGEONS = REGISTRAR.dataComponentType("pigeons",
+              b -> b.persistent(Occupant.LIST_CODEC).networkSynchronized(Occupant.STREAM_CODEC.apply(ByteBufCodecs.list())).cacheEncoding());
 
         static void init() {
         }

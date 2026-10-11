@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -74,6 +75,7 @@ public class PaybackPackageItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player instanceof ServerPlayer serverPlayer) {
+            stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
             SimpleMenuProvider menuProvider = new SimpleMenuProvider(
                   (id, inventory, pl) -> new PaybackPackageMenu(id, inventory, hand), stack.getHoverName());
             Platform.openMenu(serverPlayer, menuProvider, buffer -> buffer.writeEnum(hand));

@@ -2,17 +2,17 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
-      "model": "envelope:item/tattered_letter_unfolded",
+      "model": "envelope:item/tattered_letter_open",
       "predicate": {
-        "envelope:letter_content": 0.0,
-        "envelope:letter_unfolded": 1.0
+        "envelope:has_content": 0.0,
+        "envelope:open": 1.0
       }
     },
     {
-      "model": "envelope:item/tattered_letter_unfolded_content",
+      "model": "envelope:item/tattered_letter_open_content",
       "predicate": {
-        "envelope:letter_content": 1.0,
-        "envelope:letter_unfolded": 1.0
+        "envelope:has_content": 1.0,
+        "envelope:open": 1.0
       }
     }
   ],

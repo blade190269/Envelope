@@ -9,11 +9,13 @@ Letter
 Misc
 - Scooping waste from **Pigeonhole** now has a 50% chance to drop a **Feather**  
 - Added particles to **Pigeonhole** waste scooping
+- Added "opened" models to Paper Box, Package, Payback Box and Payback Package items when player opens their interfaces 
 
 ### Changes and Fixes
 - Updated all item textures
 - Small update to hanging letter block textures
 - Sealed Package is no longer placeable as a block
+
 
 ## 0.8.0-Snapshot2
 ### New Features
