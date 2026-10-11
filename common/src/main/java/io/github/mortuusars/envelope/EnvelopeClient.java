@@ -41,28 +41,31 @@ public class EnvelopeClient {
     // --
 
     public static class ItemModelOverrides {
-        public static final ResourceLocation LETTER_TATTERED = Envelope.resource("letter_tattered");
-        public static final ResourceLocation LETTER_UNFOLDED = Envelope.resource("letter_unfolded");
-        public static final ResourceLocation LETTER_CONTENT = Envelope.resource("letter_content");
+        public static final ResourceLocation OPEN = Envelope.resource("open");
+        public static final ResourceLocation HAS_CONTENT = Envelope.resource("has_content");
 
         public static final ResourceLocation PAYBACK_TAG_DURATION = Envelope.resource("payback_tag_duration");
 
         public static void register() {
-            ItemProperties.register(Envelope.Items.LETTER_AND_QUILL.get(), LETTER_CONTENT, ItemModelOverrides::hasLetterContent);
+            ItemProperties.register(Envelope.Items.LETTER_AND_QUILL.get(), HAS_CONTENT, ItemModelOverrides::hasLetterContent);
 
-            ItemProperties.register(Envelope.Items.LETTER.get(), LETTER_UNFOLDED, ItemModelOverrides::isLetterUnfolded);
-            ItemProperties.register(Envelope.Items.LETTER.get(), LETTER_CONTENT, ItemModelOverrides::hasLetterContent);
-            ItemProperties.register(Envelope.Items.TATTERED_LETTER.get(), LETTER_UNFOLDED, ItemModelOverrides::isLetterUnfolded);
-            ItemProperties.register(Envelope.Items.TATTERED_LETTER.get(), LETTER_CONTENT, ItemModelOverrides::hasLetterContent);
-            ItemProperties.register(Envelope.Items.SERVICE_LETTER.get(), LETTER_UNFOLDED, ItemModelOverrides::isLetterUnfolded);
-            ItemProperties.register(Envelope.Items.SERVICE_LETTER.get(), LETTER_CONTENT, ItemModelOverrides::hasLetterContent);
+            ItemProperties.register(Envelope.Items.LETTER.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.LETTER.get(), HAS_CONTENT, ItemModelOverrides::hasLetterContent);
+            ItemProperties.register(Envelope.Items.TATTERED_LETTER.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.TATTERED_LETTER.get(), HAS_CONTENT, ItemModelOverrides::hasLetterContent);
+            ItemProperties.register(Envelope.Items.SERVICE_LETTER.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.SERVICE_LETTER.get(), HAS_CONTENT, ItemModelOverrides::hasLetterContent);
+
+            ItemProperties.register(Envelope.Items.PAPER_BOX.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.PACKAGE.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.PAYBACK_BOX.get(), OPEN, ItemModelOverrides::isOpen);
+            ItemProperties.register(Envelope.Items.PAYBACK_PACKAGE.get(), OPEN, ItemModelOverrides::isOpen);
 
             ItemProperties.register(Envelope.Items.PAYBACK_TAG.get(), PAYBACK_TAG_DURATION, ItemModelOverrides::getPaybackDuration);
         }
 
-        public static float isLetterUnfolded(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-            LetterContent content = stack.getOrDefault(Envelope.DataComponents.LETTER_CONTENT, LetterContent.EMPTY);
-            return content.unfolded() ? 1 : 0;
+        public static float isOpen(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+            return stack.has(Envelope.DataComponents.OPEN) ? 1 : 0;
         }
 
         public static float hasLetterContent(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {

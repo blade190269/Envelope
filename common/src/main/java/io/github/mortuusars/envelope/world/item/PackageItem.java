@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
@@ -103,6 +104,8 @@ public class PackageItem extends BlockItem implements SealableItem {
             dropExperience(stack, level, player.position());
 
             if (player instanceof ServerPlayer serverPlayer) {
+                stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
+
                 // Force update the stack on client before opening, so the client has correct initial state.
                 player.inventoryMenu.broadcastChanges();
 
