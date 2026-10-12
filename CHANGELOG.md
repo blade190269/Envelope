@@ -7,6 +7,7 @@ Letter
 - Added **Service Letter**
 
 Misc
+- Added **Spider Eye** -> **Pumpkin Seeds** mailing recipe to **Mail Service** 
 - Scooping waste from **Pigeonhole** now has a 50% chance to drop a **Feather**  
 - Added particles to **Pigeonhole** waste scooping
 - Added "opened" models to Paper Box, Package, Payback Box and Payback Package items when player opens their interfaces 
