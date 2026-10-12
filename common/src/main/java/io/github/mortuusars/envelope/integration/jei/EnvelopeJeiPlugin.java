@@ -184,4 +184,14 @@ public class EnvelopeJeiPlugin implements IModPlugin {
 
         registration.addGhostIngredientHandler(PaybackTagScreen.class, new PaybackTagGhostIngredientHandler());
     }
+
+    @Override
+    public void registerIngredientAliases(IIngredientAliasRegistration registration) {
+        registration.addAlias(SERVICE_ADDRESS_INGREDIENT, ServiceAddress.getOrThrow(
+              ServiceAddress.CLOUD_DEPOSITORY, Minecrft.registryAccess()), "service");
+        registration.addAlias(Envelope.Items.PAPER_BOX.get(), "package");
+        registration.addAlias(CloudDepository.createWithdrawalRequestLetter(Minecrft.registryAccess()), "letter");
+        registration.addAlias(CloudDepository.createStatusRequestLetter(Minecrft.registryAccess()), "letter");
+        registration.addAlias(CloudDepository.createExpansionRequestLetter(Minecrft.registryAccess()), "letter");
+    }
 }

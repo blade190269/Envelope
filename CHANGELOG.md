@@ -13,6 +13,7 @@ Misc
 - Added "opened" models to Paper Box, Package, Payback Box and Payback Package items when player opens their interfaces 
 - Added a way to copy Address Tag and Payback Tag contents into another tag by applying it in inventory
 - Added visual indicator to application target items when carrying (picked up with mouse) an applicable item (Address Tag, Payback Tag and Seal Stamp)
+- [JEI] Added aliases to some items and ingredients for easier searching 
 
 ### Changes and Fixes
 - Updated all item textures
