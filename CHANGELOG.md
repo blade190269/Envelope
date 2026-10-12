@@ -15,7 +15,7 @@ Misc
 - Updated all item textures
 - Small update to hanging letter block textures
 - Sealed Package is no longer placeable as a block
-
+- Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent) 
 
 ## 0.8.0-Snapshot2
 ### New Features
