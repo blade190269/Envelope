@@ -16,7 +16,6 @@ import io.github.mortuusars.envelope.world.mail.service.ServiceAddresses;
 import io.github.mortuusars.envelope.world.mail.payback.PaybackDepartment;
 import io.github.mortuusars.envelope.world.block.mailbox.Mailboxes;
 import io.github.mortuusars.envelope.world.KnownPlayers;
-import io.github.mortuusars.mortaar.resources.Resource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
@@ -205,9 +204,10 @@ public class MailService {
               .append("\n\n")
               .append(getAddress().getComponent());
 
-        return Mail.createLetter(text)
-              .itemName(Component.translatable("letter.envelope.courier_death_notice.name"))
-              .get();
+        return Mail.of(Envelope.Items.SERVICE_LETTER)
+              .name(Component.translatable("letter.envelope.courier_death_notice.name"))
+              .letterContent(text)
+              .itemStack();
     }
 
     public ServiceAddress getAddress() {

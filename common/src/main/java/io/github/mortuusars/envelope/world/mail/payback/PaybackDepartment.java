@@ -204,7 +204,7 @@ public class PaybackDepartment {
               .sender(subjectDelivery.getSender())
               .recipient(subjectDelivery.getRecipient())
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
 
         getMailService().getDeliveryManager()
               .startService(Delivery.draft()
@@ -263,7 +263,7 @@ public class PaybackDepartment {
               .sender(paybackSubject.returnAddress())
               .writeToLog(DeliveryRecord.message(DeliveryRecord.Message.PAYBACK_FULFILLED))
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
         paybackDelivery.setMail(subject);
         paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
     }
@@ -275,7 +275,7 @@ public class PaybackDepartment {
               .setLog(Mail.getLog(paybackPackage))
               .writeToLog(DeliveryRecord.message(DeliveryRecord.Message.PAYBACK_FULFILLED))
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
 
         getMailService().getDeliveryManager()
               .startService(Delivery.draft()

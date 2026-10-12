@@ -26,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.SeededContainerLoot;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class Mail {
@@ -160,44 +162,12 @@ public final class Mail {
         return new MailBuilder<>(stack);
     }
 
-    public static MailBuilder<?> createLetter(Component text) {
-        return new MailBuilder<>(Envelope.Items.LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text));
+    public static MailBuilder<?> of(ItemLike item) {
+        return of(new ItemStack(item));
     }
 
-    public static MailBuilder<?> createLetter(LetterContent content) {
-        return new MailBuilder<>(Envelope.Items.LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, content);
-    }
-
-    public static MailBuilder<?> createServiceLetter(Component text) {
-        return new MailBuilder<>(Envelope.Items.SERVICE_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text));
-    }
-
-    public static MailBuilder<?> createServiceLetter(LetterContent content) {
-        return new MailBuilder<>(Envelope.Items.SERVICE_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, content);
-    }
-
-    public static MailBuilder<?> createSealedLetter(Component text) {
-        return new MailBuilder<>(Envelope.Items.SEALED_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text));
-    }
-
-    public static MailBuilder<?> createSealedLetter(LetterContent content) {
-        return new MailBuilder<>(Envelope.Items.SEALED_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, content);
-    }
-
-    public static MailBuilder<?> createSealedServiceLetter(Component text) {
-        return new MailBuilder<>(Envelope.Items.SEALED_SERVICE_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text));
-    }
-
-    public static MailBuilder<?> createSealedServiceLetter(LetterContent content) {
-        return new MailBuilder<>(Envelope.Items.SEALED_SERVICE_LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, content);
+    public static MailBuilder<?> of(Supplier<? extends ItemLike> item) {
+        return of(new ItemStack(item.get()));
     }
 
     public static MailBuilder<?> createPackage(PackageContents contents) {
@@ -233,7 +203,7 @@ public final class Mail {
         List<ItemStack> packages = new ArrayList<>();
         items.removeIf(stack -> {
             if (stack.getItem() instanceof PackageItem) {
-                packages.add(Mail.of(stack).apply(builder).get());
+                packages.add(Mail.of(stack).apply(builder).itemStack());
                 return true;
             }
             return false;
@@ -242,7 +212,7 @@ public final class Mail {
         List<ItemStack> packedPackages = ContainerUtils.split(ContainerUtils.compact(items), PackageContents.SLOTS)
               .stream()
               .map(PackageContents::new)
-              .map(contents -> Mail.createPackage(contents).apply(builder).get())
+              .map(contents -> Mail.createPackage(contents).apply(builder).itemStack())
               .toList();
 
         return Stream.concat(packages.stream(), packedPackages.stream()).toList();

@@ -175,11 +175,10 @@ public class EquineAssuranceBureau {
             multiple = true;
         }
 
-        Component body = Component.translatable("letter.envelope.equine_assurance_notice.body", requiredItems);
-
-        return Mail.createLetter(body)
-              .itemName(Component.translatable("letter.envelope.equine_assurance_notice.name"))
-              .get();
+        return Mail.of(Envelope.Items.LETTER)
+              .name(Component.translatable("letter.envelope.equine_assurance_notice.name"))
+              .letterContent(Component.translatable("letter.envelope.equine_assurance_notice.body", requiredItems))
+              .itemStack();
     }
 
     private static Style createItemStyle(ItemStack stack) {

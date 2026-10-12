@@ -169,8 +169,8 @@ public class RecipesDatagen extends RecipeProvider {
         MailRecipeBuilder.crafting(address)
               .requires(Ingredient.of(Items.DIAMOND))
               .forResult(Mail.createPackage(Envelope.LootTables.LOST_MAIL)
-                    .itemName(Component.translatable("item.envelope.lost_mail"))
-                    .get())
+                    .name(Component.translatable("item.envelope.lost_mail"))
+                    .itemStack())
               .experience(1.5f)
               .save(output, "lost_mail");
 
