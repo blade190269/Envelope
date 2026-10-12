@@ -103,6 +103,7 @@ public class PackingMenu extends AbstractInHandContainerMenu {
         }
 
         ItemStack result = createPackingResult();
+        result.remove(Envelope.DataComponents.OPEN);
 
         getItemInHand().shrink(1);
 
