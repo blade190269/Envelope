@@ -1,6 +1,9 @@
 package io.github.mortuusars.envelope.client.model;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.mortuusars.envelope.world.entity.PigeonVariant;
 import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.mortaar.util.Easing;
 import net.minecraft.Optionull;
@@ -8,7 +11,10 @@ import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +36,9 @@ public class PigeonModel extends AgeableListModel<Pigeon> {
     private final ModelPart tail;
     private final ModelPart leftWing;
     private final ModelPart rightWing;
+
+    private boolean ghost;
+    private ResourceLocation texture;
 
     public PigeonModel(ModelPart root) {
         // bodyYOffset = 24 * (babyBodyScale - 1)
@@ -134,6 +143,8 @@ public class PigeonModel extends AgeableListModel<Pigeon> {
 
     public void setupAnim(Pigeon pigeon, float limbSwing, float limbSwingAmount, float bob, float netHeadYaw, float headPitch) {
         root.getAllParts().forEach(ModelPart::resetPose);
+        ghost = pigeon.getVariant().is(PigeonVariant.GHOST);
+        texture = pigeon.getVariant().value().texture();
 
         head.xRot = headPitch * (float) (Math.PI / 180.0);
         head.yRot = netHeadYaw * (float) (Math.PI / 180.0);
@@ -215,6 +226,24 @@ public class PigeonModel extends AgeableListModel<Pigeon> {
             body.zScale = 1.15f;
             beak.xScale = 1.2f;
             beak.zScale = 0.75f;
+        }
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        if (ghost && color == 0xFFFFFFFF) {
+            // This is probably stupid, but looks pretty good
+
+            // Low opacity regular render to block water and clouds (entityTranslucentEmissive does not sort transparency well)
+            color = 0x22FFFFFF;
+            super.renderToBuffer(poseStack, buffer, LightTexture.FULL_BRIGHT, packedOverlay, color);
+
+            VertexConsumer emissiveBuffer = Minecrft.get().renderBuffers().bufferSource().getBuffer(
+                  RenderType.entityTranslucentEmissive(texture));
+            color = 0x6093FF93;
+            super.renderToBuffer(poseStack, emissiveBuffer, LightTexture.FULL_BRIGHT, packedOverlay, color);
+        } else {
+            super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, color);
         }
     }
 
