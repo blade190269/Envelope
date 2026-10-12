@@ -5,7 +5,6 @@ import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.Position;
 import io.github.mortuusars.envelope.world.entity.CourierBat;
-import io.github.mortuusars.envelope.world.item.component.LetterContent;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryRecord;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.network.packet.clientbound.ClientboundOpenMailboxAddressTagScreenPacket;
@@ -257,7 +256,7 @@ public class MailboxBlock extends BaseEntityBlock {
                       && blockEntity.isAvailableForPickup()
                       && !blockEntity.getPigeonFoodItem().isEmpty()
                       && Envelope.EntityTypes.PIGEON.get().spawn(serverLevel,
-                      pos.relative(state.getValue(FACING)), MobSpawnType.SPAWN_EGG) instanceof Pigeon pigeon
+                        pos.relative(state.getValue(FACING)), MobSpawnType.SPAWN_EGG) instanceof Pigeon pigeon
                       && blockEntity.tryStartDelivery(pigeon)) {
 
                     if (level.isNight() || level.isRaining() || level.isThundering()) {

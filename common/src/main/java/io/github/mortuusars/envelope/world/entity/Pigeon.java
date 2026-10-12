@@ -18,6 +18,7 @@ import io.github.mortuusars.envelope.world.mail.delivery.*;
 import io.github.mortuusars.mortaar.bugger.Bugger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -56,6 +57,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -237,6 +239,13 @@ public class Pigeon extends Animal implements VariantHolder<Holder<PigeonVariant
     public void aiStep() {
         super.aiStep();
         this.calculateFlapping();
+
+        if (getVariant().is(PigeonVariant.GHOST) && level().getRandom().nextInt(10) == 0) {
+            level().addParticle(new DustParticleOptions(Vec3.fromRGB24(0xFF4eff63).toVector3f(), 1f),
+                  position().x + getRandom().nextFloat() * 0.6f - 0.3f,
+                  position().y + getRandom().nextFloat() * 0.6f - 0.1f,
+                  position().z + getRandom().nextFloat() * 0.6f - 0.3f, 0, 0, 0);
+        }
 
         if (isNoAi()) {
             return;

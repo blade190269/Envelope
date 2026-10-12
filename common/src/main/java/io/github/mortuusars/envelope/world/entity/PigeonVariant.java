@@ -3,6 +3,7 @@ package io.github.mortuusars.envelope.world.entity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.mortaar.util.Time;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -36,6 +37,8 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
           ResourceKey.create(Envelope.Registries.PIGEON_VARIANT, Envelope.resource("charred"));
     public static final ResourceKey<PigeonVariant> ARCHIMEDES =
           ResourceKey.create(Envelope.Registries.PIGEON_VARIANT, Envelope.resource("archimedes"));
+    public static final ResourceKey<PigeonVariant> GHOST =
+          ResourceKey.create(Envelope.Registries.PIGEON_VARIANT, Envelope.resource("ghost"));
     public static final ResourceKey<PigeonVariant> DEFAULT = GRAY;
 
     // --
@@ -63,37 +66,44 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
 
     // --
 
-    public static Optional<Holder.Reference<PigeonVariant>> get(RegistryAccess registryAccess, ResourceKey<PigeonVariant> key) {
-        return registryAccess.registryOrThrow(Envelope.Registries.PIGEON_VARIANT).getHolder(key);
+    public static Optional<Holder.Reference<PigeonVariant>> get(RegistryAccess registries, ResourceKey<PigeonVariant> key) {
+        return registries.registryOrThrow(Envelope.Registries.PIGEON_VARIANT).getHolder(key);
     }
 
-    public static Holder<PigeonVariant> getOrThrow(RegistryAccess registryAccess, ResourceKey<PigeonVariant> key) {
-        return registryAccess.registryOrThrow(Envelope.Registries.PIGEON_VARIANT).getHolderOrThrow(key);
+    public static Holder<PigeonVariant> getOrThrow(RegistryAccess registries, ResourceKey<PigeonVariant> key) {
+        return registries.registryOrThrow(Envelope.Registries.PIGEON_VARIANT).getHolderOrThrow(key);
     }
 
-    public static Holder<PigeonVariant> getRandomSpawnVariant(RegistryAccess registryAccess, RandomSource random, Holder<Biome> biome) {
-        return getRandomVariant(registryAccess, random,
+    public static Holder<PigeonVariant> getRandomSpawnVariant(RegistryAccess registries, RandomSource random, Holder<Biome> biome) {
+        return getRandomVariant(registries, random,
               variant -> variant.biomes().contains(biome),
               variant -> variant.weights().biome())
-              .orElseGet(() -> getRandomCommonVariant(registryAccess, random));
+              .orElseGet(() -> getRandomCommonVariant(registries, random));
     }
 
-    public static Holder<PigeonVariant> getRandomCommonVariant(RegistryAccess registryAccess, RandomSource random) {
-        return withFallback(registryAccess,
-              getRandomVariant(registryAccess, random, variant -> variant.weights().common()));
+    public static Holder<PigeonVariant> getRandomCommonVariant(RegistryAccess registries, RandomSource random) {
+        return withFallback(registries,
+              getRandomVariant(registries, random, variant -> variant.weights().common()));
     }
 
-    public static Holder<PigeonVariant> getRandomServiceVariant(RegistryAccess registryAccess, RandomSource random) {
-        return withFallback(registryAccess,
-              getRandomVariant(registryAccess, random, variant -> variant.weights().service()));
+    public static Holder<PigeonVariant> getRandomServiceVariant(RegistryAccess registries, RandomSource random) {
+        if (Time.isHalloween() && random.nextInt(5) == 0) {
+            Optional<Holder.Reference<PigeonVariant>> ghost = get(registries, GHOST);
+            if (ghost.isPresent()) {
+                return ghost.get();
+            }
+        }
+
+        return withFallback(registries,
+              getRandomVariant(registries, random, variant -> variant.weights().service()));
     }
 
-    public static Optional<Holder<PigeonVariant>> getRandomVariant(RegistryAccess registryAccess, RandomSource random, Function<PigeonVariant, Integer> weightGetter) {
-        return getRandomVariant(registryAccess, random, variant -> true, weightGetter);
+    public static Optional<Holder<PigeonVariant>> getRandomVariant(RegistryAccess registries, RandomSource random, Function<PigeonVariant, Integer> weightGetter) {
+        return getRandomVariant(registries, random, variant -> true, weightGetter);
     }
 
-    public static Optional<Holder<PigeonVariant>> getRandomVariant(RegistryAccess registryAccess, RandomSource random, Predicate<PigeonVariant> filter, Function<PigeonVariant, Integer> weightGetter) {
-        Registry<PigeonVariant> registry = registryAccess.registryOrThrow(Envelope.Registries.PIGEON_VARIANT);
+    public static Optional<Holder<PigeonVariant>> getRandomVariant(RegistryAccess registries, RandomSource random, Predicate<PigeonVariant> filter, Function<PigeonVariant, Integer> weightGetter) {
+        Registry<PigeonVariant> registry = registries.registryOrThrow(Envelope.Registries.PIGEON_VARIANT);
         var variants = registry.holders()
               .filter(holder -> filter.test(holder.value()))
               .map(variant -> WeightedEntry.wrap(variant, weightGetter.apply(variant.value())))
@@ -103,8 +113,8 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
               .map(WeightedEntry.Wrapper::data);
     }
 
-    public static Holder<PigeonVariant> withFallback(RegistryAccess registryAccess, Optional<Holder<PigeonVariant>> variant) {
-        Registry<PigeonVariant> registry = registryAccess.registryOrThrow(Envelope.Registries.PIGEON_VARIANT);
+    public static Holder<PigeonVariant> withFallback(RegistryAccess registries, Optional<Holder<PigeonVariant>> variant) {
+        Registry<PigeonVariant> registry = registries.registryOrThrow(Envelope.Registries.PIGEON_VARIANT);
         return variant
               .or(() -> registry.getHolder(DEFAULT))
               .or(registry::getAny)
@@ -151,6 +161,7 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
         register(context, PASSENGER, "passenger", Envelope.Tags.Biomes.SPAWNS_PASSENGER_PIGEONS, new SpawningWeights(1, 0), true);
         register(context, CHARRED, "charred", HolderSet.empty(), new SpawningWeights(0, 0), false);
         register(context, ARCHIMEDES, "archimedes", HolderSet.empty(), new SpawningWeights(0, 0), false);
+        register(context, GHOST, "ghost", HolderSet.empty(), new SpawningWeights(0, 0), false);
     }
 
     static void register(BootstrapContext<PigeonVariant> context, ResourceKey<PigeonVariant> key,
