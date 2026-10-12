@@ -106,13 +106,18 @@ public class SealStampItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public boolean shouldRenderSlotTooltipWhileCarrying(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
+    public boolean canBeAppliedTo(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
         if (!slot.allowModification(player)) {
             return false;
         }
 
-        return slot.getItem().has(Envelope.DataComponents.SEAL)
-              || (slot.getItem().getItem() instanceof SealableItem sealable && sealable.canSeal(player.level(), slot.getItem()));
+        if (slot.getItem().get(Envelope.DataComponents.SEAL) instanceof Seal existingSeal) {
+            return existingSeal.getSignatureAsId().equals(player.getScoreboardName())
+                  && canApplyGold(carried, player)
+                  && (existingSeal.lock().isEmpty() || !existingSeal.lock().get().isLocked(player.level()));
+        }
+
+        return slot.getItem().getItem() instanceof SealableItem sealable && sealable.canSeal(player.level(), slot.getItem());
     }
 
     @Override
@@ -128,8 +133,7 @@ public class SealStampItem extends Item implements ApplicatorItem {
 
         ItemStack target = slot.getItem();
 
-        @Nullable Seal existingSeal = target.get(Envelope.DataComponents.SEAL);
-        if (existingSeal != null
+        if (target.get(Envelope.DataComponents.SEAL) instanceof Seal existingSeal
               && existingSeal.getSignatureAsId().equals(player.getScoreboardName())
               && canApplyGold(stack, player)
               && (existingSeal.lock().isEmpty() || !existingSeal.lock().get().isLocked(player.level()))) {

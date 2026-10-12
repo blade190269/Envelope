@@ -49,55 +49,77 @@ public class AddressTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public boolean shouldRenderSlotTooltipWhileCarrying(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
+    public boolean canBeAppliedTo(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
         if (!slot.allowModification(player)) {
             return false;
         }
 
-        return slot.getItem().is(Envelope.Tags.Items.MAILABLE)
-            && (carried.has(Envelope.DataComponents.ADDRESS_TAG_ADDRESS) || slot.getItem().has(Envelope.DataComponents.MAIL_ADDRESS_TAG));
+        if (slot.getItem().is(Envelope.Tags.Items.MAILABLE)) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS),
+                  slot.getItem().get(Envelope.DataComponents.MAIL_ADDRESS_TAG));
+        }
+
+        if (slot.getItem().is(Envelope.Items.ADDRESS_TAG.get())) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS),
+                  slot.getItem().get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS));
+        }
+
+        return false;
     }
 
     @Override
     public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
         ItemStack target = slot.getItem();
 
-        if (action != ClickAction.SECONDARY
-              || !slot.allowModification(player)
-              || !target.is(Envelope.Tags.Items.MAILABLE)) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
             return false;
         }
 
         @Nullable Address address = stack.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS);
-        @Nullable Address recipient = Mail.getRecipient(target).orElse(null);
-        if (Objects.equals(address, recipient)) {
-            player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+
+        if (target.is(Envelope.Tags.Items.MAILABLE)) {
+            @Nullable Address recipient = Mail.getRecipient(target).orElse(null);
+            if (Objects.equals(address, recipient)) {
+                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                return true;
+            }
+
+            if (address != null && stack.getCount() < target.getCount()) {
+                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                return true;
+            }
+
+            ItemStack result = target.copy();
+            Mail.setRecipient(result, address);
+            Mail.removePreviousDeliveryData(result);
+
+            if (!slot.mayPlace(result)) {
+                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                return true;
+            }
+
+            slot.setByPlayer(result);
+
+            if (address != null && !player.isCreative()) {
+                stack.shrink(target.getCount());
+            }
+
+            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+
             return true;
         }
 
-        if (address != null && stack.getCount() < target.getCount()) {
-            player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+        // Copy address from carried item to target, but only if addresses are different (to not block usual stack splitting behavior)
+        if (target.is(Envelope.Items.ADDRESS_TAG.get())
+              && !Objects.equals(address, target.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS))) {
+            target.set(Envelope.DataComponents.ADDRESS_TAG_ADDRESS, address);
+            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
             return true;
         }
 
-        ItemStack result = target.copy();
-        Mail.setRecipient(result, address);
-        Mail.removePreviousDeliveryData(result);
-
-        if (!slot.mayPlace(result)) {
-            player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
-            return true;
-        }
-
-        slot.setByPlayer(result);
-
-        if (address != null && !player.isCreative()) {
-            stack.shrink(target.getCount());
-        }
-
-        player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
-
-        return true;
+        return false;
     }
 
     @Override

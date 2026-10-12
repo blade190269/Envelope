@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class PaybackTagItem extends Item implements ApplicatorItem {
@@ -36,13 +37,24 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public boolean shouldRenderSlotTooltipWhileCarrying(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
+    public boolean canBeAppliedTo(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
         if (!slot.allowModification(player)) {
             return false;
         }
 
-        return slot.getItem().is(Envelope.Tags.Items.MAILABLE)
-              && (carried.has(Envelope.DataComponents.PAYBACK_TAG_CONTENTS) || slot.getItem().has(Envelope.DataComponents.MAIL_PAYBACK_TAG));
+        if (slot.getItem().is(Envelope.Tags.Items.MAILABLE)) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS),
+                  slot.getItem().get(Envelope.DataComponents.MAIL_PAYBACK_TAG));
+        }
+
+        if (slot.getItem().is(Envelope.Items.PAYBACK_TAG.get())) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS),
+                  slot.getItem().get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS));
+        }
+
+        return false;
     }
 
     @Override
@@ -50,36 +62,47 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
         if (action != ClickAction.SECONDARY) return false;
         if (!slot.allowModification(player)) return false;
         ItemStack target = slot.getItem();
-        if (!target.is(Envelope.Tags.Items.MAILABLE)) return false;
 
         @Nullable PaybackRequest request = stack.get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS);
-        @Nullable PaybackRequest currentRequest = target.get(Envelope.DataComponents.MAIL_PAYBACK_TAG);
 
-        if (request != null) {
-            if (stack.getCount() < target.getCount()) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
-                return true;
+        if (target.is(Envelope.Tags.Items.MAILABLE)) {
+            @Nullable PaybackRequest existingTag = target.get(Envelope.DataComponents.MAIL_PAYBACK_TAG);
+            if (request != null) {
+                if (stack.getCount() < target.getCount()) {
+                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    return true;
+                }
+
+                if (request.equals(existingTag)) {
+                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    return true;
+                }
+                target.set(Envelope.DataComponents.MAIL_PAYBACK_TAG, request);
+            } else {
+                if (existingTag == null) {
+                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    return true;
+                }
+                target.remove(Envelope.DataComponents.MAIL_PAYBACK_TAG);
             }
 
-            if (request.equals(currentRequest)) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
-                return true;
+            slot.setChanged();
+            if (request != null && !player.isCreative()) {
+                stack.shrink(target.getCount());
             }
-            target.set(Envelope.DataComponents.MAIL_PAYBACK_TAG, request);
-        } else {
-            if (currentRequest == null) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
-                return true;
-            }
-            target.remove(Envelope.DataComponents.MAIL_PAYBACK_TAG);
+            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+            return true;
         }
 
-        slot.setChanged();
-        if (request != null && !player.isCreative()) {
-            stack.shrink(target.getCount());
+        // Copy request from carried item to target, but only if requests are different (to not block usual stack splitting behavior)
+        if (target.is(Envelope.Items.PAYBACK_TAG.get())
+              && !Objects.equals(request, target.get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS))) {
+            target.set(Envelope.DataComponents.PAYBACK_TAG_CONTENTS, request);
+            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+            return true;
         }
-        player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
-        return true;
+
+        return false;
     }
 
     @Override
