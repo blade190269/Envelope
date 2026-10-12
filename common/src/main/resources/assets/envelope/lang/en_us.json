@@ -194,10 +194,16 @@
 
   "letter.envelope.mail_service.signature": "Mail Service",
 
+  "service_letter_meaning.envelope.mail_service.broadcast_report": "Broadcast Report",
+  "service_letter_meaning.envelope.mail_service.payback_request_cancel_report": "Payback Request Cancel Report",
+
   "service_letter_meaning.envelope.cloud_depository.withdrawal_request": "Withdrawal Request",
   "service_letter_meaning.envelope.cloud_depository.status_request": "Status Request",
   "service_letter_meaning.envelope.cloud_depository.expansion_request": "Expansion Request",
 
+  "service_letter_meaning.envelope.cloud_depository.status_report": "Status Report",
+  "service_letter_meaning.envelope.cloud_depository.deposit_report": "Deposit Report",
+  "service_letter_meaning.envelope.cloud_depository.expansion_report": "Expansion Report",
 
   "package.envelope.canceled_payback_request.name": "Canceled Payback Request",
 

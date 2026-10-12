@@ -60,6 +60,6 @@ public class PaybackPackageMenu extends PackageMenu {
     }
 
     protected ItemStack createBoxReturnItem() {
-        return Mail.createPaybackBox(getPaybackSubject()).get();
+        return Mail.createPaybackBox(getPaybackSubject()).itemStack();
     }
 }

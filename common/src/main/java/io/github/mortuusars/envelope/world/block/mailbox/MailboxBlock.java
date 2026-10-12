@@ -213,7 +213,7 @@ public class MailboxBlock extends BaseEntityBlock {
                       .writeToLog(DeliveryRecord.sentFrom(new PlayerAddress(player)))
                       .writeToLog(DeliveryRecord.arrivedTo(address))
                       .sender(new PlayerAddress(player))
-                      .get());
+                      .itemStack());
 
                 if (blockEntity.addMail(mail)) {
                     player.getItemInHand(hand).shrink(1);
@@ -231,13 +231,13 @@ public class MailboxBlock extends BaseEntityBlock {
                     blockEntity.clearMail();
                 } else {
                     for (int i = 0; i < 12; i++) {
-                        ItemStack mail = Mail.asDelivered(Mail.createLetter(LetterContent.EMPTY)
+                        ItemStack mail = Mail.asDelivered(Mail.of(Envelope.Items.LETTER)
                               .sender(new BlockAddress("Address " + i))
                               .recipient(blockEntity.getAddress())
                               .writeToLog(DeliveryRecord.sentFrom(new PlayerAddress(player)))
                               .writeToLog(DeliveryRecord.arrivedTo(blockEntity.getAddress()))
-                              .itemName(Component.literal("Letter " + i))
-                              .get());
+                              .name(Component.literal("Letter " + i))
+                              .itemStack());
 
                         if (blockEntity.addMail(mail)) {
                             blockEntity.onMailInserted(mail);
