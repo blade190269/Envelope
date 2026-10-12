@@ -130,10 +130,12 @@ public class EnvelopeJeiPlugin implements IModPlugin {
             return;
         }
 
+        /* Not that useful
         registration.addIngredientInfo(ServiceAddress.getOrThrow(ServiceAddress.MAIL_SERVICE, Minecrft.registryAccess()), SERVICE_ADDRESS_INGREDIENT,
               Component.translatable("envelope.jei.info.mail_service"));
         registration.addIngredientInfo(ServiceAddress.getOrThrow(ServiceAddress.AUTOMATED_SUPPLY_SERVICE, Minecrft.registryAccess()), SERVICE_ADDRESS_INGREDIENT,
               Component.translatable("envelope.jei.info.automated_supply_service"));
+        */
 
         ServiceAddress cloudDepository = ServiceAddress.getOrThrow(ServiceAddress.CLOUD_DEPOSITORY, Minecrft.registryAccess());
         if (ServiceAddress.isEnabled(cloudDepository)) {
