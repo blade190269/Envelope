@@ -16,7 +16,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -143,7 +142,7 @@ public interface PhysicalCourier extends Courier {
     default void onAppeared(ServerLevel level) {
         Vec3 pos = ((Entity) this).position();
         sendLongDistanceParticles(level, getTransitionParticle(), pos.x, pos.y, pos.z, 16, 0.1, 0.1, 0.1, 0.05);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, pos.x, pos.y, pos.z, Envelope.SoundEvents.COURIER_APPEARED.get(), SoundSource.NEUTRAL, 1, 1);
     }
 
     default ParticleOptions getTransitionParticle() {
@@ -153,7 +152,7 @@ public interface PhysicalCourier extends Courier {
     default void onVanished(ServerLevel level) {
         Vec3 pos = ((Entity) this).position();
         sendLongDistanceParticles(level, getTransitionParticle(), pos.x, pos.y, pos.z, 16, 0.1, 0.1, 0.1, 0.05);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, pos.x, pos.y, pos.z, Envelope.SoundEvents.COURIER_DISAPPEARED.get(), SoundSource.NEUTRAL, 1, 1);
     }
 
     default <T extends ParticleOptions> void sendLongDistanceParticles(ServerLevel level, T type, double posX, double posY, double posZ,

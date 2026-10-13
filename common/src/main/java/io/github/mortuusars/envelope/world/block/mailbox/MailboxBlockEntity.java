@@ -242,7 +242,7 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
                 BlockAddress.STREAM_CODEC.encode(buffer, getAddress());
                 ItemStack.LIST_STREAM_CODEC.encode(buffer, getAllMail());
             });
-            playSound(SoundEvents.BARREL_OPEN, 0.6f, 1.1f);
+            playSound(Envelope.SoundEvents.MAILBOX_OPEN.get(), 0.6f, 1.1f);
         }
     }
 
@@ -280,7 +280,7 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
         Vec3 pos = courier.position();
         level.sendParticles(ParticleTypes.CLOUD, pos.x, pos.y, pos.z, 10, 0.3, 0.3, 0.3, 0.02);
-        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.NEUTRAL, 1f, 1.3f);
+        level.playSound(null, pos.x, pos.y, pos.z, Envelope.SoundEvents.COURIER_MAIL_PICKUP.get(), SoundSource.NEUTRAL, 1f, 1.3f);
 
         if (courier.asCourierEntity().getType().equals(Envelope.EntityTypes.PIGEON.get())) {
             deliveredWithPigeon = true;
@@ -313,7 +313,7 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
     @Override
     public void onMailInserted(ItemStack mail) {
-        playSound(SoundEvents.NOTE_BLOCK_CHIME.value(), 1, 1);
+        playSound(Envelope.SoundEvents.MAILBOX_MAIL_RECEIVE.get(), 1, 1);
     }
 
     @Override
@@ -467,9 +467,8 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
                       .setValue(MailboxBlock.HAS_MAIL, shouldHaveMail));
 
                 if (isOpen != shouldBeOpen) {
-                    playSound(shouldBeOpen ? SoundEvents.CHERRY_WOOD_TRAPDOOR_OPEN : SoundEvents.CHERRY_WOOD_TRAPDOOR_CLOSE,
-                          0.75f,
-                          shouldBeOpen ? 1f : 0.75f);
+                    playSound(shouldBeOpen ? Envelope.SoundEvents.MAILBOX_HATCH_OPEN.get() : Envelope.SoundEvents.MAILBOX_HATCH_CLOSE.get(),
+                          0.75f, shouldBeOpen ? 1f : 0.75f);
                 }
             }
         }

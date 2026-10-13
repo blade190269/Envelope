@@ -247,7 +247,6 @@ public class MailboxBlock extends BaseEntityBlock {
             return ItemInteractionResult.SUCCESS;
         }
 
-
         //TODO: refactor the hell out from this:
 
         if (stack.is(Envelope.Items.PIGEON_SPAWN_EGG.get())) {
@@ -259,8 +258,8 @@ public class MailboxBlock extends BaseEntityBlock {
                         pos.relative(state.getValue(FACING)), MobSpawnType.SPAWN_EGG) instanceof Pigeon pigeon
                       && blockEntity.tryStartDelivery(pigeon)) {
                     if (level.isNight() || level.isRaining() || level.isThundering()) {
-                        serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                        player.displayClientMessage(Component.translatable("gui.envelope.mail_service.pigeon_wrong_time").withStyle(ChatFormatting.RED), true);
+                        serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
+                        player.displayClientMessage(Component.translatable("gui.envelope.mailbox.pigeon_wrong_time").withStyle(ChatFormatting.RED), true);
                         return ItemInteractionResult.SUCCESS;
                     }
 
@@ -271,7 +270,7 @@ public class MailboxBlock extends BaseEntityBlock {
                         pigeon.setOrigin(CourierOrigin.service());
                     }
                 } else {
-                    serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                    serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 }
             }
 
@@ -285,24 +284,24 @@ public class MailboxBlock extends BaseEntityBlock {
             }
 
             if (!(level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)) {
-                serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 return ItemInteractionResult.SUCCESS;
             }
 
             if (!blockEntity.isAvailableForPickup()) {
-                serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 player.displayClientMessage(Component.translatable("gui.envelope.mailbox.no_mail_or_food").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
 
             if (blockEntity.getBatFoodItem().isEmpty()) {
-                serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_wrong_food").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
 
             if (level.isDay() || level.isRaining() || level.isThundering()) {
-                serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_wrong_time").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
@@ -316,7 +315,7 @@ public class MailboxBlock extends BaseEntityBlock {
                     stack.shrink(1);
                 }
             } else {
-                serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
+                serverLevel.playSound(null, pos, Envelope.SoundEvents.UI_ERROR.get(), SoundSource.BLOCKS, 1, 1);
                 player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_spawn_failed").withStyle(ChatFormatting.RED), true);
             }
 
@@ -377,7 +376,7 @@ public class MailboxBlock extends BaseEntityBlock {
                     },
                     error -> {
                         player.displayClientMessage(error.getTranslation(), true);
-                        player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.75f, 1f);
+                        player.playSound(Envelope.SoundEvents.UI_ERROR.get(), 0.75f, 1f);
                     });
     }
 
@@ -390,7 +389,7 @@ public class MailboxBlock extends BaseEntityBlock {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!(stack.getItem() instanceof BlockItem blockItem)) {
-            player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.75f, 1f);
+            player.playSound(Envelope.SoundEvents.UI_ERROR.get(), 0.75f, 1f);
             Envelope.LOGGER.error("Failed to place mailbox: item in hand is not a BlockItem, but {}", stack);
             return;
         }
@@ -402,7 +401,7 @@ public class MailboxBlock extends BaseEntityBlock {
                         blockItem.place(context);
 
                         if (!(level.getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity)) {
-                            player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.75f, 1f);
+                            player.playSound(Envelope.SoundEvents.UI_ERROR.get(), 0.75f, 1f);
                             Envelope.LOGGER.error("Failed to place mailbox: be at pos [{}] is not MailboxBlockEntity", pos.toShortString());
                             return;
                         }
@@ -413,7 +412,7 @@ public class MailboxBlock extends BaseEntityBlock {
                     },
                     error -> {
                         player.displayClientMessage(error.getTranslation(), true);
-                        player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 0.75f, 1f);
+                        player.playSound(Envelope.SoundEvents.UI_ERROR.get(), 0.75f, 1f);
                     });
     }
 
@@ -421,7 +420,7 @@ public class MailboxBlock extends BaseEntityBlock {
         blockEntity.setAddress(address);
 
         if (Config.Server.MAILBOX_ADDRESS_EXPERIENCE_LEVELS_COST.get() > 0) {
-            player.level().playSound(player, blockEntity.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS);
+            player.level().playSound(player, blockEntity.getBlockPos(), Envelope.SoundEvents.MAILBOX_CONNECT.get(), SoundSource.BLOCKS);
         }
 
         if (!player.isCreative()) {

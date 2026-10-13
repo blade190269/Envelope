@@ -604,16 +604,39 @@ public class Envelope {
     }
 
     public static class SoundEvents {
-        public static final Supplier<SoundEvent> SEAL_STAMP = register("item", "seal_stamp");
+        public static final Supplier<SoundEvent> PIGEONHOLE_ENTER = register("block", "pigeonhole.enter");
+        public static final Supplier<SoundEvent> PIGEONHOLE_EXIT = register("block", "pigeonhole.exit");
+        public static final Supplier<SoundEvent> PIGEONHOLE_WORK = register("block", "pigeonhole.work");
+        public static final Supplier<SoundEvent> PIGEONHOLE_WORK_MULTIPLE = register("block", "pigeonhole.work_multiple");
+        public static final Supplier<SoundEvent> PIGEONHOLE_SCOOP = register("block", "pigeonhole.scoop");
 
-        public static final Supplier<SoundEvent> PAPER_TEAR = register("item", "paper.tear");
-        public static final Supplier<SoundEvent> PAPER_CRACKLE = register("item", "paper.crackle");
+        public static final Supplier<SoundEvent> MAILBOX_CONNECT = register("block", "mailbox.connect");
+        public static final Supplier<SoundEvent> MAILBOX_OPEN = register("block", "mailbox.open");
+        public static final Supplier<SoundEvent> MAILBOX_HATCH_OPEN = register("block", "mailbox.hatch_open");
+        public static final Supplier<SoundEvent> MAILBOX_HATCH_CLOSE = register("block", "mailbox.hatch_close");
+        public static final Supplier<SoundEvent> MAILBOX_MAIL_RECEIVE = register("block", "mailbox.mail_receive");
+        public static final Supplier<SoundEvent> MAILBOX_UI_MAIL_RECEIVE = register("block", "mailbox.ui.mail_receive");
+
         public static final Supplier<SoundEvent> PAPER_PLACE = register("block", "paper.place");
         public static final Supplier<SoundEvent> PAPER_BREAK = register("block", "paper.break");
         public static final Supplier<SoundEvent> PAPER_HIT = register("block", "paper.hit");
         public static final Supplier<SoundEvent> PAPER_FALL = register("block", "paper.fall");
         public static final Supplier<SoundEvent> PAPER_STEP = register("block", "paper.step");
         public static final Supplier<SoundEvent> PAPER_USE = register("block", "paper.use");
+
+        public static final Supplier<SoundEvent> PAPER_TEAR = register("item", "paper.tear");
+        public static final Supplier<SoundEvent> PAPER_CRACKLE = register("item", "paper.crackle");
+
+        public static final Supplier<SoundEvent> PACKAGE_PACK = register("item", "package.pack");
+        public static final Supplier<SoundEvent> TAG_APPLY = register("item", "tag.apply");
+        public static final Supplier<SoundEvent> SEAL_STAMP_APPLY = register("item", "seal_stamp.apply");
+        public static final Supplier<SoundEvent> SOULBOUND_SEAL_STAMP_LOCK = register("item", "soulbound_seal_stamp.lock");
+        public static final Supplier<SoundEvent> SOULBOUND_SEAL_STAMP_UNLOCK = register("item", "soulbound_seal_stamp.unlock");
+
+        public static final Supplier<SoundEvent> COURIER_MAIL_PICKUP = register("entity", "courier.mail_pickup");
+        public static final Supplier<SoundEvent> COURIER_APPEARED = register("entity", "courier.appeared");
+        public static final Supplier<SoundEvent> COURIER_DISAPPEARED = register("entity", "courier.disappeared");
+        public static final Supplier<SoundEvent> COURIER_EVADE = register("entity", "courier.evade");
 
         public static final Supplier<SoundEvent> PIGEON_AMBIENT = register("entity", "pigeon.ambient");
         public static final Supplier<SoundEvent> PIGEON_DEATH = register("entity", "pigeon.death");
@@ -628,13 +651,13 @@ public class Envelope {
         public static final Supplier<SoundEvent> CHARRED_PIGEON_HURT = register("entity", "charred_pigeon.hurt");
         public static final Supplier<SoundEvent> CHARRED_PIGEON_STEP = register("entity", "charred_pigeon.step");
 
-        public static final Supplier<SoundEvent> PIGEONHOLE_ENTER = register("block", "pigeonhole.enter");
-        public static final Supplier<SoundEvent> PIGEONHOLE_EXIT = register("block", "pigeonhole.exit");
-        public static final Supplier<SoundEvent> PIGEONHOLE_WORK = register("block", "pigeonhole.work");
-        public static final Supplier<SoundEvent> PIGEONHOLE_WORK_MULTIPLE = register("block", "pigeonhole.work_multiple");
-        public static final Supplier<SoundEvent> PIGEONHOLE_SCOOP = register("block", "pigeonhole.scoop");
-
         public static final Supplier<SoundEvent> VILLAGER_THROW_PIGEON_FOOD = register("entity", "villager.throw_pigeon_food");
+
+        public static final Supplier<SoundEvent> IGNITE = register("generic", "ignite");
+
+        public static final Supplier<SoundEvent> UI_WRITE = register("ui", "write");
+        public static final Supplier<SoundEvent> UI_ACTION_BLOCKED = register("ui", "action_blocked");
+        public static final Supplier<SoundEvent> UI_ERROR = register("ui", "error");
 
         private static Supplier<SoundEvent> register(String category, String key) {
             Preconditions.checkState(category != null && !category.isEmpty(), "'category' should not be empty.");

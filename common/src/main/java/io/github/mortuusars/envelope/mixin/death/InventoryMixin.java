@@ -41,7 +41,7 @@ public abstract class InventoryMixin {
               && droppedItem.get(Envelope.DataComponents.SEAL) instanceof Seal seal
               && seal.lock().map(lock -> lock.isOwnedBy(instance) && lock.isLocked(instance.level())).orElse(false)) {
             Vec3 pos = instance.position();
-            instance.level().playSound(null, pos.x, pos.y, pos.z, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.PLAYERS,
+            instance.level().playSound(null, pos.x, pos.y, pos.z, Envelope.SoundEvents.SOULBOUND_SEAL_STAMP_UNLOCK.get(), SoundSource.PLAYERS,
                   1f, instance.getRandom().nextFloat() * 0.3f + 0.85f);
             if (instance.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 5, 0.3, 0.3, 0.3, 0);

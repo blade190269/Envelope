@@ -166,7 +166,7 @@ public class AddressTagScreen extends Screen {
 
     protected boolean confirm() {
         if (!isCurrentIdSameAsExistingAddress()) {
-            Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1f));
+            Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(Envelope.SoundEvents.UI_WRITE.get(), 1f));
             int slot = this.hand == InteractionHand.MAIN_HAND ? Minecrft.player().getInventory().selected : Inventory.SLOT_OFFHAND;
             new ServerboundAddressTagApplyPacket(slot, getOrCreateAddressFromCurrentValue()).sendToServer();
         }

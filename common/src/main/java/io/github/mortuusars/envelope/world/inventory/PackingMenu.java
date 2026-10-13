@@ -111,7 +111,7 @@ public class PackingMenu extends AbstractInHandContainerMenu {
             player.drop(result, false);
         }
 
-        player.level().playSound(null, player, SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.PLAYERS,
+        player.level().playSound(null, player, Envelope.SoundEvents.PACKAGE_PACK.get(), SoundSource.PLAYERS,
               1f, player.level().getRandom().nextFloat() * 0.3f + 0.85f);
         player.swing(getHand());
         player.awardStat(Envelope.Stats.PACKAGES_CREATED.get());

@@ -319,7 +319,7 @@ public class Pigeon extends Animal implements VariantHolder<Holder<PigeonVariant
                 charredPigeon.getNavigation().moveTo(charredPigeon.getNavigation().createPath(getNavigation().getTargetPos(), 1), 1);
             }
 
-            serverLevel.playSound(null, charredPigeon, SoundEvents.FIRECHARGE_USE, SoundSource.NEUTRAL, 0.6f, 1);
+            serverLevel.playSound(null, charredPigeon, Envelope.SoundEvents.IGNITE.get(), SoundSource.NEUTRAL, 0.6f, 1);
             serverLevel.sendParticles(ParticleTypes.FLAME, position().x, position().y + 0.2, position().z, 15, 0.4, 0.4, 0.4, 0);
             serverLevel.sendParticles(ParticleTypes.LAVA, position().x, position().y + 0.2, position().z, 6, 0.4, 0.4, 0.4, 0);
         }
@@ -514,7 +514,7 @@ public class Pigeon extends Animal implements VariantHolder<Holder<PigeonVariant
 
             if (level() instanceof ServerLevel level) {
                 level.sendParticles(ParticleTypes.POOF, position().x, position().y, position().z, 3, 0.3, 0.3, 0.3, 0);
-                level.playSound(null, this, SoundEvents.ALLAY_THROW, SoundSource.NEUTRAL, 1,
+                level.playSound(null, this, Envelope.SoundEvents.COURIER_EVADE.get(), SoundSource.NEUTRAL, 1,
                       getRandom().nextFloat() * 0.1f + 0.95f);
             }
 

@@ -1,35 +1,4 @@
 {
-  "item.seal_stamp": {
-    "sounds": [
-      "envelope:item/seal_stamp"
-    ],
-    "subtitle": "subtitles.envelope.seal_stamp"
-  },
-  "item.paper.crackle": {
-    "sounds": [
-      "item/book/open_flip1",
-      "item/book/open_flip2",
-      "item/book/open_flip3",
-      {
-        "name": "envelope:item/paper",
-        "pitch": 0.85,
-        "volume": 0.3
-      },
-      {
-        "name": "envelope:item/paper",
-        "pitch": 1.25,
-        "volume": 0.3
-      }
-    ],
-    "subtitle": "subtitles.envelope.paper.crackle"
-  },
-  "item.paper.tear": {
-    "sounds": [
-      "envelope:item/paper_tear1",
-      "envelope:item/paper_tear2"
-    ],
-    "subtitle": "subtitles.envelope.paper.tear"
-  },
   "block.paper.break": {
     "sounds": [
       {
@@ -128,6 +97,309 @@
       "envelope:block/paper/hit3",
       "envelope:block/paper/hit4"
     ]
+  },
+  "block.pigeonhole.enter": {
+    "sounds": [
+      {
+        "name": "envelope:block/pigeonhole/enter",
+        "pitch": 0.9,
+        "attenuation_distance": 14
+      },
+      {
+        "name": "envelope:block/pigeonhole/enter",
+        "attenuation_distance": 14
+      }
+    ],
+    "subtitle": "subtitles.envelope.block.pigeonhole.enter"
+  },
+  "block.pigeonhole.exit": {
+    "sounds": [
+      {
+        "name": "envelope:block/pigeonhole/exit",
+        "pitch": 0.9,
+        "attenuation_distance": 14
+      },
+      {
+        "name": "envelope:block/pigeonhole/exit",
+        "attenuation_distance": 14
+      }
+    ],
+    "subtitle": "subtitles.envelope.block.pigeonhole.exit"
+  },
+  "block.pigeonhole.work": {
+    "sounds": [
+      {
+        "name": "envelope:block/pigeonhole/work1",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work2",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work3",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work4",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work5",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work6",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work7",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work8",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      }
+    ],
+    "subtitle": "subtitles.envelope.block.pigeonhole.work"
+  },
+  "block.pigeonhole.work_multiple": {
+    "sounds": [
+      {
+        "name": "envelope:block/pigeonhole/work1",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work2",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work3",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work4",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work5",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work6",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work7",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work8",
+        "volume": 0.6,
+        "attenuation_distance": 12
+      },
+      {
+        "name": "envelope:block/pigeonhole/work_multiple1",
+        "volume": 0.6,
+        "attenuation_distance": 12,
+        "weight": 3
+      },
+      {
+        "name": "envelope:block/pigeonhole/work_multiple2",
+        "volume": 0.6,
+        "attenuation_distance": 12,
+        "weight": 3
+      }
+    ],
+    "subtitle": "subtitles.envelope.block.pigeonhole.work"
+  },
+  "block.pigeonhole.scoop": {
+    "sounds": [
+      "envelope:block/pigeonhole/scoop"
+    ],
+    "subtitle": "subtitles.envelope.block.pigeonhole.scoop"
+  },
+  "block.mailbox.connect": {
+    "sounds": [
+      "block/enchantment_table/enchant1",
+      "block/enchantment_table/enchant2",
+      "block/enchantment_table/enchant3"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.connect"
+  },
+  "block.mailbox.open": {
+    "sounds": [
+      "block/barrel/open1",
+      "block/barrel/open2"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.open"
+  },
+  "block.mailbox.hatch_open": {
+    "sounds": [
+      "block/cherrywood_trapdoor/toggle1",
+      "block/cherrywood_trapdoor/toggle2",
+      "block/cherrywood_trapdoor/toggle3"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.hatch_open"
+  },
+  "block.mailbox.hatch_close": {
+    "sounds": [
+      "block/cherrywood_trapdoor/toggle1",
+      "block/cherrywood_trapdoor/toggle2",
+      "block/cherrywood_trapdoor/toggle3"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.hatch_close"
+  },
+  "block.mailbox.mail_receive": {
+    "sounds": [
+      "note/icechime"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.mail_receive"
+  },
+  "block.mailbox.ui.mail_receive": {
+    "sounds": [
+      "random/orb"
+    ],
+    "subtitle": "subtitles.envelope.block.mailbox.mail_receive"
+  },
+  "item.paper.crackle": {
+    "sounds": [
+      "item/book/open_flip1",
+      "item/book/open_flip2",
+      "item/book/open_flip3",
+      {
+        "name": "envelope:item/paper",
+        "pitch": 0.85,
+        "volume": 0.3
+      },
+      {
+        "name": "envelope:item/paper",
+        "pitch": 1.25,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.envelope.item.paper.crackle"
+  },
+  "item.paper.tear": {
+    "sounds": [
+      "envelope:item/paper_tear1",
+      "envelope:item/paper_tear2"
+    ],
+    "subtitle": "subtitles.envelope.item.paper.tear"
+  },
+  "item.package.pack": {
+    "sounds": [
+      "item/armor/equip_generic1",
+      "item/armor/equip_generic2",
+      "item/armor/equip_generic3",
+      "item/armor/equip_generic4",
+      "item/armor/equip_generic5",
+      "item/armor/equip_generic6"
+    ],
+    "subtitle": "subtitles.envelope.item.package.pack"
+  },
+  "item.seal_stamp.apply": {
+    "sounds": [
+      "envelope:item/seal_stamp"
+    ],
+    "subtitle": "subtitles.envelope.item.seal_stamp.apply"
+  },
+  "item.soulbound_seal_stamp.lock": {
+    "sounds": [
+      "block/sculk/spread1",
+      "block/sculk/spread2",
+      "block/sculk/spread3",
+      "block/sculk/spread4",
+      "block/sculk/spread5"
+    ],
+    "subtitle": "subtitles.envelope.item.soulbound_seal_stamp.lock"
+  },
+  "item.tag.apply": {
+    "sounds": [
+      "item/armor/equip_generic1",
+      "item/armor/equip_generic2",
+      "item/armor/equip_generic3",
+      "item/armor/equip_generic4",
+      "item/armor/equip_generic5",
+      "item/armor/equip_generic6"
+    ],
+    "subtitle": "subtitles.envelope.item.tag.apply"
+  },
+  "entity.courier.mail_pickup": {
+    "sounds": [
+      "item/armor/equip_generic1",
+      "item/armor/equip_generic2",
+      "item/armor/equip_generic3",
+      "item/armor/equip_generic4",
+      "item/armor/equip_generic5",
+      "item/armor/equip_generic6"
+    ],
+    "subtitle": "subtitles.envelope.entity.courier.mail_pickup"
+  },
+  "entity.courier.appeared": {
+    "sounds": [
+      {
+        "name": "block/bubble_column/bubble1",
+        "volume": 0.2,
+        "pitch": 1.2
+      },
+      {
+        "name": "block/bubble_column/bubble2",
+        "volume": 0.2,
+        "pitch": 1.2
+      },
+      {
+        "name": "block/bubble_column/bubble3",
+        "volume": 0.2,
+        "pitch": 1.2
+      }
+    ],
+    "subtitle": "subtitles.envelope.entity.courier.appeared"
+  },
+  "entity.courier.disappeared": {
+    "sounds": [
+      {
+        "name": "block/bubble_column/bubble1",
+        "volume": 0.2,
+        "pitch": 0.8
+      },
+      {
+        "name": "block/bubble_column/bubble2",
+        "volume": 0.2,
+        "pitch": 0.8
+      },
+      {
+        "name": "block/bubble_column/bubble3",
+        "volume": 0.2,
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.envelope.entity.courier.disappeared"
+  },
+  "entity.courier.evade": {
+    "sounds": [
+      {
+        "name": "mob/allay/item_thrown1",
+        "volume": 0.25,
+        "pitch": 1.5
+      }
+    ],
+    "subtitle": "subtitles.envelope.entity.courier.evade"
   },
   "entity.pigeon.ambient": {
     "sounds": [
@@ -333,142 +605,6 @@
       "mob/parrot/step5"
     ]
   },
-  "block.pigeonhole.enter": {
-    "sounds": [
-      {
-        "name": "envelope:block/pigeonhole/enter",
-        "pitch": 0.9,
-        "attenuation_distance": 14
-      },
-      {
-        "name": "envelope:block/pigeonhole/enter",
-        "attenuation_distance": 14
-      }
-    ],
-    "subtitle": "subtitles.envelope.block.pigeonhole.enter"
-  },
-  "block.pigeonhole.exit": {
-    "sounds": [
-      {
-        "name": "envelope:block/pigeonhole/exit",
-        "pitch": 0.9,
-        "attenuation_distance": 14
-      },
-      {
-        "name": "envelope:block/pigeonhole/exit",
-        "attenuation_distance": 14
-      }
-    ],
-    "subtitle": "subtitles.envelope.block.pigeonhole.exit"
-  },
-  "block.pigeonhole.work": {
-    "sounds": [
-      {
-        "name": "envelope:block/pigeonhole/work1",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work2",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work3",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work4",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work5",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work6",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work7",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work8",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      }
-    ],
-    "subtitle": "subtitles.envelope.block.pigeonhole.work"
-  },
-  "block.pigeonhole.work_multiple": {
-    "sounds": [
-      {
-        "name": "envelope:block/pigeonhole/work1",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work2",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work3",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work4",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work5",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work6",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work7",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work8",
-        "volume": 0.6,
-        "attenuation_distance": 12
-      },
-      {
-        "name": "envelope:block/pigeonhole/work_multiple1",
-        "volume": 0.6,
-        "attenuation_distance": 12,
-        "weight": 3
-      },
-      {
-        "name": "envelope:block/pigeonhole/work_multiple2",
-        "volume": 0.6,
-        "attenuation_distance": 12,
-        "weight": 3
-      }
-    ],
-    "subtitle": "subtitles.envelope.block.pigeonhole.work"
-  },
-  "block.pigeonhole.scoop": {
-    "sounds": [
-      "envelope:block/pigeonhole/scoop"
-    ],
-    "subtitle": "subtitles.envelope.block.pigeonhole.scoop"
-  },
   "entity.villager.throw_pigeon_food": {
     "sounds": [
       {
@@ -493,5 +629,28 @@
       }
     ],
     "subtitle": "subtitles.envelope.entity.villager.throw_pigeon_food"
+  },
+  "generic.ignite": {
+    "sounds": [
+      "mob/ghast/fireball4"
+    ],
+    "subtitle": "subtitles.envelope.generic.ignite"
+  },
+  "ui.write": {
+    "sounds": [
+      "ui/cartography_table/drawmap1",
+      "ui/cartography_table/drawmap2",
+      "ui/cartography_table/drawmap3"
+    ]
+  },
+  "ui.action_blocked": {
+    "sounds": [
+      "random/click"
+    ]
+  },
+  "ui.error": {
+    "sounds": [
+      "note/bassattack"
+    ]
   }
 }

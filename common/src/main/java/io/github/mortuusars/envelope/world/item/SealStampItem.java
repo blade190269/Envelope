@@ -13,7 +13,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
@@ -127,7 +126,7 @@ public class SealStampItem extends Item implements ApplicatorItem {
         }
 
         if (!slot.allowModification(player)) {
-            player.playSound(SoundEvents.COMPARATOR_CLICK);
+            player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get());
             return true;
         }
 
@@ -146,12 +145,12 @@ public class SealStampItem extends Item implements ApplicatorItem {
 
             target.set(Envelope.DataComponents.SEAL, newSeal);
             slot.set(target);
-            player.playSound(Envelope.SoundEvents.SEAL_STAMP.get(), 1f, player.getRandom().nextFloat() * 0.4f + 0.80f);
+            player.playSound(Envelope.SoundEvents.SEAL_STAMP_APPLY.get(), 1f, player.getRandom().nextFloat() * 0.4f + 0.80f);
             return true;
         }
 
         if (!(target.getItem() instanceof SealableItem sealable) || !sealable.canSeal(player.level(), target)) {
-            player.playSound(SoundEvents.COMPARATOR_CLICK);
+            player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get());
             return true;
         }
 
@@ -178,7 +177,7 @@ public class SealStampItem extends Item implements ApplicatorItem {
     }
 
     protected void onSealApplied(ItemStack stack, Player player, SealableItem sealable, ItemStack target, Seal seal) {
-        player.playSound(Envelope.SoundEvents.SEAL_STAMP.get(), 0.75f, player.getRandom().nextFloat() * 0.4f + 0.80f);
+        player.playSound(Envelope.SoundEvents.SEAL_STAMP_APPLY.get(), 0.75f, player.getRandom().nextFloat() * 0.4f + 0.80f);
         player.awardStat(Envelope.Stats.SEALS_APPLIED.get());
     }
 

@@ -34,9 +34,9 @@ public class LetterItem extends BlockItem implements SealableItem {
               && context.getLevel().getBlockState(context.getClickedPos()).is(Envelope.Tags.Blocks.BURNING)) {
             context.getPlayer().getItemInHand(context.getHand()).shrink(1);
             context.getLevel().playSound(context.getPlayer(), context.getClickedPos(),
-                  SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.6f, 0.9f + context.getLevel().getRandom().nextFloat() * 0.3f);
+                  Envelope.SoundEvents.IGNITE.get(), SoundSource.PLAYERS, 0.5f, 0.9f + context.getLevel().getRandom().nextFloat() * 0.3f);
             context.getLevel().playSound(context.getPlayer(), context.getClickedPos(),
-                  SoundEvents.CAMPFIRE_CRACKLE, SoundSource.PLAYERS, 1f, 1f);
+                  SoundEvents.FIRE_AMBIENT, SoundSource.PLAYERS, 1f, 1f);
             Vec3 p = context.getClickLocation();
 
             if (context.getLevel() instanceof ServerLevel serverLevel) {

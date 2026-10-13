@@ -237,7 +237,7 @@ public final class Mail {
             stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             player.playSound(SoundEvents.SHEEP_SHEAR, 0.75f, 1f);
         } else {
-            player.playSound(SoundEvents.COMPARATOR_CLICK, 0.75f, 1f);
+            player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 0.75f, 1f);
         }
 
         return true;
