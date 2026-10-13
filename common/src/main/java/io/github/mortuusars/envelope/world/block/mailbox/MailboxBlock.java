@@ -189,7 +189,7 @@ public class MailboxBlock extends BaseEntityBlock {
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!MailService.operatesIn(level)) {
-            player.displayClientMessage(Component.literal("Mail Service does not operate in this dimension.")
+            player.displayClientMessage(Component.translatable("gui.envelope.mail_service.invalid_dimension")
                   .withStyle(ChatFormatting.RED), true);
             return ItemInteractionResult.SUCCESS;
         }
@@ -258,13 +258,11 @@ public class MailboxBlock extends BaseEntityBlock {
                       && Envelope.EntityTypes.PIGEON.get().spawn(serverLevel,
                         pos.relative(state.getValue(FACING)), MobSpawnType.SPAWN_EGG) instanceof Pigeon pigeon
                       && blockEntity.tryStartDelivery(pigeon)) {
-
                     if (level.isNight() || level.isRaining() || level.isThundering()) {
                         serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                        player.displayClientMessage(Component.literal("Pigeon cannot deliver at this time.").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(Component.translatable("gui.envelope.mail_service.pigeon_wrong_time").withStyle(ChatFormatting.RED), true);
                         return ItemInteractionResult.SUCCESS;
                     }
-
 
                     if (!player.isCreative()) {
                         pigeon.setOrigin(CourierOrigin.regular(pos));
@@ -293,19 +291,19 @@ public class MailboxBlock extends BaseEntityBlock {
 
             if (!blockEntity.isAvailableForPickup()) {
                 serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                player.displayClientMessage(Component.literal("Nothing to deliver or food is missing.").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("gui.envelope.mailbox.no_mail_or_food").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
 
             if (blockEntity.getBatFoodItem().isEmpty()) {
                 serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                player.displayClientMessage(Component.literal("Bat doesn't like the food.").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_wrong_food").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
 
             if (level.isDay() || level.isRaining() || level.isThundering()) {
                 serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                player.displayClientMessage(Component.literal("Bat cannot deliver at this time.").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_wrong_time").withStyle(ChatFormatting.RED), true);
                 return ItemInteractionResult.SUCCESS;
             }
 
@@ -319,7 +317,7 @@ public class MailboxBlock extends BaseEntityBlock {
                 }
             } else {
                 serverLevel.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1, 1);
-                player.displayClientMessage(Component.literal("Bat failed to arrive.").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("gui.envelope.mailbox.bat_spawn_failed").withStyle(ChatFormatting.RED), true);
             }
 
             return ItemInteractionResult.SUCCESS;
@@ -336,7 +334,7 @@ public class MailboxBlock extends BaseEntityBlock {
         }
 
         if (!MailService.operatesIn(level)) {
-            player.displayClientMessage(Component.literal("Mail Service does not operate in this dimension.")
+            player.displayClientMessage(Component.translatable("gui.envelope.mail_service.invalid_dimension")
                   .withStyle(ChatFormatting.RED), true);
             return InteractionResult.SUCCESS_NO_ITEM_USED;
         }

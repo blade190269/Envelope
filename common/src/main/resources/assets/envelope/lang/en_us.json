@@ -224,6 +224,13 @@
   "envelope.letter_and_quill.fold_button": "Fold",
   "envelope.letter_and_quill.fold_warning": "Note! When you fold the letter, it will no longer be editable.",
 
+  "gui.envelope.mail_service.invalid_dimension": "Mail Service does not operate in this dimension.",
+  "gui.envelope.mailbox.no_mail_or_food": "Nothing to deliver or food is missing.",
+  "gui.envelope.mailbox.pigeon_wrong_time": "Pigeon cannot deliver at this time.",
+  "gui.envelope.mailbox.bat_wrong_time": "Bat cannot deliver at this time.",
+  "gui.envelope.mailbox.bat_wrong_food": "Bat doesn't like the food.",
+  "gui.envelope.mailbox.bat_spawn_failed": "Bat failed to arrive.",
+
   "gui.envelope.mailbox_address.rename_warning.inbox": "§6• Mail in inbox will be dropped on the ground.",
   "gui.envelope.mailbox_address.rename_warning.traveling": "§6• Mail traveling to previous address will be returned.",
 
@@ -248,6 +255,7 @@
   "gui.envelope.payback_tag.duration_medium": "Duration: Medium",
   "gui.envelope.payback_tag.duration_long": "Duration: Long",
   "gui.envelope.payback_tag.tooltip.scroll": "§8[§7Scroll§8] to change amount",
+  "gui.envelope.payback.accepts_tag": "Accepts Tag:",
 
   "gui.envelope.confirm": "Confirm",
   "gui.envelope.cancel": "Cancel",
