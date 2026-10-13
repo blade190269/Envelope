@@ -97,7 +97,7 @@ public class PaybackPackingScreen extends AbstractInHandContainerScreen<PaybackP
             List<Component> lines = requestedItemSlot.getIngredient().items().unwrapKey()
                   .map(tag -> {
                       List<Component> list = new ArrayList<>(getTooltipFromContainerItem(stack));
-                      list.addLast(Component.literal("Accepts Tag:").withStyle(ChatFormatting.GRAY));
+                      list.addLast(Component.translatable("gui.envelope.payback.accepts_tag").withStyle(ChatFormatting.GRAY));
                       list.addLast(Component.literal("#" + tag.location()).withStyle(ChatFormatting.GRAY));
                       return list;
                   })
