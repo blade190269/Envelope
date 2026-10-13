@@ -36,6 +36,8 @@ dependencies {
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port_version}")
 
     modLocalRuntime("mezz.jei:jei-${minecraft_version}-fabric:${jei_version}")
+    modLocalRuntime("net.mezzdev.config:mezz_config-${minecraft_version}-fabric:${mezz_config_version}")
+
     modLocalRuntime("maven.modrinth:modmenu:${modmenu_version}")
     modLocalRuntime("maven.modrinth:jade:${jade_version}+fabric")
     modLocalRuntime("maven.modrinth:sodium:${sodium_version}-fabric")
