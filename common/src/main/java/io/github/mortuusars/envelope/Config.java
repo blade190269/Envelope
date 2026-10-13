@@ -23,7 +23,8 @@ public abstract class Config {
         public static final ModConfigSpec.BooleanValue PIGEON_CONVERT_INTO_CHARRED;
         public static final ModConfigSpec.IntValue PIGEON_CONVERT_INTO_CHARRED_TICKS;
         public static final ModConfigSpec.DoubleValue PIGEON_ARCHIMEDES_CHANCE;
-        public static final ModConfigSpec.BooleanValue PIGEON_GHOST;
+        public static final ModConfigSpec.DoubleValue PIGEON_GHOST_CHANCE;
+        public static final ModConfigSpec.BooleanValue PIGEON_GHOST_HALLOWEEN;
         public static final ModConfigSpec.DoubleValue PIGEON_DELIVERY_TRAVEL_SPEED;
         public static final ModConfigSpec.IntValue PIGEON_DELIVERY_TIRED_TICKS;
 
@@ -147,9 +148,12 @@ public abstract class Config {
                 PIGEON_ARCHIMEDES_CHANCE = builder
                       .comment("Chance of an Archimedes spawning when 'envelope:spawns_archimedes' mob is killed by 'envelope:spawns_archimedes' damage type (player explosion by default).")
                       .defineInRange("archimedes_chance", 0.05, 0, 1);
-                PIGEON_GHOST = builder
+                PIGEON_GHOST_CHANCE = builder
+                      .comment("Chance of a Ghost Pigeon spawning nearby when a Villager is converted into a Zombie Villager on a full moon night.", "Default: true")
+                      .defineInRange("ghost_spawn_chance", 0.5, 0.0, 1.0);
+                PIGEON_GHOST_HALLOWEEN = builder
                       .comment("On Halloween, Ghost Pigeon will spawn in villages at night and as a service courier.", "Default: true")
-                      .define("ghost", true);
+                      .define("ghost_on_halloween", true);
 
                 PIGEON_DELIVERY_TRAVEL_SPEED = builder
                       .comment("Speed (in blocks per second) while in traveling (background) phases of a delivery.")

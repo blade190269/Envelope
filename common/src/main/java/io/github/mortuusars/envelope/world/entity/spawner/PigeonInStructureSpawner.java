@@ -96,7 +96,7 @@ public class PigeonInStructureSpawner implements CustomSpawner {
         pigeon.moveTo(pos, 0.0F, 0.0F);
         pigeon.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.NATURAL, null);
 
-        if (Config.Server.PIGEON_GHOST.get() && level.isNight() && Time.isHalloween() && level.getRandom().nextBoolean()) {
+        if (Config.Server.PIGEON_GHOST_HALLOWEEN.get() && level.isNight() && Time.isHalloween() && level.getRandom().nextBoolean()) {
             PigeonVariant.get(level.registryAccess(), PigeonVariant.GHOST)
                   .ifPresent(pigeon::setVariant);
         }

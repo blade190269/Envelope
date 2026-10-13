@@ -1,13 +1,12 @@
 # Changelog
 
-## UNRELEASED
+## 0.8.0-Snapshot3
 ### New Features
-Letter
+- Added Ghost Pigeon variant
+  - Has a chance to spawn when a Villager is converted into a Zombie Villager on a full moon night
+  - On Halloween: spawns in village at night; can appear as a service courier 
 - Added separate **Tattered Letter** item (previously was just a data component on the **Letter**)
 - Added **Service Letter**
-
-Misc
-- Added Ghost Pigeon variant that spawns on Halloween in villages at night and as a service courier  
 - Added **Spider Eye** -> **Pumpkin Seeds** mailing recipe to **Mail Service** 
 - Scooping waste from **Pigeonhole** now has a 50% chance to drop a **Feather**  
 - Added particles to **Pigeonhole** waste scooping
