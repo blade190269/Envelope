@@ -31,6 +31,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
@@ -56,6 +58,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -164,6 +167,34 @@ public class Pigeon extends Animal implements VariantHolder<Holder<PigeonVariant
         pigeon.setVariant(PigeonVariant.getRandomServiceVariant(level.registryAccess(), level.getRandom()));
         pigeon.setOrigin(CourierOrigin.service());
         return pigeon;
+    }
+
+    public static void trySpawnGhost(ServerLevel level, ZombieVillager zombieVillager) {
+        RandomSource random = level.getRandom();
+        if (random.nextDouble() >= Config.Server.PIGEON_GHOST_CHANCE.get()
+              || level.isDay()
+              || level.getMoonBrightness() <= 0.9F) {
+            return;
+        }
+
+        int x = (4 + random.nextInt(8)) * (random.nextBoolean() ? -1 : 1);
+        int y = (4 + random.nextInt(8)) * (random.nextBoolean() ? -1 : 1);
+        BlockPos spawnPos = zombieVillager.blockPosition().offset(x, 0, y);
+        spawnPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, spawnPos);
+
+        if (level.isLoaded(spawnPos)
+              && Math.abs(zombieVillager.getBlockY() - spawnPos.getY()) <= 16 // Not too far
+              && SpawnPlacements.isSpawnPositionOk(Envelope.EntityTypes.PIGEON.get(), level, spawnPos)
+              && Envelope.EntityTypes.PIGEON.get().spawn(level, spawnPos, MobSpawnType.REINFORCEMENT) instanceof Pigeon pigeon) {
+            PigeonVariant.get(level.registryAccess(), PigeonVariant.GHOST)
+                  .ifPresent(pigeon::setVariant);
+            Vec3 pos = pigeon.position();
+            for (ServerPlayer player : level.players()) {
+                level.sendParticles(player, new DustParticleOptions(Vec3.fromRGB24(0xFF4eff63).toVector3f(), 2f),
+                      true, pos.x(), pos.y() + 0.25f, pos.z(), 10, 0.5, 0.5, 0.5, 0);
+            }
+            LOGGER.debug("Spawned ghost pigeon at [{}]", spawnPos);
+        }
     }
 
     @Override

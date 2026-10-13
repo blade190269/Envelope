@@ -88,7 +88,7 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
     }
 
     public static Holder<PigeonVariant> getRandomServiceVariant(RegistryAccess registries, RandomSource random) {
-        if (Config.Server.PIGEON_GHOST.get() && Time.isHalloween() && random.nextBoolean()) {
+        if (Config.Server.PIGEON_GHOST_HALLOWEEN.get() && Time.isHalloween() && random.nextBoolean()) {
             Optional<Holder.Reference<PigeonVariant>> ghost = get(registries, GHOST);
             if (ghost.isPresent()) {
                 return ghost.get();
