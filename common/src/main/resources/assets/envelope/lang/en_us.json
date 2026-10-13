@@ -21,7 +21,6 @@
 
   "block_type.envelope.pigeonhole": "%s Pigeonhole",
 
-
   "item.envelope.oak_pigeonhole": "Oak Pigeonhole",
   "item.envelope.spruce_pigeonhole": "Spruce Pigeonhole",
   "item.envelope.birch_pigeonhole": "Birch Pigeonhole",
@@ -75,7 +74,6 @@
   "item.envelope.soulbound_seal_stamp.error.in_creative_mode": "Soulbound seal lock was not created. Creative-mode players have no soul.",
 
   "item_group.envelope.envelope": "Envelope",
-
 
   "entity.envelope.pigeon": "Pigeon",
   "entity.envelope.charred_pigeon": "Charred Pigeon",
@@ -207,7 +205,6 @@
 
   "package.envelope.canceled_payback_request.name": "Canceled Payback Request",
 
-
   "address_type.envelope.block": "Block",
   "address_type.envelope.player": "Player",
   "address_type.envelope.service": "Service",
@@ -220,15 +217,12 @@
   "address.envelope.equine_assurance_bureau": "Equine Assurance Bureau",
   "address.envelope.unknown": "Unknown",
 
-
   "container.envelope.mailbox": "Mailbox",
   "container.envelope.payback_tag": "Payback",
   "container.envelope.package.contents_unknown": "Contents Unknown",
 
-
   "envelope.letter_and_quill.fold_button": "Fold",
   "envelope.letter_and_quill.fold_warning": "Note! When you fold the letter, it will no longer be editable.",
-
 
   "gui.envelope.mailbox_address.rename_warning.inbox": "§6• Mail in inbox will be dropped on the ground.",
   "gui.envelope.mailbox_address.rename_warning.traveling": "§6• Mail traveling to previous address will be returned.",
@@ -333,13 +327,11 @@
   "gui.envelope.formatting.white": "White",
   "gui.envelope.formatting.yellow": "Yellow",
 
-
   "error.envelope.address.id_cannot_be_empty": "Address cannot be empty",
   "error.envelope.address.id_too_long": "Address is too long",
   "error.envelope.address.id_contains_invalid_chars": "Address contains invalid characters",
   "error.envelope.address.taken": "Address is already taken",
   "error.envelope.address.not_enough_xp_levels": "Not enough experience levels",
-
 
   "subtitles.envelope.block.pigeonhole.enter": "Pigeon enters hole",
   "subtitles.envelope.block.pigeonhole.exit": "Pigeon leaves hole",
@@ -363,10 +355,8 @@
 
   "subtitles.envelope.entity.villager.throw_pigeon_food": "Villager throws food",
 
-
   "recipe.envelope.mailing.mail_service.letter_broadcasting.info": "Sends copies of the letter to all players who have a default mailbox",
   "recipe.envelope.mailing.mail_service.payback_cancelling.info": "Cancels and returns the last mail with payback request",
-
 
   "advancement.envelope.dirt_to_diamonds.title": "Dirt to Diamonds",
   "advancement.envelope.dirt_to_diamonds.description": "Find a Diamond in Pigeonhole waste",
@@ -389,7 +379,6 @@
   "advancement.envelope.system_failure.title": "System Failure",
   "advancement.envelope.system_failure.description": "Step foot on a Collapsed Mail Hub",
 
-
   "stat.envelope.interact_with_mailbox": "Interactions with Mailbox",
   "stat.envelope.mail_deliveries": "Mail Deliveries",
   "stat.envelope.seals_applied": "Seals Applied",
@@ -398,9 +387,22 @@
   "stat.envelope.packages_created": "Packages Created",
   "stat.envelope.packages_opened": "Packages Opened",
 
-
   "envelope.empty_tag": "Empty Tag",
 
+  "tag.item.envelope.mailable": "Mailable",
+  "tag.item.envelope.cannot_be_packaged": "Cannot Be Packaged",
+  "tag.item.envelope.pigeonholes": "Pigeonholes",
+  "tag.item.envelope.letters": "Letters",
+  "tag.item.envelope.packages": "Packages",
+  "tag.item.envelope.seal_stamps": "Seal Stamps",
+  "tag.item.envelope.regular_seal_stamps": "Regular Seal Stamps",
+  "tag.item.envelope.waste_scoopable": "Waste Scoopable",
+  "tag.item.envelope.pigeon_food": "Pigeon Food",
+  "tag.item.envelope.bat_food": "Bat Food",
+  "tag.item.envelope.courier_food": "Courier Food",
+  "tag.item.envelope.villager_feeding_pigeon_food_common": "Villager Feeding Pigeon Food Common",
+  "tag.item.envelope.villager_feeding_pigeon_food_uncommon": "Villager Feeding Pigeon Food Uncommon",
+  "tag.item.envelope.villager_feeding_pigeon_food_rare": "Villager Feeding Pigeon Food Rare",
 
   "envelope.jei.category.mailing": "Mailing",
   "envelope.jei.info": "Info",
@@ -408,7 +410,6 @@
   "envelope.jei.info.cloud_depository.withdrawal_request": "When §4sealed§r and sent to %s - requests withdrawal of the last deposited item.\nIf renamed, item with the same name will be requested.",
   "envelope.jei.info.cloud_depository.status_request": "When §4sealed§r and sent to %s - requests a storage status report.",
   "envelope.jei.info.cloud_depository.expansion_request": "When §4sealed§r and sent to %s - requests a storage expansion by %s slots.",
-
 
   "envelope.configuration.pigeon": "Pigeon",
   "envelope.configuration.spawns_naturally": "Spawns Naturally",
