@@ -405,9 +405,9 @@
   "envelope.jei.category.mailing": "Mailing",
   "envelope.jei.info": "Info",
   "envelope.jei.info.cloud_depository": "Stores items remotely and securely.\n\nSend items to deposit.\nSend %s to withdraw.\n\nDeposits and requests must be sealed for identification reasons.",
-  "envelope.jei.info.cloud_depository.withdrawal_request": "When sealed and sent to %s - requests withdrawal of the last deposited item.\nIf renamed, item with the same name will be requested.",
-  "envelope.jei.info.cloud_depository.status_request": "When sealed and sent to %s - requests a storage status report.",
-  "envelope.jei.info.cloud_depository.expansion_request": "When sealed and sent to %s - requests a storage expansion by %s slots.",
+  "envelope.jei.info.cloud_depository.withdrawal_request": "When §4sealed§r and sent to %s - requests withdrawal of the last deposited item.\nIf renamed, item with the same name will be requested.",
+  "envelope.jei.info.cloud_depository.status_request": "When §4sealed§r and sent to %s - requests a storage status report.",
+  "envelope.jei.info.cloud_depository.expansion_request": "When §4sealed§r and sent to %s - requests a storage expansion by %s slots.",
 
 
   "envelope.configuration.pigeon": "Pigeon",
