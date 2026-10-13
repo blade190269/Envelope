@@ -35,6 +35,7 @@ dependencies {
     include(modApi("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}"))
 
     modLocalRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") { transitive = false }
+    modLocalRuntime("net.mezzdev.config:mezz_config-${minecraft_version}-neoforge:${mezz_config_version}")
 
     // EMI
     //modLocalRuntime("dev.emi:emi-neoforge:${emi_version}") { transitive = false }
