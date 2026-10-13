@@ -5,7 +5,6 @@ import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.client.gui.widget.textbox.TextBox;
 import io.github.mortuusars.envelope.client.gui.widget.textbox.text.FormattedString;
 import io.github.mortuusars.mortaar.client.Minecrft;
-import io.github.mortuusars.envelope.integration.jei.JeiCompatibleScreen;
 import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundLetterEditPacket;
 import io.github.mortuusars.envelope.world.item.LetterAndQuillItem;
 import io.github.mortuusars.mortaar.client.gui.Sprites;
@@ -26,7 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class LetterEditScreen extends Screen implements JeiCompatibleScreen {
+public class LetterEditScreen extends Screen {
     public static final ResourceLocation TEXTURE = Envelope.resource("textures/gui/letter_and_quill.png");
     public static final WidgetSprites FOLD_BUTTON_SPRITES = Sprites.threeStates(Envelope.resource("letter_and_quill/fold_button"));
 
@@ -145,14 +144,5 @@ public class LetterEditScreen extends Screen implements JeiCompatibleScreen {
 
         int slot = this.hand == InteractionHand.MAIN_HAND ? Minecrft.player().getInventory().selected : Inventory.SLOT_OFFHAND;
         new ServerboundLetterEditPacket(slot, text, fold).sendToServer();
-    }
-
-    // --
-
-    @Override
-    public boolean shouldBlockJeiInput() {
-        // Always block JEI input, as this screen does not have jei showing,
-        // but hotkeys such as Ctrl + O will still hide JEI if pressed.
-        return true;
     }
 }

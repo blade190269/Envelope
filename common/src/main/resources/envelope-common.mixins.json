@@ -16,7 +16,6 @@
     "event.ServerLevelMixin",
     "fox_tatter.FoxMixin",
     "injected.ServerLevelMixin",
-    "jei.JeiKeyConflictContextMixin",
     "paper_box_fall.EntityMixin",
     "predators.CatMixin",
     "predators.FoxMixin",
