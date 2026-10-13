@@ -4,7 +4,9 @@ import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.item.component.seal.Seal;
 import io.github.mortuusars.envelope.world.item.component.seal.SealMaterial;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -36,8 +38,7 @@ public class SoulboundSealStampItem extends SealStampItem {
 
     @Override
     public int getBarColor(ItemStack stack) {
-        //TODO: FIX
-        double time = /*(Minecrft.level().getGameTime() + Minecrft.get().getTimer().getGameTimeDeltaPartialTick(true)) / */20.0;
+        double time = Util.getMillis() / 1000.0;
         double beat = Math.pow((Math.sin(time * Math.PI * 2 * 1) + 1.0) * 0.5, 10);
         float delta = (float) Mth.lerp(beat, 0, 1);
         return FastColor.ARGB32.lerp(delta, 0xFF08ABB3, 0xFF40E7FF);
