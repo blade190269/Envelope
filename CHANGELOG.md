@@ -7,6 +7,7 @@ Letter
 - Added **Service Letter**
 
 Misc
+- Added Ghost Pigeon variant that spawns on Halloween in villages at night and as a service courier  
 - Added **Spider Eye** -> **Pumpkin Seeds** mailing recipe to **Mail Service** 
 - Scooping waste from **Pigeonhole** now has a 50% chance to drop a **Feather**  
 - Added particles to **Pigeonhole** waste scooping

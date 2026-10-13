@@ -14,7 +14,6 @@ public abstract class Config {
         public static final ModConfigSpec.BooleanValue PIGEON_SPAWNS_IN_VILLAGE;
         public static final ModConfigSpec.IntValue PIGEON_MIN_TICKS_INSIDE_PIGEONHOLE;
         public static final ModConfigSpec.IntValue PIGEON_MIN_TICKS_OUTSIDE_PIGEONHOLE;
-        public static final ModConfigSpec.IntValue PIGEON_DELIVERY_TIRED_TICKS;
         public static final ModConfigSpec.BooleanValue PIGEON_EATS_SEEDS;
         public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS;
         public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS_NITWIT_ONLY;
@@ -23,7 +22,10 @@ public abstract class Config {
         public static final ModConfigSpec.BooleanValue PIGEON_HUNTED_BY_FOX;
         public static final ModConfigSpec.BooleanValue PIGEON_CONVERT_INTO_CHARRED;
         public static final ModConfigSpec.IntValue PIGEON_CONVERT_INTO_CHARRED_TICKS;
+        public static final ModConfigSpec.DoubleValue PIGEON_ARCHIMEDES_CHANCE;
+        public static final ModConfigSpec.BooleanValue PIGEON_GHOST;
         public static final ModConfigSpec.DoubleValue PIGEON_DELIVERY_TRAVEL_SPEED;
+        public static final ModConfigSpec.IntValue PIGEON_DELIVERY_TIRED_TICKS;
 
         // -- Charred Pigeon
         public static final ModConfigSpec.BooleanValue CHARRED_PIGEON_SPAWNS_NATURALLY;
@@ -94,9 +96,6 @@ public abstract class Config {
         // Equine Assurance Bureau
         public static final ModConfigSpec.BooleanValue SERVICE_EQUINE_BUREAU_NOTICE_SENDING_ENABLED;
 
-        // -- Misc
-        public static final ModConfigSpec.DoubleValue ARCHIMEDES_CHANCE;
-
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
@@ -145,9 +144,12 @@ public abstract class Config {
                       .comment("Time (in ticks) Pigeon needs to stay in the ultrawarm dimension to convert into Charred Pigeon.")
                       .defineInRange("convert_into_charred_ticks", 300, 0, Integer.MAX_VALUE);
 
-                ARCHIMEDES_CHANCE = builder
+                PIGEON_ARCHIMEDES_CHANCE = builder
                       .comment("Chance of an Archimedes spawning when 'envelope:spawns_archimedes' mob is killed by 'envelope:spawns_archimedes' damage type (player explosion by default).")
                       .defineInRange("archimedes_chance", 0.05, 0, 1);
+                PIGEON_GHOST = builder
+                      .comment("On Halloween, Ghost Pigeon will spawn in villages at night and as a service courier.", "Default: true")
+                      .define("ghost", true);
 
                 PIGEON_DELIVERY_TRAVEL_SPEED = builder
                       .comment("Speed (in blocks per second) while in traveling (background) phases of a delivery.")
@@ -368,11 +370,6 @@ public abstract class Config {
                 }
                 builder.pop();
             }
-
-//            {
-//                builder.push("misc");
-//                builder.pop();
-//            }
 
             SPEC = builder.build();
         }
