@@ -2,6 +2,7 @@ package io.github.mortuusars.envelope.world.entity;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.mortaar.util.Time;
 import net.minecraft.core.*;
@@ -87,7 +88,7 @@ public record PigeonVariant(ResourceLocation texture, HolderSet<Biome> biomes, S
     }
 
     public static Holder<PigeonVariant> getRandomServiceVariant(RegistryAccess registries, RandomSource random) {
-        if (Time.isHalloween() && random.nextInt(5) == 0) {
+        if (Config.Server.PIGEON_GHOST.get() && Time.isHalloween() && random.nextBoolean()) {
             Optional<Holder.Reference<PigeonVariant>> ghost = get(registries, GHOST);
             if (ghost.isPresent()) {
                 return ghost.get();

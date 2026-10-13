@@ -75,7 +75,7 @@ public class CommonEvents {
     }
 
     public static void livingDeath(LivingEntity entity, DamageSource source) {
-        if (entity.getRandom().nextDouble() < Config.Server.ARCHIMEDES_CHANCE.get()
+        if (entity.getRandom().nextDouble() < Config.Server.PIGEON_ARCHIMEDES_CHANCE.get()
               && entity.level().dimension() == Level.OVERWORLD
               && source.getEntity() instanceof ServerPlayer player
               && entity.getType().is(Envelope.Tags.EntityTypes.SPAWNS_ARCHIMEDES)

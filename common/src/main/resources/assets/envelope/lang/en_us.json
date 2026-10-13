@@ -451,6 +451,7 @@
   "envelope.configuration.convert_into_charred": "Convert Into Charred",
   "envelope.configuration.convert_into_charred_ticks": "Ticks To Convert Into Charred",
   "envelope.configuration.archimedes_chance": "Archimedes Chance",
+  "envelope.configuration.ghost": "Ghost",
   "envelope.configuration.delivery_travel_speed": "Delivery Travel Speed",
   "envelope.configuration.ticks_tired_after_delivery": "Ticks Tired After Delivery",
 

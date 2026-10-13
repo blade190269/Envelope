@@ -152,15 +152,6 @@ public class AddressTagScreen extends Screen {
         matchedKnownAddress = knownAddresses.byName(addressId);
         updateItem();
 
-//        boolean showSuggestion = matchedKnownAddress.isPresent() || text.isBlank();
-//        @Nullable String suggestion = !showSuggestion ? getAutocompleteSuggestion(text) : null;
-//        currentSuggestion = suggestion;
-//        if (suggestion != null && !suggestion.equalsIgnoreCase(addressBox.getValue())) {
-//            addressBox.setSuggestion(suggestion.substring(addressBox.getValue().length()));
-//        } else {
-//            addressBox.setSuggestion(suggestion);
-//        }
-
         suggestions.update();
     }
 

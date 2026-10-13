@@ -3,6 +3,8 @@ package io.github.mortuusars.envelope.world.entity.spawner;
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
+import io.github.mortuusars.envelope.world.entity.PigeonVariant;
+import io.github.mortuusars.mortaar.util.Time;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -93,6 +95,12 @@ public class PigeonInStructureSpawner implements CustomSpawner {
 
         pigeon.moveTo(pos, 0.0F, 0.0F);
         pigeon.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.NATURAL, null);
+
+        if (Config.Server.PIGEON_GHOST.get() && level.isNight() && Time.isHalloween() && level.getRandom().nextBoolean()) {
+            PigeonVariant.get(level.registryAccess(), PigeonVariant.GHOST)
+                  .ifPresent(pigeon::setVariant);
+        }
+
         level.addFreshEntityWithPassengers(pigeon);
         level.playSound(null, pigeon, Envelope.SoundEvents.PIGEON_AMBIENT.get(), SoundSource.NEUTRAL, 2, 1);
         return 1;
