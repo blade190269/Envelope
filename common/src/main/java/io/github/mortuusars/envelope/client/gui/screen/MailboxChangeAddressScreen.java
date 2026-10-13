@@ -1,6 +1,7 @@
 package io.github.mortuusars.envelope.client.gui.screen;
 
 import io.github.mortuusars.envelope.Config;
+import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
 import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundMailboxAddressTagApplyPacket;
@@ -9,7 +10,6 @@ import io.github.mortuusars.envelope.world.mail.address.type.BlockAddress;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -40,9 +40,9 @@ public class MailboxChangeAddressScreen extends AbstractMailboxAddressScreen {
 
     @Override
     protected void onConfirm() {
-        Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1f));
+        Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(Envelope.SoundEvents.UI_WRITE.get(), 1f));
         if (Config.Server.MAILBOX_ADDRESS_EXPERIENCE_LEVELS_COST.get() > 0) {
-            player.level().playSound(player, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS);
+            player.level().playSound(player, pos, Envelope.SoundEvents.MAILBOX_CONNECT.get(), SoundSource.BLOCKS);
         }
         new ServerboundMailboxAddressTagApplyPacket(hand, getCurrentAddressId().trim(), pos).sendToServer();
     }

@@ -69,18 +69,18 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
             @Nullable PaybackRequest existingTag = target.get(Envelope.DataComponents.MAIL_PAYBACK_TAG);
             if (request != null) {
                 if (stack.getCount() < target.getCount()) {
-                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                     return true;
                 }
 
                 if (request.equals(existingTag)) {
-                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                     return true;
                 }
                 target.set(Envelope.DataComponents.MAIL_PAYBACK_TAG, request);
             } else {
                 if (existingTag == null) {
-                    player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                    player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                     return true;
                 }
                 target.remove(Envelope.DataComponents.MAIL_PAYBACK_TAG);
@@ -98,7 +98,7 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
         if (target.is(Envelope.Items.PAYBACK_TAG.get())
               && !Objects.equals(request, target.get(Envelope.DataComponents.PAYBACK_TAG_CONTENTS))) {
             target.set(Envelope.DataComponents.PAYBACK_TAG_CONTENTS, request);
-            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+            player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 1, 1);
             return true;
         }
 
@@ -106,21 +106,11 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        if (state.getBlock() instanceof PigeonholeBlock) {
-            return InteractionResult.FAIL;
-        }
-
-        return super.useOn(context);
-    }
-
-    @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
             @Nullable PaybackRequest removedRequest = player.getItemInHand(hand).remove(Envelope.DataComponents.PAYBACK_TAG_CONTENTS);
             if (removedRequest != null) {
-                player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+                player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 0.35f, 1);
                 return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
             }
         }
@@ -131,7 +121,7 @@ public class PaybackTagItem extends Item implements ApplicatorItem {
                   new SimpleMenuProvider((id, inventory, pl) ->
                         new PaybackTagMenu(id, inventory, hand), Component.translatable("container.envelope.payback_tag")),
                   buffer -> buffer.writeEnum(hand));
-            player.getCooldowns().addCooldown(this, 3);
+            player.getCooldowns().addCooldown(this, 5);
         }
 
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());

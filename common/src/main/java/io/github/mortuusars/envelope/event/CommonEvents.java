@@ -6,12 +6,8 @@ import io.github.mortuusars.envelope.world.block.dispenser.PlaceBlockDispenseIte
 import io.github.mortuusars.envelope.world.entity.Pigeon;
 import io.github.mortuusars.envelope.world.entity.PigeonVariant;
 import io.github.mortuusars.envelope.world.item.SealStampItem;
-import io.github.mortuusars.envelope.world.item.component.SealLock;
-import io.github.mortuusars.envelope.world.item.component.seal.Seal;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
-import io.github.mortuusars.envelope.world.level.saveddata.SealLocks;
 import io.github.mortuusars.envelope.world.mail.MailService;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

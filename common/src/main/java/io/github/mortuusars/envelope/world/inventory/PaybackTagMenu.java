@@ -157,8 +157,8 @@ public class PaybackTagMenu extends AbstractInHandContainerMenu {
                 getItemInHand().set(Envelope.DataComponents.PAYBACK_TAG_CONTENTS, request);
             }
 
-            player.level().playSound(player, player, SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.PLAYERS,
-                  1f, player.level().getRandom().nextFloat() * 0.3f + 0.85f);
+            player.level().playSound(player, player, Envelope.SoundEvents.UI_WRITE.get(), SoundSource.PLAYERS,
+                  0.35f, player.level().getRandom().nextFloat() * 0.3f + 0.85f);
             player.setItemInHand(getHand(), getItemInHand());
             player.swing(getHand());
             return true;

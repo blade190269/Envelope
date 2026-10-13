@@ -21,6 +21,10 @@ Misc
 - Sealed Package is no longer placeable as a block
 - Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent) 
 
+### Technical Changes
+- Replaced vanilla sound events with custom ones
+- Replaced leftover hardcoded text lines with translatable components
+
 ## 0.8.0-Snapshot2
 ### New Features
 Courier Bat

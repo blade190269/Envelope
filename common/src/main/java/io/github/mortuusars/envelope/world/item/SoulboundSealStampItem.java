@@ -36,6 +36,7 @@ public class SoulboundSealStampItem extends SealStampItem {
 
     @Override
     public int getBarColor(ItemStack stack) {
+        //TODO: FIX
         double time = /*(Minecrft.level().getGameTime() + Minecrft.get().getTimer().getGameTimeDeltaPartialTick(true)) / */20.0;
         double beat = Math.pow((Math.sin(time * Math.PI * 2 * 1) + 1.0) * 0.5, 10);
         float delta = (float) Mth.lerp(beat, 0, 1);
@@ -80,7 +81,7 @@ public class SoulboundSealStampItem extends SealStampItem {
     protected void onSealApplied(ItemStack stampStack, Player player, SealableItem sealable, ItemStack target, Seal seal) {
         super.onSealApplied(stampStack, player, sealable, target, seal);
 
-        player.level().playSound(null, player, SoundEvents.SCULK_BLOCK_SPREAD,
+        player.level().playSound(null, player, Envelope.SoundEvents.SOULBOUND_SEAL_STAMP_LOCK.get(),
               SoundSource.PLAYERS, 1f, player.getRandom().nextFloat() * 0.3f + 0.85f);
 
         if (Config.Server.SOULBOUND_SEAL_STAMP_CREATES_LOCK.get()) {

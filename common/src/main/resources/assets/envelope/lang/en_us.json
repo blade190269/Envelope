@@ -346,9 +346,25 @@
   "subtitles.envelope.block.pigeonhole.work": "Pigeons \"work\"",
   "subtitles.envelope.block.pigeonhole.scoop": "Shovel scoops",
 
-  "subtitles.envelope.seal_stamp": "Seal Stamp stamps",
-  "subtitles.envelope.paper.crackle": "Paper crackles",
-  "subtitles.envelope.paper.tear": "Paper tears",
+  "subtitles.envelope.block.mailbox.connect": "Mailbox connects",
+  "subtitles.envelope.block.mailbox.open": "Mailbox opens",
+  "subtitles.envelope.block.mailbox.hatch_open": "Mailbox hatch opens",
+  "subtitles.envelope.block.mailbox.hatch_close": "Mailbox hatch closes",
+  "subtitles.envelope.block.mailbox.mail_receive": "Mailbox receives mail",
+
+  "subtitles.envelope.item.paper.crackle": "Paper crackles",
+  "subtitles.envelope.item.paper.tear": "Paper tears",
+
+  "subtitles.envelope.item.package.pack": "Package packed",
+  "subtitles.envelope.item.tag.apply": "Tag applied",
+  "subtitles.envelope.item.seal_stamp.apply": "Seal Stamp stamps",
+  "subtitles.envelope.item.soulbound_seal_stamp.lock": "Soulbound Seal locks",
+  "subtitles.envelope.item.soulbound_seal_stamp.unlock": "Soulbound Seal unlocks",
+
+  "subtitles.envelope.entity.courier.mail_pickup": "Courier picks up mail",
+  "subtitles.envelope.entity.courier.appeared": "Courier appeared",
+  "subtitles.envelope.entity.courier.disappeared": "Courier disappeared",
+  "subtitles.envelope.entity.courier.evade": "Courier evades damage",
 
   "subtitles.envelope.entity.pigeon.ambient": "Pigeon coos",
   "subtitles.envelope.entity.pigeon.death": "Pigeon dies",
@@ -362,6 +378,8 @@
   "subtitles.envelope.entity.charred_pigeon.hurts": "Charred Pigeon hurts",
 
   "subtitles.envelope.entity.villager.throw_pigeon_food": "Villager throws food",
+
+  "subtitles.envelope.generic.ignite": "Object ignited",
 
   "recipe.envelope.mailing.mail_service.letter_broadcasting.info": "Sends copies of the letter to all players who have a default mailbox",
   "recipe.envelope.mailing.mail_service.payback_cancelling.info": "Cancels and returns the last mail with payback request",

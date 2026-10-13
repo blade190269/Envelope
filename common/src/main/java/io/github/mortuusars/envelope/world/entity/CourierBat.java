@@ -258,7 +258,7 @@ public class CourierBat extends PathfinderMob implements FlyingAnimal, PhysicalC
 
             if (level() instanceof ServerLevel level) {
                 level.sendParticles(ParticleTypes.POOF, position().x, position().y, position().z, 3, 0.3, 0.3, 0.3, 0);
-                level.playSound(null, this, SoundEvents.ALLAY_THROW, SoundSource.NEUTRAL, 1,
+                level.playSound(null, this, Envelope.SoundEvents.COURIER_EVADE.get(), SoundSource.NEUTRAL, 1,
                       getRandom().nextFloat() * 0.1f + 0.95f);
             }
 

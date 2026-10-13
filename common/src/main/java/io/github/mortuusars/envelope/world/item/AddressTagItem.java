@@ -3,6 +3,7 @@ package io.github.mortuusars.envelope.world.item;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlock;
+import io.github.mortuusars.envelope.world.item.component.PaybackRequest;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
@@ -82,12 +83,12 @@ public class AddressTagItem extends Item implements ApplicatorItem {
         if (target.is(Envelope.Tags.Items.MAILABLE)) {
             @Nullable Address recipient = Mail.getRecipient(target).orElse(null);
             if (Objects.equals(address, recipient)) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                 return true;
             }
 
             if (address != null && stack.getCount() < target.getCount()) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                 return true;
             }
 
@@ -96,7 +97,7 @@ public class AddressTagItem extends Item implements ApplicatorItem {
             Mail.removePreviousDeliveryData(result);
 
             if (!slot.mayPlace(result)) {
-                player.playSound(SoundEvents.COMPARATOR_CLICK, 1, 1);
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
                 return true;
             }
 
@@ -106,7 +107,7 @@ public class AddressTagItem extends Item implements ApplicatorItem {
                 stack.shrink(target.getCount());
             }
 
-            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+            player.playSound(Envelope.SoundEvents.TAG_APPLY.get(), 1, 1);
 
             return true;
         }
@@ -115,7 +116,7 @@ public class AddressTagItem extends Item implements ApplicatorItem {
         if (target.is(Envelope.Items.ADDRESS_TAG.get())
               && !Objects.equals(address, target.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS))) {
             target.set(Envelope.DataComponents.ADDRESS_TAG_ADDRESS, address);
-            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
+            player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 1, 1);
             return true;
         }
 
@@ -133,13 +134,21 @@ public class AddressTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            AllAddresses knownAddresses = MailService.of(serverPlayer.serverLevel()).getKnownAddresses();
-            new ClientboundOpenAddressTagScreenPacket(usedHand, knownAddresses).sendToClient(serverPlayer);
-            player.getCooldowns().addCooldown(this, 6);
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (player.isSecondaryUseActive()) {
+            @Nullable Address removedAddress = player.getItemInHand(hand).remove(Envelope.DataComponents.ADDRESS_TAG_ADDRESS);
+            if (removedAddress != null) {
+                player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 0.35f, 1);
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+            }
         }
 
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+        if (player instanceof ServerPlayer serverPlayer) {
+            AllAddresses knownAddresses = MailService.of(serverPlayer.serverLevel()).getKnownAddresses();
+            new ClientboundOpenAddressTagScreenPacket(hand, knownAddresses).sendToClient(serverPlayer);
+            player.getCooldowns().addCooldown(this, 5);
+        }
+
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }
 }
