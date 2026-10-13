@@ -17,6 +17,7 @@ Misc
 
 ### Changes and Fixes
 - Updated all item textures
+  - Updated mod icon
 - Small update to hanging letter block textures
 - Sealed Package is no longer placeable as a block
 - Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent) 
