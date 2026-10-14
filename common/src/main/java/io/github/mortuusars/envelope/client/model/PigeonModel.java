@@ -240,7 +240,7 @@ public class PigeonModel extends AgeableListModel<Pigeon> {
 
             VertexConsumer emissiveBuffer = Minecrft.get().renderBuffers().bufferSource().getBuffer(
                   RenderType.entityTranslucentEmissive(texture));
-            color = 0x6093FF93;
+            color = 0x7F93FF93;
             super.renderToBuffer(poseStack, emissiveBuffer, LightTexture.FULL_BRIGHT, packedOverlay, color);
         } else {
             super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, color);
