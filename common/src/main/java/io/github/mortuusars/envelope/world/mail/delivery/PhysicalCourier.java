@@ -25,18 +25,9 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.AirRandomPos;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public interface PhysicalCourier extends Courier {
-    Level level();
-
-    Vec3 position();
-
-    BlockPos blockPosition();
-
-    PathNavigation getNavigation();
-
     SpawnableEntityData toSpawnableCourierData();
 
     MailboxHandler getMailboxHandler();
@@ -54,7 +45,7 @@ public interface PhysicalCourier extends Courier {
             LOGGER.warn("Starting new delivery when the courier is already delivering. This might be an error.");
         }
         setDelivery(delivery);
-        asCourierEntity().stopRiding();
+        asEntity().stopRiding();
     }
 
     @Override
@@ -97,7 +88,7 @@ public interface PhysicalCourier extends Courier {
     }
 
     default void diedWhileDelivering(ServerLevel level, DamageSource damageSource, Delivery delivery) {
-        PathfinderMob entity = asCourierEntity();
+        PathfinderMob entity = asEntity();
 
         String message = damageSource.getLocalizedDeathMessage(entity).getString();
         String carriedItem = !delivery.getMail().isEmpty()
@@ -107,7 +98,7 @@ public interface PhysicalCourier extends Courier {
               + " to "
               + delivery.getRecipient().getString();
         String service = getCourierOrigin().isService() ? "Service " : "";
-        Envelope.LOGGER.info("{}{} at [{}] while delivering{} from {}!", service, message, blockPosition().toShortString(), carriedItem, addresses);
+        Envelope.LOGGER.info("{}{} at [{}] while delivering{} from {}!", service, message, entity.blockPosition().toShortString(), carriedItem, addresses);
 
         if (shouldSendDeathNotice()) {
             MailService.of(level).sendCourierDeathNotice(entity, delivery, damageSource);
@@ -127,7 +118,7 @@ public interface PhysicalCourier extends Courier {
     }
 
     default boolean canEat(ItemStack food) {
-        return asCourierEntity() instanceof Animal animal && animal.isFood(food);
+        return asEntity() instanceof Animal animal && animal.isFood(food);
     }
 
     default BackgroundCourier transitionToBackground(ServerLevel level) {
@@ -163,7 +154,7 @@ public interface PhysicalCourier extends Courier {
         }
     }
 
-    default PathfinderMob asCourierEntity() {
+    default PathfinderMob asEntity() {
         return (PathfinderMob) this;
     }
 
@@ -178,7 +169,7 @@ public interface PhysicalCourier extends Courier {
     default boolean hasReachedSegmentEndPos(Delivery delivery) {
         return delivery.getRoute().getSegment(delivery.getPhase()).endPos()
               .map(endPos -> hasReachedTarget(
-                    CourierNavigation.getSegmentApproachTarget(level(), endPos, delivery.getPhase())))
+                    CourierNavigation.getSegmentApproachTarget(asEntity().level(), endPos, delivery.getPhase())))
               .orElse(true);
     }
 
@@ -188,15 +179,18 @@ public interface PhysicalCourier extends Courier {
 
     default boolean pathfindDirectlyTowards(BlockPos localPos) {
         BlockPos navigationPos = CourierNavigation.getNavigationPos(this, localPos);
-        getNavigation().setMaxVisitedNodesMultiplier(10.0F);
-        getNavigation().moveTo(navigationPos.getX(), navigationPos.getY(), navigationPos.getZ(), 1, 1);
-        return getNavigation().getPath() != null && getNavigation().getPath().canReach();
+        PathNavigation navigation = asEntity().getNavigation();
+        navigation.setMaxVisitedNodesMultiplier(10.0F);
+        navigation.moveTo(navigationPos.getX(), navigationPos.getY(), navigationPos.getZ(), 1, 1);
+        return navigation.getPath() != null && navigation.getPath().canReach();
     }
 
     default void pathfindRandomlyTowards(BlockPos localPos) {
-        Vec3 vec3 = Position.getGlobalCenter(level(), localPos).subtract(0, 0.5, 0);
+        PathfinderMob entity = asEntity();
+
+        Vec3 vec3 = Position.getGlobalCenter(entity.level(), localPos).subtract(0, 0.5, 0);
         int i = 0;
-        BlockPos blockPos = this.blockPosition();
+        BlockPos blockPos = entity.blockPosition();
         int j = (int) vec3.y - blockPos.getY();
         if (j > 2) {
             i = 4;
@@ -206,16 +200,16 @@ public interface PhysicalCourier extends Courier {
 
         int k = 6;
         int l = 8;
-        int m = blockPos.distManhattan(Position.getNavigationPos(level(), localPos));
+        int m = blockPos.distManhattan(Position.getNavigationPos(entity.level(), localPos));
         if (m < 15) {
             k = m / 2;
             l = m / 2;
         }
 
-        Vec3 pos = AirRandomPos.getPosTowards(asCourierEntity(), k, l, i, vec3, (float) (Math.PI / 10));
+        Vec3 pos = AirRandomPos.getPosTowards(entity, k, l, i, vec3, (float) (Math.PI / 10));
         if (pos != null) {
-            getNavigation().setMaxVisitedNodesMultiplier(1.0F);
-            getNavigation().moveTo(pos.x, pos.y, pos.z, 1);
+            entity.getNavigation().setMaxVisitedNodesMultiplier(1.0F);
+            entity.getNavigation().moveTo(pos.x, pos.y, pos.z, 1);
         }
     }
 }

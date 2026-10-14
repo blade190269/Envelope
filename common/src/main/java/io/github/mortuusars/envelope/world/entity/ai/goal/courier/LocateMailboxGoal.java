@@ -33,12 +33,12 @@ public class LocateMailboxGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return MailService.operatesIn(courier.level())
+        return MailService.operatesIn(courier.asEntity().level())
               && !courier.isDelivering()
               && courier.canStartDelivery()
               && courier.getMailboxHandler().getLocateCooldown() <= 0
               && courier.getMailboxHandler().getTargetPos() == null
-              && courier.level().getRandom().nextFloat() < frequency;
+              && courier.asEntity().level().getRandom().nextFloat() < frequency;
     }
 
     @Override
@@ -64,18 +64,18 @@ public class LocateMailboxGoal extends Goal {
     }
 
     private List<BlockPos> findNearbyAvailableMailboxes() {
-        ServerLevel level = (ServerLevel) courier.level();
+        ServerLevel level = (ServerLevel) courier.asEntity().level();
         PoiManager poiManager = level.getPoiManager();
 
         List<BlockPos> poiResults = poiManager.getInRange(holder -> holder.is(Envelope.PoiTypes.MAILBOX),
-                    courier.blockPosition(), maxDistance, PoiManager.Occupancy.ANY)
+                    courier.asEntity().blockPosition(), maxDistance, PoiManager.Occupancy.ANY)
               .map(PoiRecord::getPos)
               .filter(p -> level.getBlockEntity(p) instanceof MailboxBlockEntity blockEntity
                     && blockEntity.isAvailableForPickup())
               .toList();
 
-        return ContraptionTargets.locateNearby(level, courier.position(), maxDistance, poiResults,
+        return ContraptionTargets.locateNearby(level, courier.asEntity().position(), maxDistance, poiResults,
               () -> ContraptionTargets.findNearbyMailboxes(
-                    level, courier.position(), maxDistance, MailboxBlockEntity::isAvailableForPickup));
+                    level, courier.asEntity().position(), maxDistance, MailboxBlockEntity::isAvailableForPickup));
     }
 }

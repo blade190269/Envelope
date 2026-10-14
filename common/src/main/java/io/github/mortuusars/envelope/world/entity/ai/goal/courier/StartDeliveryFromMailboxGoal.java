@@ -20,7 +20,7 @@ public class StartDeliveryFromMailboxGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (!MailService.operatesIn(courier.level()) || courier.isDelivering() || !courier.canStartDelivery()) {
+        if (!MailService.operatesIn(courier.asEntity().level()) || courier.isDelivering() || !courier.canStartDelivery()) {
             return false;
         }
 
@@ -28,7 +28,7 @@ public class StartDeliveryFromMailboxGoal extends Goal {
 
         return pos != null
               && courier.closerThan(pos, CourierNavigation.getReachDistance() * 1.2f)
-              && courier.level().getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity
+              && courier.asEntity().level().getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity
               && blockEntity.isAvailableForPickup();
     }
 
@@ -39,7 +39,7 @@ public class StartDeliveryFromMailboxGoal extends Goal {
 
     @Override
     public void start() {
-        courier.getMailboxHandler().getMailboxAtCurrentPos(courier.level())
+        courier.getMailboxHandler().getMailboxAtCurrentPos(courier.asEntity().level())
               .ifPresent(blockEntity -> {
                   blockEntity.tryStartDelivery(courier);
                   courier.getMailboxHandler().setTargetPos(null);

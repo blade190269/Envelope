@@ -4,6 +4,7 @@ import io.github.mortuusars.envelope.world.Position;
 import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -33,9 +34,9 @@ public abstract class AbstractGoToBlockGoal extends Goal {
     public boolean canUse() {
         @Nullable BlockPos pos = getBlockPos();
         return pos != null
-              && !courier.asCourierEntity().hasRestriction()
+              && !courier.asEntity().hasRestriction()
               && !courier.hasReachedTarget(pos)
-              && !Position.isFireNearby(courier.level(), pos);
+              && !Position.isFireNearby(courier.asEntity().level(), pos);
     }
 
     @Override
@@ -49,7 +50,8 @@ public abstract class AbstractGoToBlockGoal extends Goal {
     public void stop() {
         this.travellingTicks = 0;
         this.ticksStuck = 0;
-        courier.getNavigation().stop();
-        courier.getNavigation().resetMaxVisitedNodesMultiplier();
+        PathNavigation navigation = courier.asEntity().getNavigation();
+        navigation.stop();
+        navigation.resetMaxVisitedNodesMultiplier();
     }
 }

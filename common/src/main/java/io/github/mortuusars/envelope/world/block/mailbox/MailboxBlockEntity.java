@@ -30,7 +30,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -278,13 +277,13 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
         removeItem(SLOT_MAIL, 1);
         removeItem(level.isDay() ? SLOT_PIGEON_FOOD : SLOT_BAT_FOOD, 1);
 
-        Vec3 pos = courier.position();
+        Vec3 pos = courier.asEntity().position();
         level.sendParticles(ParticleTypes.CLOUD, pos.x, pos.y, pos.z, 10, 0.3, 0.3, 0.3, 0.02);
         level.playSound(null, pos.x, pos.y, pos.z, Envelope.SoundEvents.COURIER_MAIL_PICKUP.get(), SoundSource.NEUTRAL, 1f, 1.3f);
 
-        if (courier.asCourierEntity().getType().equals(Envelope.EntityTypes.PIGEON.get())) {
+        if (courier.asEntity().getType().equals(Envelope.EntityTypes.PIGEON.get())) {
             deliveredWithPigeon = true;
-        } else if (courier.asCourierEntity().getType().equals(Envelope.EntityTypes.COURIER_BAT.get())) {
+        } else if (courier.asEntity().getType().equals(Envelope.EntityTypes.COURIER_BAT.get())) {
             deliveredWithBat = true;
         }
 
