@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -38,13 +39,14 @@ public class DeliverMailGoal extends Goal {
     @Override
     public void stop() {
         courier.setDelivery(null);
-        courier.getNavigation().stop();
-        courier.getNavigation().resetMaxVisitedNodesMultiplier();
+        PathNavigation navigation = courier.asEntity().getNavigation();
+        navigation.stop();
+        navigation.resetMaxVisitedNodesMultiplier();
     }
 
     @Override
     public void tick() {
-        if (!(courier.level() instanceof ServerLevel level)) {
+        if (!(courier.asEntity().level() instanceof ServerLevel level)) {
             return;
         }
 
@@ -66,13 +68,13 @@ public class DeliverMailGoal extends Goal {
 
                       if (!courier.hasReachedTarget(targetLocal)) {
                           BlockPos navigationPos = CourierNavigation.getNavigationPos(courier, targetLocal);
-                          if (!courier.getNavigation().isInProgress()
-                                || !navigationPos.equals(courier.getNavigation().getTargetPos())) {
+                          if (!courier.asEntity().getNavigation().isInProgress()
+                                || !navigationPos.equals(courier.asEntity().getNavigation().getTargetPos())) {
                               courier.pathfindDirectlyTowards(targetLocal);
                           }
                       }
                   }, () -> {
-                      PathfinderMob entity = courier.asCourierEntity();
+                      PathfinderMob entity = courier.asEntity();
                       @Nullable Vec3 randomPos = AirAndWaterRandomPos.getPos(entity, 8, 4, -2,
                             entity.getX(), entity.getZ(), (float) (Math.PI / 2));
                       if (randomPos != null && level.getRandom().nextFloat() < 0.1f) {

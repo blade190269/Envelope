@@ -65,11 +65,11 @@ public class MailboxHandler {
             locateCooldown--;
         }
 
-        if (level instanceof ServerLevel && courier.asCourierEntity().tickCount % 20 == 0) {
+        if (level instanceof ServerLevel && courier.asEntity().tickCount % 20 == 0) {
             if (targetPos != null && !isMailboxValid(level, courier)) {
                 setTargetPos(null);
             }
-            Envelope.BuggerData.COURIER_MAILBOX_HANDLER.send(courier.asCourierEntity().getId(), this);
+            Envelope.BuggerData.COURIER_MAILBOX_HANDLER.send(courier.asEntity().getId(), this);
         }
     }
 
@@ -86,7 +86,7 @@ public class MailboxHandler {
     public boolean isMailboxValid(Level level, PhysicalCourier courier) {
         @Nullable BlockPos currentPos = getTargetPos();
         if (currentPos == null) return false;
-        if (Position.distanceToSqr(level, currentPos, courier.blockPosition().getCenter()) > 48 * 48) return false;
+        if (Position.distanceToSqr(level, currentPos, courier.asEntity().blockPosition().getCenter()) > 48 * 48) return false;
         return level.getBlockEntity(currentPos) instanceof MailboxBlockEntity blockEntity
               && blockEntity.isAvailableForPickup();
     }

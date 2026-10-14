@@ -5,6 +5,7 @@ import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlockEntity;
 import io.github.mortuusars.envelope.world.entity.ai.MailboxHandler;
 import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.Path;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +27,7 @@ public class GoToMailboxGoal extends AbstractGoToBlockGoal {
         return !courier.isDelivering()
               && courier.canStartDelivery()
               && super.canUse()
-              && courier.level().getBlockEntity(getBlockPos()) instanceof MailboxBlockEntity blockEntity
+              && courier.asEntity().level().getBlockEntity(getBlockPos()) instanceof MailboxBlockEntity blockEntity
               && blockEntity.isAvailableForPickup();
     }
 
@@ -42,29 +43,30 @@ public class GoToMailboxGoal extends AbstractGoToBlockGoal {
             return;
         }
 
-        if (courier.getNavigation().isInProgress()) {
+        PathNavigation navigation = courier.asEntity().getNavigation();
+        if (navigation.isInProgress()) {
             return;
         }
 
         if (!courier.closerThan(handler.getTargetPos(), 16)) {
             if (handler.getTargetPos() != null
-                  && Position.distanceToSqr(courier.level(), handler.getTargetPos(), courier.position()) > 48 * 48) {
+                  && Position.distanceToSqr(courier.asEntity().level(), handler.getTargetPos(), courier.asEntity().position()) > 48 * 48) {
                 handler.dropMailbox();
             } else {
                 courier.pathfindRandomlyTowards(handler.getTargetPos());
             }
-        } else if (!courier.getNavigation().isInProgress()) {
+        } else if (!navigation.isInProgress()) {
             boolean canReach = courier.pathfindDirectlyTowards(handler.getTargetPos());
-            if (!canReach && courier.getNavigation().getPath() == null) {
+            if (!canReach && navigation.getPath() == null) {
                 handler.dropAndBlacklistMailbox();
-            } else if (lastPath != null && lastPath.sameAs(courier.getNavigation().getPath())) {
+            } else if (lastPath != null && lastPath.sameAs(navigation.getPath())) {
                 ticksStuck++;
                 if (ticksStuck > TICKS_BEFORE_DROP) {
                     handler.dropMailbox();
                     ticksStuck = 0;
                 }
             } else {
-                lastPath = courier.getNavigation().getPath();
+                lastPath = navigation.getPath();
             }
         }
     }

@@ -56,9 +56,9 @@ public final class CourierNavigation {
             return true;
         }
 
-        Level level = courier.asCourierEntity().level();
+        Level level = courier.asEntity().level();
         BlockPos navigationPos = Position.getNavigationPos(level, localPos);
-        PathNavigation navigation = courier.getNavigation();
+        PathNavigation navigation = courier.asEntity().getNavigation();
         @Nullable Path path = navigation.getPath();
 
         if (path != null && path.canReach() && path.isDone() && path.getTarget().equals(navigationPos)) {
@@ -69,15 +69,15 @@ public final class CourierNavigation {
         return !navigation.isInProgress()
               && navigationTarget != null
               && navigationTarget.equals(navigationPos)
-              && navigationTarget.closerThan(courier.asCourierEntity().blockPosition(), distance);
+              && navigationTarget.closerThan(courier.asEntity().blockPosition(), distance);
     }
 
     public static boolean isWithinReach(PhysicalCourier courier, BlockPos localPos, double distance) {
-        LivingEntity entity = courier.asCourierEntity();
+        LivingEntity entity = courier.asEntity();
         return Position.isWithinReach(entity.level(), localPos, entity.position(), entity.blockPosition(), distance);
     }
 
     public static BlockPos getNavigationPos(PhysicalCourier courier, BlockPos localPos) {
-        return Position.getNavigationPos(courier.asCourierEntity().level(), localPos);
+        return Position.getNavigationPos(courier.asEntity().level(), localPos);
     }
 }
