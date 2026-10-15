@@ -21,7 +21,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -32,7 +31,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -111,6 +109,11 @@ public class EnvelopeFabric implements ModInitializer {
         if (BuiltInLootTables.PILLAGER_OUTPOST.equals(tableKey)) {
             builder.pool(LootPool.lootPool()
                   .add(NestedLootTable.lootTableReference(Envelope.LootTables.PILLAGER_OUTPOST_INJECT))
+                  .build());
+        }
+        if (BuiltInLootTables.RUINED_PORTAL.equals(tableKey)) {
+            builder.pool(LootPool.lootPool()
+                  .add(NestedLootTable.lootTableReference(Envelope.LootTables.RUINED_PORTAL_INJECT))
                   .build());
         }
     }

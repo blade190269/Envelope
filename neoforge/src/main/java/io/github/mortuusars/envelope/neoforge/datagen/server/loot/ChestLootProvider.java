@@ -16,14 +16,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.EitherHolder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.SeededContainerLoot;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.functions.ExplorationMapFunction;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -230,6 +233,20 @@ public class ChestLootProvider implements LootTableSubProvider {
                           .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_4")))
                           .add(EmptyLootItem.emptyItem().setWeight(16))
                     ));
+
+        output.accept(
+              Envelope.LootTables.RUINED_PORTAL_INJECT,
+              LootTable.lootTable()
+                    .withPool(LootPool.lootPool()
+                          .setRolls(ConstantValue.exactly(1.0F))
+                          .add(LootItem.lootTableItem(Items.MAP)
+                                .apply(ExplorationMapFunction.makeExplorationMap()
+                                      .setDestination(Envelope.Tags.Structures.ON_COLLAPSED_MAIL_HUB_EXPLORER_MAPS)
+                                      .setMapDecoration(MapDecorationTypes.RED_X)
+                                      .setZoom((byte) 1)
+                                      .setSkipKnownStructures(false))
+                                .apply(SetNameFunction.setName(Component.translatable("envelope.filled_map.collapsed_mail_hub"), SetNameFunction.Target.ITEM_NAME)))
+                          .add(EmptyLootItem.emptyItem())));
     }
 
     // --

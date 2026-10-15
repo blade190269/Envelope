@@ -2,6 +2,7 @@
 
 ## UNRELEASED
 ### New Features
+- Added **Collapsed Mail Hub Explorer Map** to **Ruined Portal** chest 
 - Added **2x Block of Copper** -> **Oxidized Copper** recipe to **Mail Service**  
 - Added **6x Red Wool** -> **Paper Box** recipe to **Mail Service**
 
