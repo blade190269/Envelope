@@ -98,7 +98,7 @@ public class AdvancementsDatagen extends AdvancementProvider {
                         AdvancementType.TASK,
                         true,
                         true,
-                        true
+                        false
                   )
                   .requirements(AdvancementRequirements.Strategy.OR)
                   .addCriterion("spawn_archimedes", Envelope.CriteriaTriggers.SPAWN_ARCHIMEDES.get()

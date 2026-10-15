@@ -92,13 +92,14 @@ public interface Courier {
     }
 
     default int getPhaseDuration(ServerLevel level, Delivery delivery, DeliveryPhase phase) {
-        return Math.max(1, (int)(getBasePhaseDuration(level, delivery, phase) * Config.Server.DELIVERY_PHASE_DURATION_MODIFIER.get()));
+        return Math.max(1, (int) (getBasePhaseDuration(level, delivery, phase) * Config.Server.DELIVERY_PHASE_DURATION_MODIFIER.get()));
     }
 
     default int getBasePhaseDuration(ServerLevel level, Delivery delivery, DeliveryPhase phase) {
         return switch (phase) {
             case STARTED, FINISHED -> 5;
-            case DEPARTING_SENDER, APPROACHING_RECIPIENT, DEPARTING_RECIPIENT, APPROACHING_SENDER -> Mth.ceil(120 * (Config.Server.DELIVERY_ASCEND_DISTANCE.get() / 16f));
+            case DEPARTING_SENDER, APPROACHING_RECIPIENT, DEPARTING_RECIPIENT, APPROACHING_SENDER ->
+                  Mth.ceil(120 * (Config.Server.DELIVERY_ASCEND_DISTANCE.get() / 16f));
             case TRAVELING_FROM_SENDER_TO_HUB, TRAVELING_FROM_HUB_TO_SENDER -> delivery.getRoute().getSenderToHubDuration().ticks();
             case TRAVELING_FROM_HUB_TO_RECIPIENT, TRAVELING_FROM_RECIPIENT_TO_HUB ->
                   delivery.getRoute().getRecipientToHubDuration().ticks();
@@ -190,6 +191,7 @@ public interface Courier {
                       .ifPresent(player -> {
                           if (player instanceof ServerPlayer serverPlayer) {
                               Envelope.CriteriaTriggers.MAIL_DELIVERED.get().trigger(serverPlayer, delivery);
+                              //TODO: If offline - accumulate and award when logged in
                               player.awardStat(Envelope.Stats.MAIL_DELIVERIES.get());
                           }
                       });

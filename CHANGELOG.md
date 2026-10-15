@@ -6,6 +6,9 @@
 - Added **2x Block of Copper** -> **Oxidized Copper** recipe to **Mail Service**  
 - Added **6x Red Wool** -> **Paper Box** recipe to **Mail Service**
 
+### Changes and Fixes
+- Advancement **It's Filthy In There** is no longer hidden
+
 ## 0.8.0-Snapshot3
 ### New Features
 - Added Ghost Pigeon variant
