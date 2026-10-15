@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED
+### New Features
+- Added **2x Block of Copper** -> **Oxidized Copper** recipe to **Mail Service**  
+
 ## 0.8.0-Snapshot3
 ### New Features
 - Added Ghost Pigeon variant
