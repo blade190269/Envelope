@@ -1,0 +1,28 @@
+{
+  "type": "envelope:mail_crafting",
+  "address": "envelope:mail_service",
+  "ingredients": [
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:red_wool"
+    },
+    {
+      "item": "minecraft:red_wool"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "envelope:paper_box"
+  }
+}

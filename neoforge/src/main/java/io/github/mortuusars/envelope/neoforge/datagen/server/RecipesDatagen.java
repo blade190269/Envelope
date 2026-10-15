@@ -172,9 +172,13 @@ public class RecipesDatagen extends RecipeProvider {
               .save(output);
 
         MailRecipeBuilder.crafting(address)
-              .requires(Ingredient.of(Items.COPPER_BLOCK))
-              .requires(Ingredient.of(Items.COPPER_BLOCK))
+              .requires(Ingredient.of(Items.COPPER_BLOCK), 2)
               .forResult(Items.OXIDIZED_COPPER)
+              .save(output);
+
+        MailRecipeBuilder.crafting(address)
+              .requires(Ingredient.of(Items.RED_WOOL), 6)
+              .forResult(Envelope.Items.PAPER_BOX.get())
               .save(output);
 
         MailRecipeBuilder.crafting(address)
