@@ -67,7 +67,7 @@ public abstract class Config {
         public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_ENABLED;
         public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_CONSUMABLE;
         public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_CREATES_LOCK;
-        public static final ModConfigSpec.BooleanValue LOCKED_SEAL_OWNER_CAN_REMOVE_WITHOUT_UNLOCKING;
+        public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_OWNER_BYPASSES_LOCK;
 
         // -- Delivery
         public static final ModConfigSpec.IntValue DELIVERY_ASCEND_DISTANCE;
@@ -290,9 +290,9 @@ public abstract class Config {
                       .comment("Soulbound Seal Stamp will create a seal lock when the item is sealed.",
                             "Seal lock keeps the item in owner's inventory when they die, and prevents other players from removing the seal until the owner dies.")
                       .define("soulbound_seal_stamp_creates_lock", true);
-                LOCKED_SEAL_OWNER_CAN_REMOVE_WITHOUT_UNLOCKING = builder
-                      .comment("Locked seals (created by Soulbound Seal Stamp or commands) can be removed by their owner regardless of their lock status.")
-                      .define("locked_seal_owner_can_remove_without_unlocking", true);
+                SOULBOUND_SEAL_OWNER_BYPASSES_LOCK = builder
+                      .comment("Owner (sealer) can remove locked seal (created by Soulbound Seal Stamp or commands) regardless of its lock status.")
+                      .define("soulbound_seal_owner_bypasses_lock", true);
                 builder.pop();
             }
 
