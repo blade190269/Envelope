@@ -65,7 +65,7 @@ public record SealLock(String owner, GameTimeId id) {
     }
 
     public boolean isLockedFor(Player player) {
-        if (Config.Server.LOCKED_SEAL_OWNER_CAN_REMOVE_WITHOUT_UNLOCKING.get() && isOwnedBy(player)) {
+        if (Config.Server.SOULBOUND_SEAL_OWNER_BYPASSES_LOCK.get() && isOwnedBy(player)) {
             return false;
         }
 
