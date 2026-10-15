@@ -389,7 +389,7 @@ public abstract class Config {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
             LOOT = builder
-                  .comment("Envelope will add its items to various loot chests, etc. Use datapack if you need finer control. This is basically a kill switch.", "Default: true")
+                  .comment("Envelope will add its items to various loot chests, etc. Use a datapack if you need finer control. This is basically a kill switch.", "Default: true")
                   .define("loot", true);
 
             SPEC = builder.build();

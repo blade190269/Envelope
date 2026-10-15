@@ -768,6 +768,8 @@ public class Envelope {
               ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Envelope.resource("chests/abandoned_mineshaft_inject"));
         public static final ResourceKey<LootTable> PILLAGER_OUTPOST_INJECT =
               ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Envelope.resource("chests/pillager_outpost_inject"));
+        public static final ResourceKey<LootTable> RUINED_PORTAL_INJECT =
+              ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, Envelope.resource("chests/ruined_portal_inject"));
     }
 
     public static class Tags {
@@ -851,8 +853,12 @@ public class Envelope {
         }
 
         public static class Structures {
+            public static final TagKey<Structure> DOVECOTE =
+                  TagKey.create(net.minecraft.core.registries.Registries.STRUCTURE, resource("dovecote"));
             public static final TagKey<Structure> PIGEONS_SPAWN_IN =
                   TagKey.create(net.minecraft.core.registries.Registries.STRUCTURE, resource("pigeons_spawn_in"));
+            public static final TagKey<Structure> ON_COLLAPSED_MAIL_HUB_EXPLORER_MAPS =
+                  TagKey.create(net.minecraft.core.registries.Registries.STRUCTURE, resource("on_collapsed_mail_hub_explorer_maps"));
         }
 
         public static class SealImpressions {

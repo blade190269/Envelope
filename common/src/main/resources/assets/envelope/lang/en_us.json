@@ -75,6 +75,8 @@
 
   "item_group.envelope.envelope": "Envelope",
 
+  "envelope.filled_map.collapsed_mail_hub": "Collapsed Mail Hub Explorer Map",
+
   "entity.envelope.pigeon": "Pigeon",
   "entity.envelope.charred_pigeon": "Charred Pigeon",
   "entity.envelope.courier_bat": "Bat",
@@ -223,6 +225,30 @@
 
   "envelope.letter_and_quill.fold_button": "Fold",
   "envelope.letter_and_quill.fold_warning": "Note! When you fold the letter, it will no longer be editable.",
+
+  "recipe.envelope.mailing.mail_service.letter_broadcasting.info": "Sends copies of the letter to all players who have a default mailbox",
+  "recipe.envelope.mailing.mail_service.payback_cancelling.info": "Cancels and returns the last mail with payback request",
+
+  "advancement.envelope.dirt_to_diamonds.title": "Dirt to Diamonds",
+  "advancement.envelope.dirt_to_diamonds.description": "Find a Diamond in Pigeonhole waste",
+  "advancement.envelope.just_dont_smoke_it.title": "Just Don't Smoke It",
+  "advancement.envelope.just_dont_smoke_it.description": "Place a Pigeonhole",
+  "advancement.envelope.and_you_did_it_anyway.title": "Do They Look Like Bees?",
+  "advancement.envelope.and_you_did_it_anyway.description": "Smoke a Pigeonhole",
+  "advancement.envelope.foxtile_environment.title": "Foxtile Environment",
+  "advancement.envelope.foxtile_environment.description": "Obtain a Tattered Letter",
+  "advancement.envelope.overworld_wide_web.title": "Overworld Wide Web",
+  "advancement.envelope.overworld_wide_web.description": "Place a Mailbox",
+  "advancement.envelope.pigeons_and_bats.title": "The Pigeons and the Bats",
+  "advancement.envelope.pigeons_and_bats.description": "Deliver mail by both Pigeon and Bat from the same mailbox",
+  "advancement.envelope.what_is_my_purpose.title": "What Is My Purpose?",
+  "advancement.envelope.what_is_my_purpose.description": "Deliver a Package full of blocks",
+  "advancement.envelope.its_filthy_in_there.title": "It's Filthy in There",
+  "advancement.envelope.its_filthy_in_there.description": "Find a Pigeon in a... peculiar place",
+  "advancement.envelope.soft_landing.title": "Soft Landing",
+  "advancement.envelope.soft_landing.description": "Fall on Paper Box from height of 100 or more blocks",
+  "advancement.envelope.system_failure.title": "System Failure",
+  "advancement.envelope.system_failure.description": "Step foot on a Collapsed Mail Hub",
 
   "gui.envelope.mail_service.invalid_dimension": "Mail Service does not operate in this dimension.",
   "gui.envelope.mailbox.no_mail_or_food": "Nothing to deliver or food is missing.",
@@ -380,30 +406,6 @@
   "subtitles.envelope.entity.villager.throw_pigeon_food": "Villager throws food",
 
   "subtitles.envelope.generic.ignite": "Object ignited",
-
-  "recipe.envelope.mailing.mail_service.letter_broadcasting.info": "Sends copies of the letter to all players who have a default mailbox",
-  "recipe.envelope.mailing.mail_service.payback_cancelling.info": "Cancels and returns the last mail with payback request",
-
-  "advancement.envelope.dirt_to_diamonds.title": "Dirt to Diamonds",
-  "advancement.envelope.dirt_to_diamonds.description": "Find a Diamond in Pigeonhole waste",
-  "advancement.envelope.just_dont_smoke_it.title": "Just Don't Smoke It",
-  "advancement.envelope.just_dont_smoke_it.description": "Place a Pigeonhole",
-  "advancement.envelope.and_you_did_it_anyway.title": "Do They Look Like Bees?",
-  "advancement.envelope.and_you_did_it_anyway.description": "Smoke a Pigeonhole",
-  "advancement.envelope.foxtile_environment.title": "Foxtile Environment",
-  "advancement.envelope.foxtile_environment.description": "Obtain a Tattered Letter",
-  "advancement.envelope.overworld_wide_web.title": "Overworld Wide Web",
-  "advancement.envelope.overworld_wide_web.description": "Place a Mailbox",
-  "advancement.envelope.pigeons_and_bats.title": "The Pigeons and the Bats",
-  "advancement.envelope.pigeons_and_bats.description": "Deliver mail by both Pigeon and Bat from the same mailbox",
-  "advancement.envelope.what_is_my_purpose.title": "What Is My Purpose?",
-  "advancement.envelope.what_is_my_purpose.description": "Deliver a Package full of blocks",
-  "advancement.envelope.its_filthy_in_there.title": "It's Filthy in There",
-  "advancement.envelope.its_filthy_in_there.description": "Find a Pigeon in a... peculiar place",
-  "advancement.envelope.soft_landing.title": "Soft Landing",
-  "advancement.envelope.soft_landing.description": "Fall on Paper Box from height of 100 or more blocks",
-  "advancement.envelope.system_failure.title": "System Failure",
-  "advancement.envelope.system_failure.description": "Step foot on a Collapsed Mail Hub",
 
   "stat.envelope.interact_with_mailbox": "Interactions with Mailbox",
   "stat.envelope.mail_deliveries": "Mail Deliveries",
