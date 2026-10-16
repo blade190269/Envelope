@@ -7,6 +7,7 @@
 - Added **6x Red Wool** -> **Paper Box** recipe to **Mail Service**
 
 ### Changes and Fixes
+- [NeoForge] Mailbox now has an ItemHandler capability, making it compatible with most modded logistic blocks (like Create's Chute, Funnel, etc.)  
 - Advancement **It's Filthy In There** is no longer hidden
 - Fixed crash when mailbox on a Sable sublevel with `/sable forceload` is loaded
   - Stored mail will **not** load correctly; Avoid using `/sable forceload` when mailbox is present on a sublevel or don't use mailboxes on force-loaded sublevels until [this issue](https://github.com/ryanhcode/sable/issues/1633) is resolved
