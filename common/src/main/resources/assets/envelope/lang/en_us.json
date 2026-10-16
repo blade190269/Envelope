@@ -41,7 +41,7 @@
   "item.envelope.service_letter": "Service Letter",
   "item.envelope.sealed_service_letter": "Sealed Service Letter",
   "item.envelope.sealed_service_letter.name": "Sealed %s",
-  "item.envelope.paper_box": "Payback Box",
+  "item.envelope.paper_box": "Paper Box",
   "item.envelope.package": "Package",
   "item.envelope.sealed_package": "Sealed Package",
   "item.envelope.payback_box": "Payback Box",
@@ -161,7 +161,7 @@
   "letter.envelope.collapsed_mail_hub.common_6": "           Junk Mail\n\n  Have you got one of those junk mails already? Last one I got was about some horse thing, or something. I didn't even read it all, thrown it into the trash immediately!\n\n  Another one of those and I'll break my mailbox in half, I swear!",
   "letter.envelope.collapsed_mail_hub.common_7": "       Supply Service\n\n  You should try that %s they've set up recently. It's pretty convenient! \n\n  I only wish they'd add more products to it.\n\n  Maybe one day we wouldn't even need our markets at all? Buy and sell everything from the comfort of our home! Isn't that a dream?",
 
-  "letter.envelope.collapsed_mail_hub.nether_1": "         Riches Below\n\n  As I hoped, pursuing portal development was entirely worth it! You would be amazed by how many resources lie on the other side, and we have only scratched the surface!\n\n  I still have some leftovers from my portal. I will send them as soon as possible. Hurry, before someone else gets there first!",
+  "letter.envelope.collapsed_mail_hub.nether_1": "         Riches Below\n\n  As I hoped, pursuing portal development was entirely worth it! You would be amazed by how many resources lie on the other side, and we have only scratched the surface!\n\n  I still have some leftovers from my portal. I will send them as soon as possible. Hurry, before someone else gets there earlier!",
   "letter.envelope.collapsed_mail_hub.nether_2": "       Treasures Await!\n\n  That place is unimaginable!\nI knew spending so much on the portal would pay off — and it absolutely did!\n\n  I have sent you some leftovers from mine.\n\n  Join us as soon as possible. There is so much to gain there, you would be amazed!",
   "letter.envelope.collapsed_mail_hub.nether_3": "        We will be rich!\n\n  I managed to sneak through the portal they built. It is... It is even better than we thought! There's so much gold and other valuables here! We will be be rich!\n\n  Take all spare Obsidian you have. The frame is indeed made of it, as we tried, but, I guess, it's the size? We need to continue work as soon as possible.",
   "letter.envelope.collapsed_mail_hub.nether_4": "        Portal Report\n\n  Our experiment was a success. After several iterations, the portal functioned as intended.\n\n  The other side was far different than we anticipated. Temperatures are much higher than here, but manageable.\n\n  Collection and study of the local resources is ongoing.",
@@ -537,7 +537,6 @@
   "envelope.configuration.information": "Information",
 
   "envelope.configuration.enabled": "Enabled",
-
 
   "mark_symbol.envelope.letter": "Letter",
   "mark_symbol.envelope.package": "Package",
