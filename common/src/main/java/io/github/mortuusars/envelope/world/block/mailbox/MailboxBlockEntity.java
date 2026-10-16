@@ -18,6 +18,7 @@ import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
 import io.github.mortuusars.mortaar.Platform;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,6 +35,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.player.Inventory;
@@ -53,12 +55,14 @@ import org.slf4j.Logger;
 
 import java.util.*;
 
-public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbox {
+public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbox, WorldlyContainer {
     public static final int REGULAR_SLOTS = 3;
     public static final int SLOT_MAIL = 0;
     public static final int SLOT_PIGEON_FOOD = 1;
     public static final int SLOT_BAT_FOOD = 2;
-    public static final int INBOX_SLOT = REGULAR_SLOTS;
+    public static final int SLOT_INBOX = REGULAR_SLOTS;
+
+    public static final int[] ALL_SLOTS = new int[]{0, 1, 2, 3};
 
     protected static final Logger LOGGER = LogUtils.getLogger();
 
@@ -161,8 +165,8 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
     @Override
     public @NotNull ItemStack getItem(int slot) {
-        if (slot >= INBOX_SLOT) {
-            return getMail(slot - INBOX_SLOT);
+        if (slot >= SLOT_INBOX) {
+            return getMail(slot - SLOT_INBOX);
         }
         return super.getItem(slot);
     }
@@ -177,24 +181,24 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int amount) {
-        if (slot >= INBOX_SLOT) {
-            return removeMail(slot - INBOX_SLOT);
+        if (slot >= SLOT_INBOX) {
+            return removeMail(slot - SLOT_INBOX);
         }
         return super.removeItem(slot, amount);
     }
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
-        if (slot >= INBOX_SLOT) {
-            return removeMailNoUpdate(slot - INBOX_SLOT);
+        if (slot >= SLOT_INBOX) {
+            return removeMailNoUpdate(slot - SLOT_INBOX);
         }
         return super.removeItemNoUpdate(slot);
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        if (slot >= INBOX_SLOT) {
-            addMail(slot - INBOX_SLOT, stack);
+        if (slot >= SLOT_INBOX) {
+            addMail(slot - SLOT_INBOX, stack);
             return;
         }
         super.setItem(slot, stack);
@@ -210,9 +214,30 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
     @Override
     public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-        return slot >= INBOX_SLOT
+        return slot >= SLOT_INBOX
               && target.hasAnyMatching(ItemStack::isEmpty); // Prevents hoppers from removing the item and placing it back
     }
+
+    // -- WorldlyContainer
+
+    @Override
+    public int @NotNull [] getSlotsForFace(@NotNull Direction face) {
+        return ALL_SLOTS;
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        if (direction == Direction.DOWN)
+            return false;
+        return canPlaceItem(index, itemStack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int index, @NotNull ItemStack pStack, @NotNull Direction direction) {
+        return index == SLOT_INBOX;
+    }
+
+    // -- Mailbox Container
 
     public boolean isSendable(ItemStack stack) {
         return !stack.isEmpty() && stack.is(Envelope.Tags.Items.MAILABLE) && stack.has(Envelope.DataComponents.MAIL_ADDRESS_TAG);
