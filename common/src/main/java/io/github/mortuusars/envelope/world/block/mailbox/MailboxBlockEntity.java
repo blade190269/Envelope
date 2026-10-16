@@ -343,6 +343,13 @@ public class MailboxBlockEntity extends BaseContainerBlockEntity implements Inbo
 
     public void loadInbox() {
         if (level instanceof ServerLevel serverLevel && !inboxId.equals(Util.NIL_UUID)) {
+            //noinspection ConstantValue
+            if (serverLevel.getServer().overworld() == null) {
+                LOGGER.error("Cannot load inbox of mailbox {}. Overworld level is not loaded yet.\n" +
+                      "If mailbox is on a sable sub-level and '/sable forceload' is used to keep it loaded - avoid this approach until https://github.com/ryanhcode/sable/issues/1633 is resolved.", address);
+                return; // InboxStorage.get(serverLevel) will throw NullPointer
+            }
+
             mail = InboxStorage.get(serverLevel).remove(inboxId)
                   .map(Inbox::getAllMail)
                   .orElseGet(ArrayList::new);

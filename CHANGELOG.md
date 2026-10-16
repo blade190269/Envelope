@@ -8,6 +8,8 @@
 
 ### Changes and Fixes
 - Advancement **It's Filthy In There** is no longer hidden
+- Fixed crash when mailbox on a Sable sublevel with `/sable forceload` is loaded
+  - Stored mail will **not** load correctly; Avoid using `/sable forceload` when mailbox is present on a sublevel or don't use mailboxes on force-loaded sublevels until [this issue](https://github.com/ryanhcode/sable/issues/1633) is resolved
 
 ## 0.8.0-Snapshot3
 ### New Features
