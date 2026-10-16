@@ -5,6 +5,7 @@
 - Added **Collapsed Mail Hub Explorer Map** to **Ruined Portal** chest 
 - Added **2x Block of Copper** -> **Oxidized Copper** recipe to **Mail Service**  
 - Added **6x Red Wool** -> **Paper Box** recipe to **Mail Service**
+- Added **Letter**, **Package**, **Bird** and **Bat** symbols to **Chalk** mod when installed alongside it
 
 ### Changes and Fixes
 - [NeoForge] Mailbox now has an ItemHandler capability, making it compatible with most modded logistic blocks (like Create's Chute, Funnel, etc.)  

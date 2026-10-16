@@ -536,5 +536,11 @@
   "envelope.configuration.service_address_ingredient": "Service Address Ingredient",
   "envelope.configuration.information": "Information",
 
-  "envelope.configuration.enabled": "Enabled"
+  "envelope.configuration.enabled": "Enabled",
+
+
+  "mark_symbol.envelope.letter": "Letter",
+  "mark_symbol.envelope.package": "Package",
+  "mark_symbol.envelope.bird": "Bird",
+  "mark_symbol.envelope.bat": "Bat"
 }
