@@ -46,7 +46,6 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -357,7 +356,7 @@ public class CourierBat extends PathfinderMob implements FlyingAnimal, PhysicalC
     }
 
     @Override
-    public @NonNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (player.getItemInHand(hand).is(Items.DEBUG_STICK)) {
             setNoAi(!isNoAi());
             player.displayClientMessage(Component.literal("Set NoAI of " + getName().getString() + " to: " + isNoAi()), true);
