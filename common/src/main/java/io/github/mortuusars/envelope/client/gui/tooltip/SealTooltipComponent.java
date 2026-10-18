@@ -21,7 +21,7 @@ public class SealTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public int getWidth(Font font) {
-        return 35 + font.width(seal.signature());
+        return 37 + font.width(seal.signature());
     }
 
     @Override
