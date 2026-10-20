@@ -1,12 +1,11 @@
 package io.github.mortuusars.envelope.client.gui.screen;
 
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.client.gui.Sprites;
-import io.github.mortuusars.envelope.client.util.Minecrft;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.serverbound.PackingMenuPresetAddressC2SP;
+import io.github.mortuusars.mortaar.client.Minecrft;
+import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundPackingMenuPresetAddressPacket;
 import io.github.mortuusars.envelope.world.inventory.PackingMenu;
 import io.github.mortuusars.envelope.world.mail.address.Address;
+import io.github.mortuusars.mortaar.client.gui.Sprites;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
@@ -57,7 +56,7 @@ public class PackingScreen extends AbstractInHandContainerScreen<PackingMenu> {
 
     protected void removePresetAddress(Button button) {
         getMenu().presetAddress(null);
-        Packets.sendToServer(new PackingMenuPresetAddressC2SP(Optional.empty()));
+        new ServerboundPackingMenuPresetAddressPacket(Optional.empty()).sendToServer();
     }
 
     @Override

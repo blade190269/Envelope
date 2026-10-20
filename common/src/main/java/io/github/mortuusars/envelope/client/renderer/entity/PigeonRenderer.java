@@ -5,12 +5,15 @@ import io.github.mortuusars.envelope.client.model.PigeonModel;
 import io.github.mortuusars.envelope.client.renderer.entity.layer.PigeonBackpackLayer;
 import io.github.mortuusars.envelope.client.renderer.entity.layer.PigeonHatLayer;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
+import io.github.mortuusars.envelope.world.entity.PigeonVariant;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PigeonRenderer extends MobRenderer<Pigeon, PigeonModel> {
     public static final ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(Envelope.resource("pigeon"), "main");
@@ -24,6 +27,15 @@ public class PigeonRenderer extends MobRenderer<Pigeon, PigeonModel> {
     @Override
     public @NotNull ResourceLocation getTextureLocation(Pigeon entity) {
         return entity.getVariant().value().texture();
+    }
+
+    @Override
+    protected @Nullable RenderType getRenderType(Pigeon livingEntity, boolean bodyVisible, boolean translucent, boolean glowing) {
+        if (livingEntity.getVariant().is(PigeonVariant.GHOST)) {
+            return RenderType.entityTranslucentCull(getTextureLocation(livingEntity));
+        }
+
+        return super.getRenderType(livingEntity, bodyVisible, translucent, glowing);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package io.github.mortuusars.envelope.world.mail;
 
 import com.google.common.base.Preconditions;
-import io.github.mortuusars.envelope.Platform;
-import io.github.mortuusars.envelope.util.bugger.Bugger;
+import io.github.mortuusars.envelope.Config;
+import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.mail.delivery.Delivery;
 import io.github.mortuusars.envelope.world.mail.delivery.DeliveryManager;
 import io.github.mortuusars.envelope.world.mail.delivery.background.BackgroundDelivery;
@@ -11,12 +11,12 @@ import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.address.AddressLocation;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
 import io.github.mortuusars.envelope.world.mail.address.type.*;
+import io.github.mortuusars.envelope.world.mail.service.cloud_depository.CloudDepository;
 import io.github.mortuusars.envelope.world.mail.service.ServiceAddresses;
 import io.github.mortuusars.envelope.world.mail.payback.PaybackDepartment;
 import io.github.mortuusars.envelope.world.block.mailbox.Mailboxes;
 import io.github.mortuusars.envelope.world.KnownPlayers;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -37,6 +37,7 @@ public class MailService {
     protected final ServiceAddresses serviceAddresses;
     protected final DeliveryManager deliveryManager;
     protected final PaybackDepartment paybackDepartment;
+    protected final CloudDepository cloudService;
 
     protected @Nullable KnownPlayers knownPlayers;
     protected @Nullable BackgroundDelivery backgroundDelivery;
@@ -48,6 +49,7 @@ public class MailService {
         this.serviceAddresses = new ServiceAddresses(this);
         this.deliveryManager = new DeliveryManager(this);
         this.paybackDepartment = new PaybackDepartment(this);
+        this.cloudService = new CloudDepository(this);
     }
 
     /**
@@ -96,6 +98,10 @@ public class MailService {
 
     public PaybackDepartment getPaybackDepartment() {
         return paybackDepartment;
+    }
+
+    public CloudDepository getCloudService() {
+        return cloudService;
     }
 
     public @NotNull KnownPlayers getKnownPlayers() {
@@ -151,9 +157,8 @@ public class MailService {
     public void tick() {
         getBackgroundDelivery().tick(level);
         getPaybackDepartment().tick();
-        getServiceAddresses().tick();
 
-        if (level.getGameTime() % 20 == 0) Bugger.MAIL_SERVICE.collectAndSendData(this);
+        if (level.getGameTime() % 20 == 0) Envelope.BuggerData.MAIL_SERVICE.collectAndSendData(this);
     }
 
     // --
@@ -163,6 +168,10 @@ public class MailService {
     }
 
     public void sendCourierDeathNotice(LivingEntity courier, Delivery delivery, DamageSource damageSource) {
+        if (!Config.Server.MAIL_SERVICE_COURIER_DEATH_NOTICE.get()) {
+            return;
+        }
+
         Address recipient = delivery.getSender();
 
         if (!(recipient instanceof BlockAddress) && !(recipient instanceof PlayerAddress)) {
@@ -195,13 +204,14 @@ public class MailService {
               .append("\n\n")
               .append(getAddress().getComponent());
 
-        return Mail.createLetter(text)
-              .set(DataComponents.ITEM_NAME, Component.translatable("letter.envelope.courier_death_notice.name"))
-              .get();
+        return Mail.of(Envelope.Items.SERVICE_LETTER)
+              .name(Component.translatable("letter.envelope.courier_death_notice.name"))
+              .letterContent(text)
+              .itemStack();
     }
 
     public ServiceAddress getAddress() {
-        return ServiceAddress.getOrThrow(getLevel().registryAccess(), ServiceAddresses.MAIL_SERVICE);
+        return ServiceAddress.getOrThrow(ServiceAddress.MAIL_SERVICE, getLevel().registryAccess());
     }
 
     /**
@@ -215,6 +225,6 @@ public class MailService {
     // --
 
     public static void init() {
-        Platform.registerServiceDropOffHandlers();
+        Envelope.registerServiceDropOffHandlers();
     }
 }

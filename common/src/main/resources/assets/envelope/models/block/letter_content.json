@@ -3,6 +3,6 @@
 	"textures": {
 		"texture": "envelope:block/letter_content",
 		"pin": "envelope:block/letter_pin",
-		"particle": "envelope:block/letter"
+		"particle": "envelope:block/letter_content"
 	}
 }

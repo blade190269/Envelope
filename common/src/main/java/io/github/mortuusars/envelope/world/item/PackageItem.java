@@ -2,10 +2,10 @@ package io.github.mortuusars.envelope.world.item;
 
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.Platform;
 import io.github.mortuusars.envelope.world.inventory.PackageMenu;
 import io.github.mortuusars.envelope.world.item.component.PackageContents;
 import io.github.mortuusars.envelope.world.item.component.seal.Seal;
+import io.github.mortuusars.mortaar.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponents;
@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class PackageItem extends BlockItem implements Sealable {
+public class PackageItem extends BlockItem implements SealableItem {
     public PackageItem(Block block, Properties properties) {
         super(block, properties);
     }
@@ -103,6 +104,8 @@ public class PackageItem extends BlockItem implements Sealable {
             dropExperience(stack, level, player.position());
 
             if (player instanceof ServerPlayer serverPlayer) {
+                stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
+
                 // Force update the stack on client before opening, so the client has correct initial state.
                 player.inventoryMenu.broadcastChanges();
 

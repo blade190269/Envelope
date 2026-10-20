@@ -6,16 +6,13 @@ import io.github.mortuusars.envelope.advancements.critereon.MailDeliveredTrigger
 import io.github.mortuusars.envelope.advancements.predicate.DeliveryPredicate;
 import io.github.mortuusars.envelope.advancements.predicate.ItemOccludingBlockPredicate;
 import io.github.mortuusars.envelope.advancements.predicate.ItemPackagePredicate;
-import net.minecraft.Util;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
@@ -101,7 +98,7 @@ public class AdvancementsDatagen extends AdvancementProvider {
                         AdvancementType.TASK,
                         true,
                         true,
-                        true
+                        false
                   )
                   .requirements(AdvancementRequirements.Strategy.OR)
                   .addCriterion("spawn_archimedes", Envelope.CriteriaTriggers.SPAWN_ARCHIMEDES.get()
@@ -127,6 +124,23 @@ public class AdvancementsDatagen extends AdvancementProvider {
                         LocationCheck.checkLocation(LocationPredicate.Builder.location()
                               .setBlock(BlockPredicate.Builder.block().of(Envelope.Blocks.MAILBOX.get())))))
                   .save(consumer, Envelope.resource("adventure/overworld_wide_web"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                  .parent(placeMailbox)
+                  .display(
+                        new ItemStack(Items.SPIDER_EYE),
+                        Component.translatable("advancement.envelope.pigeons_and_bats.title"),
+                        Component.translatable("advancement.envelope.pigeons_and_bats.description"),
+                        null,
+                        AdvancementType.TASK,
+                        true,
+                        true,
+                        false
+                  )
+                  .requirements(AdvancementRequirements.Strategy.OR)
+                  .addCriterion("deliver_with_pigeon_and_bat", Envelope.CriteriaTriggers.DELIVER_WITH_PIGEON_AND_BAT.get()
+                        .createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
+                  .save(consumer, Envelope.resource("adventure/pigeons_and_bats"), existingFileHelper);
 
             ItemPackagePredicate fullPackagePredicate = new ItemPackagePredicate(Optional.of(new CollectionPredicate<>(
                   Optional.of(new CollectionContentsPredicate.Multiple<>(NonNullList.withSize(6, ItemPredicate.Builder.item()
@@ -159,8 +173,7 @@ public class AdvancementsDatagen extends AdvancementProvider {
             Advancement.Builder.advancement()
                   .parent(placeMailbox)
                   .display(
-                        Util.make(new ItemStack(Envelope.Items.LETTER.get()), stack ->
-                              stack.set(Envelope.DataComponents.LETTER_TATTERED, Unit.INSTANCE)),
+                        new ItemStack(Envelope.Items.TATTERED_LETTER.get()),
                         Component.translatable("advancement.envelope.foxtile_environment.title"),
                         Component.translatable("advancement.envelope.foxtile_environment.description"),
                         null,
@@ -171,8 +184,8 @@ public class AdvancementsDatagen extends AdvancementProvider {
                   )
                   .requirements(AdvancementRequirements.Strategy.OR)
                   .addCriterion("get_tattered_letter", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
-                        .of(Envelope.Items.LETTER.get(), Envelope.Items.SEALED_LETTER.get())
-                        .hasComponents(DataComponentPredicate.builder().expect(Envelope.DataComponents.LETTER_TATTERED, Unit.INSTANCE).build())))
+                        .of(Envelope.Items.TATTERED_LETTER.get(), Envelope.Items.SEALED_TATTERED_LETTER.get())
+                        ))
                   .save(consumer, Envelope.resource("adventure/foxtile_environment"), existingFileHelper);
 
             // --

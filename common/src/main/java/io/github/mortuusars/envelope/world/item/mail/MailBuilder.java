@@ -1,13 +1,19 @@
 package io.github.mortuusars.envelope.world.item.mail;
 
 import com.google.common.base.Preconditions;
-import io.github.mortuusars.envelope.world.item.component.Id;
+import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.envelope.world.item.SealedItem;
+import io.github.mortuusars.envelope.world.item.component.LetterContent;
+import io.github.mortuusars.envelope.world.item.component.ServiceLetterMeaning;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryLog;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryRecord;
+import io.github.mortuusars.envelope.world.item.component.seal.Seal;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -32,11 +38,6 @@ public class MailBuilder<T extends MailBuilder<T>> implements DataComponentHolde
     @SuppressWarnings("unchecked")
     T self() {
         return (T) this;
-    }
-
-    public T id(Id id) {
-        Mail.setId(item, id);
-        return self();
     }
 
     public T sender(Address sender) {
@@ -81,9 +82,45 @@ public class MailBuilder<T extends MailBuilder<T>> implements DataComponentHolde
         return self();
     }
 
+    // Base
+
+    public T name(Component component) {
+        set(DataComponents.ITEM_NAME, component);
+        return self();
+    }
+
+    public T addressTag(Address address) {
+        set(Envelope.DataComponents.MAIL_ADDRESS_TAG, address);
+        return self();
+    }
+
+    // Letter
+
+    public T letterContent(LetterContent content) {
+        set(Envelope.DataComponents.LETTER_CONTENT, content);
+        return self();
+    }
+
+    public T letterContent(Component component) {
+        return letterContent(new LetterContent(component));
+    }
+
+    public T serviceLetterMeaning(ServiceLetterMeaning meaning) {
+        set(Envelope.DataComponents.SERVICE_LETTER_MEANING, meaning);
+        return self();
+    }
+
+    // Sealable
+
+    public T seal(Seal seal) {
+        Preconditions.checkState(item.getItem() instanceof SealedItem, "Seal is only applicable to SealedItem's");
+        set(Envelope.DataComponents.SEAL, seal);
+        return self();
+    }
+
     // --
 
-    public @NotNull ItemStack get() {
+    public @NotNull ItemStack itemStack() {
         return item;
     }
 }

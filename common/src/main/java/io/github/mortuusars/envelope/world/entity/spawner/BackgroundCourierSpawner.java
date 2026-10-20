@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -37,7 +36,7 @@ public class BackgroundCourierSpawner extends Spawner {
 
     @Override
     public void spawn(ServerLevel level) {
-        if (Config.Server.DELIVERY_SPAWNING_RESPECTS_DOMOBSPAWNING_RULE.get()
+        if (!Config.Server.DELIVERY_SPAWNING_IGNORES_DOMOBSPAWNING_RULE.get()
               && !level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
             return;
         }
@@ -64,10 +63,11 @@ public class BackgroundCourierSpawner extends Spawner {
     }
 
     protected boolean canSpawn(BackgroundCourier courier) {
-        if (courier.getOrigin().isService()
+        if (courier.getCourierOrigin().isService()
               && courier.getDelivery().getMail().isEmpty()
               && !courier.getDelivery().getPhase().isOnRecipientSide()) {
-            return false; // Don't spawn service couriers when it doesn't make sense
+            return false; // Don't spawn service couriers when they won't do any work
+            // This check is a redundant safeguard, as empty service couriers are terminated early in Courier#dispatchReturn
         }
 
         return courier.getDelivery().getPhase().isSpawnable();

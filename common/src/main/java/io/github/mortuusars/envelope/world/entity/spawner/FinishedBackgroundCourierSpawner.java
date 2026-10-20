@@ -1,12 +1,12 @@
 package io.github.mortuusars.envelope.world.entity.spawner;
 
 import io.github.mortuusars.envelope.Config;
-import io.github.mortuusars.envelope.world.GameTime;
 import io.github.mortuusars.envelope.world.Position;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
 import io.github.mortuusars.envelope.world.mail.delivery.background.FinishedBackgroundCourier;
 import io.github.mortuusars.envelope.world.mail.delivery.background.BackgroundDelivery;
 import io.github.mortuusars.envelope.world.mail.MailService;
+import io.github.mortuusars.mortaar.util.GameTime;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +28,7 @@ public class FinishedBackgroundCourierSpawner extends Spawner {
 
     @Override
     public void spawn(ServerLevel level) {
-        if (Config.Server.DELIVERY_SPAWNING_RESPECTS_DOMOBSPAWNING_RULE.get()
+        if (!Config.Server.DELIVERY_SPAWNING_IGNORES_DOMOBSPAWNING_RULE.get()
               && !level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
             return;
         }
@@ -56,7 +56,7 @@ public class FinishedBackgroundCourierSpawner extends Spawner {
         level.addFreshEntityWithPassengers(entity);
 
         if (entity instanceof Pigeon pigeon) {
-            long tiredUntil = courier.finishedAt() + Config.Server.PIGEON_TIRED_AFTER_DELIVERY_TICKS.get();
+            long tiredUntil = courier.finishedAt() + Config.Server.PIGEON_DELIVERY_TIRED_TICKS.get();
             int tiredTicks = Math.max(0, GameTime.of(level).remainingTo(tiredUntil).getAsInt());
             pigeon.setTiredTicks(tiredTicks);
         }

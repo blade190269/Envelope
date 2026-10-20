@@ -73,9 +73,10 @@ public class LetterCloningRecipe extends CustomRecipe {
         }
 
 		if (!sourceStack.isEmpty() && copies > 0) {
-			return Mail.createLetter(sourceStack.get(Envelope.DataComponents.LETTER_CONTENT))
-				.set(DataComponents.ITEM_NAME, sourceStack.get(DataComponents.ITEM_NAME))
-				.get();
+			return Mail.of(Envelope.Items.LETTER)
+				.name(sourceStack.get(DataComponents.ITEM_NAME))
+				.letterContent(sourceStack.get(Envelope.DataComponents.LETTER_CONTENT))
+				.itemStack();
 		}
 
         return ItemStack.EMPTY;

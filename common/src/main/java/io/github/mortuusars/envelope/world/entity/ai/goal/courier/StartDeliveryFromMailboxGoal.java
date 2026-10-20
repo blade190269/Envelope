@@ -1,0 +1,48 @@
+package io.github.mortuusars.envelope.world.entity.ai.goal.courier;
+
+import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlockEntity;
+import io.github.mortuusars.envelope.world.entity.ai.CourierNavigation;
+import io.github.mortuusars.envelope.world.mail.MailService;
+import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
+
+public class StartDeliveryFromMailboxGoal extends Goal {
+    private final PhysicalCourier courier;
+
+    public StartDeliveryFromMailboxGoal(PhysicalCourier courier) {
+        this.courier = courier;
+        setFlags(EnumSet.of(Flag.MOVE));
+    }
+
+    @Override
+    public boolean canUse() {
+        if (!MailService.operatesIn(courier.asEntity().level()) || courier.isDelivering() || !courier.canStartDelivery()) {
+            return false;
+        }
+
+        @Nullable BlockPos pos = courier.getMailboxHandler().getTargetPos();
+
+        return pos != null
+              && courier.closerThan(pos, CourierNavigation.getReachDistance() * 1.2f)
+              && courier.asEntity().level().getBlockEntity(pos) instanceof MailboxBlockEntity blockEntity
+              && blockEntity.isAvailableForPickup();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return false;
+    }
+
+    @Override
+    public void start() {
+        courier.getMailboxHandler().getMailboxAtCurrentPos(courier.asEntity().level())
+              .ifPresent(blockEntity -> {
+                  blockEntity.tryStartDelivery(courier);
+                  courier.getMailboxHandler().setTargetPos(null);
+              });
+    }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "service_letters",
+  "ingredients": [
+    {
+      "item": "envelope:letter_and_quill"
+    },
+    {
+      "item": "envelope:address_tag"
+    },
+    {
+      "item": "minecraft:copper_ingot"
+    }
+  ],
+  "result": {
+    "components": {
+      "envelope:letter_content": {
+        "text": {
+          "translate": "letter.envelope.cloud_depository.status_request.message"
+        }
+      },
+      "envelope:mail_address_tag": {
+        "type": "service",
+        "definition": "envelope:cloud_depository"
+      },
+      "envelope:service_letter_meaning": "envelope:cloud_depository/status_request"
+    },
+    "count": 1,
+    "id": "envelope:service_letter"
+  }
+}

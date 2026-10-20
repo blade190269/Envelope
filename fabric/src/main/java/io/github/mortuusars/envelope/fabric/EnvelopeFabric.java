@@ -6,9 +6,8 @@ import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.command.EnvelopeCommand;
 import io.github.mortuusars.envelope.event.CommonEvents;
 import io.github.mortuusars.envelope.event.ServerEvents;
-import io.github.mortuusars.envelope.network.fabric.FabricC2SPackets;
-import io.github.mortuusars.envelope.network.fabric.FabricS2CPackets;
 import io.github.mortuusars.envelope.world.entity.CharredPigeon;
+import io.github.mortuusars.envelope.world.entity.CourierBat;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
 import io.github.mortuusars.envelope.world.entity.PigeonVariant;
 import io.github.mortuusars.envelope.world.item.component.seal.SealSymbol;
@@ -19,10 +18,9 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -33,7 +31,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -57,37 +54,9 @@ public class EnvelopeFabric implements ModInitializer {
         DynamicRegistries.registerSynced(Envelope.Registries.SEAL_MATERIAL, SealMaterial.DIRECT_CODEC, SealMaterial.DIRECT_CODEC);
         DynamicRegistries.registerSynced(Envelope.Registries.SEAL_SYMBOL, SealSymbol.DIRECT_CODEC, SealSymbol.DIRECT_CODEC);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(event -> {
-            Envelope.Items.PIGEONHOLES.forEach(item -> event.accept(item.get()));
-            event.accept(Envelope.Items.PAPER_BOX.get());
-            event.accept(Envelope.Items.MAILBOX.get());
-        });
-
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(event -> {
-            event.accept(Envelope.Items.LETTER_AND_QUILL.get());
-            event.accept(Envelope.Items.LETTER.get());
-            event.accept(Envelope.Items.SEALED_LETTER.get());
-            event.accept(Envelope.Items.PACKAGE.get());
-            event.accept(Envelope.Items.SEALED_PACKAGE.get());
-            event.accept(Envelope.Items.ADDRESS_TAG.get());
-            event.accept(Envelope.Items.PAYBACK_TAG.get());
-            event.accept(Envelope.Items.SEAL_STAMP.get());
-        });
-
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(event -> {
-            event.accept(Envelope.Items.PIGEON_SPAWN_EGG.get());
-            event.accept(Envelope.Items.CHARRED_PIGEON_SPAWN_EGG.get());
-        });
-
         FabricDefaultAttributeRegistry.register(Envelope.EntityTypes.PIGEON.get(), Pigeon.createAttributes().build());
         FabricDefaultAttributeRegistry.register(Envelope.EntityTypes.CHARRED_PIGEON.get(), CharredPigeon.createAttributes().build());
-
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            PlatformImpl.server = server;
-        });
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            PlatformImpl.server = null;
-        });
+        FabricDefaultAttributeRegistry.register(Envelope.EntityTypes.COURIER_BAT.get(), CourierBat.createAttributes().build());
 
         ServerTickEvents.END_SERVER_TICK.register(ServerEvents::serverTick);
 
@@ -121,10 +90,9 @@ public class EnvelopeFabric implements ModInitializer {
 
         ServerLivingEntityEvents.AFTER_DEATH.register(CommonEvents::livingDeath);
 
-        LootTableEvents.MODIFY.register(EnvelopeFabric::modifyLoot);
+        ServerPlayerEvents.COPY_FROM.register(ServerEvents::playerCopy);
 
-        FabricC2SPackets.register();
-        FabricS2CPackets.register();
+        LootTableEvents.MODIFY.register(EnvelopeFabric::modifyLoot);
     }
 
     private static void modifyLoot(ResourceKey<LootTable> tableKey, LootTable.Builder builder,
@@ -141,6 +109,11 @@ public class EnvelopeFabric implements ModInitializer {
         if (BuiltInLootTables.PILLAGER_OUTPOST.equals(tableKey)) {
             builder.pool(LootPool.lootPool()
                   .add(NestedLootTable.lootTableReference(Envelope.LootTables.PILLAGER_OUTPOST_INJECT))
+                  .build());
+        }
+        if (BuiltInLootTables.RUINED_PORTAL.equals(tableKey)) {
+            builder.pool(LootPool.lootPool()
+                  .add(NestedLootTable.lootTableReference(Envelope.LootTables.RUINED_PORTAL_INJECT))
                   .build());
         }
     }

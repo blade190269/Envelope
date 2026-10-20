@@ -1,9 +1,9 @@
 package io.github.mortuusars.envelope.client.gui.screen;
 
 import io.github.mortuusars.envelope.Config;
-import io.github.mortuusars.envelope.client.util.Minecrft;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.serverbound.MailboxPlaceC2SP;
+import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.mortaar.client.Minecrft;
+import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundMailboxPlacePacket;
 import io.github.mortuusars.envelope.world.item.MailboxBlockItem;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
 import net.minecraft.client.player.LocalPlayer;
@@ -45,10 +45,10 @@ public class MailboxPlacingScreen extends AbstractMailboxAddressScreen {
 
         if (blockItem.place(new BlockPlaceContext(player, hand, stack, hitResult)).consumesAction()) {
             if (Config.Server.MAILBOX_ADDRESS_EXPERIENCE_LEVELS_COST.get() > 0) {
-                player.level().playSound(player, hitResult.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS);
+                player.level().playSound(player, hitResult.getBlockPos(), Envelope.SoundEvents.MAILBOX_CONNECT.get(), SoundSource.BLOCKS);
             }
 
-            Packets.sendToServer(new MailboxPlaceC2SP(hand, getCurrentAddressId().trim(), hitResult));
+            new ServerboundMailboxPlacePacket(hand, getCurrentAddressId().trim(), hitResult).sendToServer();
         }
     }
 

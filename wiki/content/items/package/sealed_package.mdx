@@ -7,18 +7,11 @@ custom:
     Mailable: "Yes"
 ---
 
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        A **sealed package** is a variant of a [package](@envelope:package) that has a proof of authorship and integrity.\
-        Seal impression and name of the sealer is shown in the item's tooltip.\
-        Can be mailed.
-    </div>
+A **sealed package** is a variant of a [package](@envelope:package) that has a proof of authorship and integrity.\
+Seal impression and name of the sealer is shown in the item's tooltip.\
+Can be mailed.
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:gui/sealed_package" width={350} />
-        <div style={{ marginTop: "6px"}}>*Sealed Package tooltip*</div>
-    </center>
-</div>
+![Sealed Package tooltip](@envelope:gui/sealed_package_tooltip){width=350 center}
 
 ## Obtaining
 Sealed Package can be obtained by sealing a [package](@envelope:package) with a [seal stamp](@envelope:seal_stamp).

@@ -4,15 +4,17 @@ import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.client.ConfigScreenFactory
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.EnvelopeClient;
 import io.github.mortuusars.envelope.client.gui.screen.*;
+import io.github.mortuusars.envelope.client.model.BatBackpackModel;
 import io.github.mortuusars.envelope.client.model.CharredPigeonModel;
 import io.github.mortuusars.envelope.client.model.PigeonModel;
 import io.github.mortuusars.envelope.client.renderer.entity.CharredPigeonRenderer;
+import io.github.mortuusars.envelope.client.renderer.entity.CourierBatRenderer;
 import io.github.mortuusars.envelope.client.renderer.entity.PigeonRenderer;
+import io.github.mortuusars.envelope.client.renderer.entity.layer.BatBackpackLayer;
 import io.github.mortuusars.envelope.client.renderer.entity.layer.CharredPigeonBackpackLayer;
 import io.github.mortuusars.envelope.client.renderer.entity.layer.PigeonBackpackLayer;
 import io.github.mortuusars.envelope.client.renderer.entity.layer.PigeonHatLayer;
-import io.github.mortuusars.envelope.network.fabric.FabricS2CPacketHandler;
-import io.github.mortuusars.envelope.world.item.Sealable;
+import io.github.mortuusars.envelope.world.item.SealedItem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -31,17 +33,26 @@ public class EnvelopeFabricClient implements ClientModInitializer {
 
         EntityRendererRegistry.register(Envelope.EntityTypes.PIGEON.get(), PigeonRenderer::new);
         EntityRendererRegistry.register(Envelope.EntityTypes.CHARRED_PIGEON.get(), CharredPigeonRenderer::new);
+        EntityRendererRegistry.register(Envelope.EntityTypes.COURIER_BAT.get(), CourierBatRenderer::new);
+
         EntityModelLayerRegistry.registerModelLayer(PigeonRenderer.MODEL_LAYER, PigeonModel::createLayerDefinition);
         EntityModelLayerRegistry.registerModelLayer(PigeonBackpackLayer.MODEL_LAYER, PigeonModel::createLayerDefinition);
         EntityModelLayerRegistry.registerModelLayer(PigeonHatLayer.MODEL_LAYER, PigeonModel::createLayerDefinition);
         EntityModelLayerRegistry.registerModelLayer(CharredPigeonRenderer.MODEL_LAYER, CharredPigeonModel::createLayerDefinition);
         EntityModelLayerRegistry.registerModelLayer(CharredPigeonBackpackLayer.MODEL_LAYER, CharredPigeonModel::createLayerDefinition);
+        EntityModelLayerRegistry.registerModelLayer(BatBackpackLayer.MODEL_LAYER, BatBackpackModel::createLayerDefinition);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(Envelope.Blocks.LETTER.get(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
+              Envelope.Blocks.LETTER.get(),
+              Envelope.Blocks.TATTERED_LETTER.get(),
+              Envelope.Blocks.SERVICE_LETTER.get());
 
-        ColorProviderRegistry.ITEM.register(Sealable::getSealOverlayColor, Envelope.Items.SEALED_LETTER.get());
-        ColorProviderRegistry.ITEM.register(Sealable::getSealOverlayColor, Envelope.Items.SEALED_PACKAGE.get());
-        ColorProviderRegistry.BLOCK.register(Sealable::getSealOverlayColor, Envelope.Blocks.SEALED_PACKAGE.get());
+        ColorProviderRegistry.ITEM.register(SealedItem.Client::getSealOverlayColor, Envelope.Items.SEALED_LETTER.get());
+        ColorProviderRegistry.ITEM.register(SealedItem.Client::getSealOverlayColor, Envelope.Items.SEALED_TATTERED_LETTER.get());
+        ColorProviderRegistry.ITEM.register(SealedItem.Client::getSealOverlayColor, Envelope.Items.SEALED_SERVICE_LETTER.get());
+        ColorProviderRegistry.ITEM.register(SealedItem.Client::getSealOverlayColor, Envelope.Items.SEALED_PACKAGE.get());
+
+        ColorProviderRegistry.BLOCK.register(SealedItem.Client::getSealOverlayColor, Envelope.Blocks.SEALED_PACKAGE.get());
 
         MenuScreens.register(Envelope.MenuTypes.MAILBOX.get(), MailboxScreen::new);
         MenuScreens.register(Envelope.MenuTypes.PACKING.get(), PackingScreen::new);
@@ -49,7 +60,5 @@ public class EnvelopeFabricClient implements ClientModInitializer {
         MenuScreens.register(Envelope.MenuTypes.PAYBACK_PACKING.get(), PaybackPackingScreen::new);
         MenuScreens.register(Envelope.MenuTypes.PAYBACK_PACKAGE.get(), PaybackPackageScreen::new);
         MenuScreens.register(Envelope.MenuTypes.PAYBACK_TAG.get(), PaybackTagScreen::new);
-
-        FabricS2CPacketHandler.register();
     }
 }

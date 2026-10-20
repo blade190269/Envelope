@@ -3,13 +3,16 @@ package io.github.mortuusars.envelope.world.mail.delivery.background;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.mortuusars.envelope.Config;
+import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.envelope.world.entity.CourierBat;
+import io.github.mortuusars.envelope.world.entity.Pigeon;
 import io.github.mortuusars.envelope.world.entity.spawning.SpawnableItem;
 import io.github.mortuusars.envelope.world.mail.MailService;
-import io.github.mortuusars.envelope.world.mail.delivery.Courier;
-import io.github.mortuusars.envelope.world.mail.delivery.CourierOrigin;
-import io.github.mortuusars.envelope.world.mail.delivery.Delivery;
+import io.github.mortuusars.envelope.world.mail.delivery.*;
 import io.github.mortuusars.envelope.world.entity.spawning.SpawnableEntityData;
 import net.minecraft.server.level.ServerLevel;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -17,20 +20,24 @@ import java.util.Optional;
 public class BackgroundCourier implements Courier {
     public static final Codec<BackgroundCourier> CODEC = RecordCodecBuilder.create(i -> i.group(
           SpawnableEntityData.CODEC.fieldOf("entity").forGetter(BackgroundCourier::getSpawnableEntityData),
-          CourierOrigin.CODEC.optionalFieldOf("origin", CourierOrigin.service()).forGetter(BackgroundCourier::getOrigin),
+          CourierProperties.CODEC.optionalFieldOf("properties", CourierProperties.DEFAULT).forGetter(BackgroundCourier::getCourierProperties),
+          CourierOrigin.CODEC.optionalFieldOf("origin", CourierOrigin.service()).forGetter(BackgroundCourier::getCourierOrigin),
           Delivery.CODEC.fieldOf("delivery").forGetter(BackgroundCourier::getDelivery)
     ).apply(i, BackgroundCourier::new));
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private final SpawnableEntityData entityData;
-    private final Delivery delivery;
+    private final CourierProperties properties;
     private final CourierOrigin origin;
+    private final Delivery delivery;
+
     private boolean removed;
 
-    public BackgroundCourier(SpawnableEntityData entityData, CourierOrigin origin, Delivery delivery) {
+    public BackgroundCourier(SpawnableEntityData entityData, CourierProperties properties, CourierOrigin origin, Delivery delivery) {
         this.entityData = entityData;
-        this.delivery = delivery;
+        this.properties = properties;
         this.origin = origin;
+        this.delivery = delivery;
     }
 
     public SpawnableEntityData getSpawnableEntityData() {
@@ -38,7 +45,12 @@ public class BackgroundCourier implements Courier {
     }
 
     @Override
-    public CourierOrigin getOrigin() {
+    public CourierProperties getCourierProperties() {
+        return properties;
+    }
+
+    @Override
+    public @NotNull CourierOrigin getCourierOrigin() {
         return origin;
     }
 
@@ -68,14 +80,55 @@ public class BackgroundCourier implements Courier {
     }
 
     @Override
+    public boolean dispatchDelivery(ServerLevel level, Delivery delivery) {
+        boolean handled = Courier.super.dispatchDelivery(level, delivery);
+        changeToAppropriateCourierIfNeeded(level, delivery);
+        return handled;
+    }
+
+    @Override
+    public boolean dispatchReturn(ServerLevel level, Delivery delivery) {
+        boolean handled = Courier.super.dispatchReturn(level, delivery);
+        changeToAppropriateCourierIfNeeded(level, delivery);
+        return handled;
+    }
+
+    public boolean changeToAppropriateCourierIfNeeded(ServerLevel level, Delivery delivery) {
+        if (!getCourierOrigin().isService() || delivery.getPhase() == DeliveryPhase.FINISHED) {
+            return false;
+        }
+
+        return getSpawnableEntityData().getEntityType()
+              .flatMap(type -> {
+                  if (type.equals(Envelope.EntityTypes.COURIER_BAT.get()) && (level.isDay() || !Config.Server.BAT_EMPLOYED_AT_MAIL_SERVICE.get())) {
+                      return Optional.of(Pigeon.createService(level));
+                  }
+                  if (type.equals(Envelope.EntityTypes.PIGEON.get()) && level.isNight() && Config.Server.BAT_EMPLOYED_AT_MAIL_SERVICE.get()) {
+                      return Optional.of(CourierBat.createService(level));
+                  }
+                  return Optional.empty();
+              })
+              .map(courier -> {
+                  level.getEnvelopeMailService().getBackgroundDelivery().addCourier(new BackgroundCourier(
+                        courier.toSpawnableCourierData(),
+                        courier.getCourierProperties(),
+                        CourierOrigin.service(),
+                        delivery));
+                  setRemoved();
+                  return true;
+              })
+              .orElse(false);
+    }
+
+    @Override
     public void endDelivery(ServerLevel level, Delivery delivery) {
         setRemoved();
 
-        if (getOrigin().isRegular()) {
+        if (getCourierOrigin().isRegular()) {
             BackgroundDelivery background = MailService.of(level).getBackgroundDelivery();
-            background.addFinishedCourier(new FinishedBackgroundCourier(getSpawnableEntityData(), getOrigin().getPos(), level.getGameTime()));
+            background.addFinishedCourier(new FinishedBackgroundCourier(getSpawnableEntityData(), getCourierOrigin().getPos(), level.getGameTime()));
             if (!delivery.getMail().isEmpty()) {
-                background.addDroppedMail(new SpawnableItem(delivery.getMail(), getOrigin().getPos()));
+                background.addDroppedMail(new SpawnableItem(delivery.getMail(), getCourierOrigin().getPos()));
             }
         } else if (!delivery.getMail().isEmpty()) {
             delivery.getRoute().getSenderPos().ifPresentOrElse(

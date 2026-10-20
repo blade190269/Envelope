@@ -114,7 +114,7 @@ public class ServiceCraftingDropOffHandler implements MailDropOffHandler {
         if (hasRemainder) {
             return MailDropOffResult.returned(results.getFirst(), DeliveryRecord.Message.CRAFTING_UNPROCESSED_ITEMS);
         } else {
-            return MailDropOffResult.reply(Mail.of(results.getFirst()).get());
+            return MailDropOffResult.reply(Mail.of(results.getFirst()).itemStack());
         }
     }
 }

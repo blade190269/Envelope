@@ -2,15 +2,16 @@ package io.github.mortuusars.envelope.client.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.client.gui.Sprites;
-import io.github.mortuusars.envelope.client.util.Minecrft;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.world.inventory.PaybackPackingMenu;
 import io.github.mortuusars.envelope.world.inventory.slot.PreviewSlot;
 import io.github.mortuusars.envelope.world.inventory.slot.RequestedItemSlot;
 import io.github.mortuusars.envelope.world.item.PaybackPackageItem;
+import io.github.mortuusars.mortaar.client.gui.Sprites;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -40,15 +41,14 @@ public class PaybackPackingScreen extends AbstractInHandContainerScreen<PaybackP
         imageHeight = 178;
         super.init();
 
-        packButton = new ImageButton(leftPos + 126, topPos + 40, 26, 20,
+        packButton = addRenderableWidget(new ImageButton(leftPos + 126, topPos + 39, 26, 21,
               PACK_BUTTON_SPRITES,
-              button -> pack(),
-              Component.translatable("gui.envelope.packing.pack"));
+              this::pack,
+              Component.translatable("gui.envelope.packing.pack")));
         packButton.setTooltip(Tooltip.create(Component.translatable("gui.envelope.packing.pack")));
-        addRenderableWidget(packButton);
     }
 
-    protected void pack() {
+    protected void pack(Button button) {
         getMenu().clickMenuButton(getMenu().getPlayer(), PaybackPackingMenu.PACK_BUTTON_ID);
         Minecrft.gameMode().handleInventoryButtonClick(getMenu().containerId, PaybackPackingMenu.PACK_BUTTON_ID);
         onClose();
@@ -97,7 +97,7 @@ public class PaybackPackingScreen extends AbstractInHandContainerScreen<PaybackP
             List<Component> lines = requestedItemSlot.getIngredient().items().unwrapKey()
                   .map(tag -> {
                       List<Component> list = new ArrayList<>(getTooltipFromContainerItem(stack));
-                      list.addLast(Component.literal("Accepts Tag:").withStyle(ChatFormatting.GRAY));
+                      list.addLast(Component.translatable("gui.envelope.payback.accepts_tag").withStyle(ChatFormatting.GRAY));
                       list.addLast(Component.literal("#" + tag.location()).withStyle(ChatFormatting.GRAY));
                       return list;
                   })

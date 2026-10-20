@@ -71,7 +71,7 @@ public class PaybackDepartment {
     }
 
     protected long calculateExpireTick(ItemStack subject) {
-        PaybackDuration duration = subject.getOrDefault(Envelope.DataComponents.MAIL_PAYBACK_REQUEST, PaybackRequest.createDefault())
+        PaybackDuration duration = subject.getOrDefault(Envelope.DataComponents.MAIL_PAYBACK_TAG, PaybackRequest.createDefault())
               .duration();
         return getMailService().getGameTime() + duration.getTicks();
     }
@@ -119,15 +119,6 @@ public class PaybackDepartment {
     }
 
     public void returnSubjectToSender(PaybackSubject subject, Component reason) {
-        @Nullable PaybackSubject removed = removeSubject(subject.id());
-
-        if (removed == null) {
-            LOGGER.error("Cannot return payback subject: {} is not in the department.", subject);
-            return;
-        }
-
-        subject = removed;
-
         ItemStack mail = subject.mail().copy();
 
         Mail.returned(mail, reason);
@@ -143,13 +134,13 @@ public class PaybackDepartment {
     // --
 
     public boolean tryHandleDelivery(Delivery delivery) {
-        if (delivery.getMail().has(Envelope.DataComponents.MAIL_PAYBACK_REQUEST)) {
-            handlePaybackSubject(delivery);
+        if (delivery.getMail().has(Envelope.DataComponents.MAIL_PAYBACK_TAG) && !Mail.isReturned(delivery.getMail())) {
+            acceptSubjectAndWaitForPayback(delivery);
             return true;
         }
 
         if (delivery.getMail().getItem() instanceof PaybackPackageItem) {
-            handlePaybackPayment(delivery);
+            acceptAndHandlePayment(delivery);
             return true;
         }
 
@@ -160,7 +151,7 @@ public class PaybackDepartment {
         if (delivery.getMail().getItem() instanceof PaybackBoxItem) {
             @Nullable PaybackSubject subject = delivery.getMail().get(Envelope.DataComponents.PAYBACK_SUBJECT);
             if (subject == null) {
-                LOGGER.info("Returning Payback Packing Box does not have a subject linked. Packing Box will be voided.");
+                LOGGER.info("Returning Payback Box does not have a subject linked. Payback Box will be voided.");
                 delivery.setMail(ItemStack.EMPTY);
                 delivery.beginPhase(DeliveryPhase.FINISHED);
                 return true;
@@ -168,8 +159,8 @@ public class PaybackDepartment {
 
             @Nullable PaybackSubject storedSubject = removePendingPaybackSubject(subject.id());
             if (storedSubject == null) {
-                LOGGER.info("Returning Payback Packing Box links to subject of [{}] with id [{}], " +
-                            "which is not found in storage. Packing Box will be voided.",
+                LOGGER.info("Returning Payback Box links to subject of [{}] with id [{}], " +
+                            "which is not found in storage. Payback Box will be voided.",
                       subject.mail().getHoverName().getString(), subject.id());
                 delivery.setMail(ItemStack.EMPTY);
                 delivery.beginPhase(DeliveryPhase.FINISHED);
@@ -178,7 +169,7 @@ public class PaybackDepartment {
 
             returnSubjectToSender(storedSubject, DeliveryRecord.Message.RECIPIENT_NOT_FOUND);
             LOGGER.info("Pending payback subject of [{}] with id [{}] was returned to sender, " +
-                        "as Payback Packing Box couldn't be delivered to recipient.",
+                        "as Payback Box couldn't be delivered to recipient.",
                   subject.mail().getHoverName().getString(), subject.id());
 
             delivery.setMail(ItemStack.EMPTY);
@@ -191,8 +182,8 @@ public class PaybackDepartment {
 
     // -- Payback Subject
 
-    protected void handlePaybackSubject(Delivery subjectDelivery) {
-        Preconditions.checkArgument(subjectDelivery.getMail().has(Envelope.DataComponents.MAIL_PAYBACK_REQUEST));
+    protected void acceptSubjectAndWaitForPayback(Delivery subjectDelivery) {
+        Preconditions.checkArgument(subjectDelivery.getMail().has(Envelope.DataComponents.MAIL_PAYBACK_TAG));
 
         ItemStack subject = subjectDelivery.getMail();
 
@@ -213,7 +204,7 @@ public class PaybackDepartment {
               .sender(subjectDelivery.getSender())
               .recipient(subjectDelivery.getRecipient())
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
 
         getMailService().getDeliveryManager()
               .startService(Delivery.draft()
@@ -225,41 +216,37 @@ public class PaybackDepartment {
 
     // -- Payback Payment
 
-    protected void handlePaybackPayment(Delivery paybackDelivery) {
+    protected void acceptAndHandlePayment(Delivery paybackDelivery) {
         ItemStack paybackPackage = paybackDelivery.getMail();
         Mail.writeToLog(paybackPackage, DeliveryRecord.arrivedTo(getAddress()));
 
         @Nullable PaybackSubject paybackSubject = paybackPackage.get(Envelope.DataComponents.PAYBACK_SUBJECT);
         if (paybackSubject == null) {
-            Mail.writeToLog(paybackPackage,
-                  DeliveryRecord.returned(DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND),
-                  DeliveryRecord.sentFrom(getAddress()));
+            Mail.returned(paybackPackage, DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND);
+            Mail.writeToLog(paybackPackage, DeliveryRecord.sentFrom(getAddress()));
             paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
             return;
         }
 
         paybackSubject = getPendingPaybackSubject(paybackSubject.id());
         if (paybackSubject == null) {
-            Mail.writeToLog(paybackPackage,
-                  DeliveryRecord.returned(DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND),
-                  DeliveryRecord.sentFrom(getAddress()));
+            Mail.returned(paybackPackage, DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND);
+            Mail.writeToLog(paybackPackage, DeliveryRecord.sentFrom(getAddress()));
             paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
             return;
         }
 
         if (!paybackDelivery.getRecipient().equals(paybackSubject.returnAddress())) {
-            Mail.writeToLog(paybackPackage,
-                  DeliveryRecord.returned(DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND),
-                  DeliveryRecord.sentFrom(getAddress()));
+            Mail.returned(paybackPackage, DeliveryRecord.Message.PAYBACK_SUBJECT_NOT_FOUND);
+            Mail.writeToLog(paybackPackage, DeliveryRecord.sentFrom(getAddress()));
             paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
             return;
         }
 
         PackageContents packageContents = PackageContents.of(paybackPackage);
         if (!paybackSubject.getRequest().matches(packageContents)) {
-            Mail.writeToLog(paybackPackage,
-                  DeliveryRecord.returned(DeliveryRecord.Message.PAYBACK_IS_NOT_VALID),
-                  DeliveryRecord.sentFrom(getAddress()));
+            Mail.returned(paybackPackage, DeliveryRecord.Message.PAYBACK_IS_NOT_VALID);
+            Mail.writeToLog(paybackPackage, DeliveryRecord.sentFrom(getAddress()));
             paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
             return;
         }
@@ -276,7 +263,7 @@ public class PaybackDepartment {
               .sender(paybackSubject.returnAddress())
               .writeToLog(DeliveryRecord.message(DeliveryRecord.Message.PAYBACK_FULFILLED))
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
         paybackDelivery.setMail(subject);
         paybackDelivery.beginPhase(DeliveryPhase.TRAVELING_FROM_HUB_TO_SENDER);
     }
@@ -288,7 +275,7 @@ public class PaybackDepartment {
               .setLog(Mail.getLog(paybackPackage))
               .writeToLog(DeliveryRecord.message(DeliveryRecord.Message.PAYBACK_FULFILLED))
               .writeToLog(DeliveryRecord.sentFrom(getAddress()))
-              .get();
+              .itemStack();
 
         getMailService().getDeliveryManager()
               .startService(Delivery.draft()

@@ -4,16 +4,16 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.util.EnvelopeCodecs;
 import io.github.mortuusars.envelope.world.item.component.PackageContents;
 import io.github.mortuusars.envelope.world.item.component.PaybackSubject;
+import io.github.mortuusars.envelope.world.item.component.ServiceLetterMeaning;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryRecord;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.address.type.ServiceAddress;
+import io.github.mortuusars.mortaar.serialization.Codecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,11 +27,17 @@ import org.slf4j.Logger;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class MailPaybackRequestCancelingRecipe extends CustomMailRecipe {
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final ServiceLetterMeaning LETTER_MEANING_CANCEL_REPORT =
+          new ServiceLetterMeaning(Envelope.resource("mail_service/payback_request_cancel_report"));
+
     private final NonNullList<Ingredient> ingredients;
+    private final Optional<Component> info = Optional.of(Component.translatable("recipe.envelope.mailing.mail_service.payback_cancelling.info"));
 
     public MailPaybackRequestCancelingRecipe(ServiceAddress address, NonNullList<Ingredient> ingredients) {
         super(address);
@@ -54,10 +60,15 @@ public class MailPaybackRequestCancelingRecipe extends CustomMailRecipe {
     }
 
     @Override
+    public Optional<Component> getInfo() {
+        return info;
+    }
+
+    @Override
     public @NotNull ItemStack getResultItem(HolderLookup.Provider registries) {
         return Mail.of(new ItemStack(Envelope.Items.SEALED_PACKAGE.get()))
-              .set(DataComponents.ITEM_NAME, Component.translatable("package.envelope.canceled_payback_request.name"))
-              .get();
+              .name(Component.translatable("package.envelope.canceled_payback_request.name"))
+              .itemStack();
     }
 
     @Override
@@ -74,15 +85,15 @@ public class MailPaybackRequestCancelingRecipe extends CustomMailRecipe {
 
         if (subjects.isEmpty()
               || !(input.service().getPaybackDepartment().removeSubject(subjects.getLast().id()) instanceof PaybackSubject subject)) {
-            MutableComponent text = Component.empty()
-                  .append(Component.translatable("letter.envelope.payback_request_cancel_report.title").withStyle(ChatFormatting.ITALIC))
-                  .append("\n\n")
-                  .append(Component.translatable("letter.envelope.payback_request_cancel_report.error_no_requests"))
-                  .append("\n\n")
-                  .append(getAddress().getComponent());
-            return Mail.createLetter(text)
-                  .set(DataComponents.ITEM_NAME, Component.translatable("letter.envelope.payback_request_cancel_report.name"))
-                  .get();
+            return Mail.of(Envelope.Items.SERVICE_LETTER.get())
+                  .name(Component.translatable("letter.envelope.payback_request_cancel_report.name"))
+                  .letterContent(Component.translatable("letter.envelope.payback_request_cancel_report.title").withStyle(ChatFormatting.ITALIC)
+                        .append("\n\n")
+                        .append(Component.translatable("letter.envelope.payback_request_cancel_report.error_no_requests"))
+                        .append("\n\n")
+                        .append(getAddress().getComponent()))
+                  .serviceLetterMeaning(LETTER_MEANING_CANCEL_REPORT)
+                  .itemStack();
         }
 
         LOGGER.info("Payback request [{}] was cancelled.", subject);
@@ -94,7 +105,7 @@ public class MailPaybackRequestCancelingRecipe extends CustomMailRecipe {
               ServiceAddress.DEFINITION_CODEC
                     .fieldOf("address")
                     .forGetter(MailPaybackRequestCancelingRecipe::getAddress),
-              EnvelopeCodecs.recipeIngredients(PackageContents.SLOTS, Envelope.RecipeTypes.MAILING.get())
+              Codecs.recipeIngredients(PackageContents.SLOTS, Envelope.RecipeTypes.MAILING.get())
                     .fieldOf("ingredients")
                     .forGetter(MailPaybackRequestCancelingRecipe::getIngredients)
         ).apply(i, MailPaybackRequestCancelingRecipe::new));

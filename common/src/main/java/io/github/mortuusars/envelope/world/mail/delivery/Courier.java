@@ -2,16 +2,19 @@ package io.github.mortuusars.envelope.world.mail.delivery;
 
 import com.google.common.base.Preconditions;
 import com.mojang.logging.LogUtils;
+import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.util.bugger.Bugger;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryRecord;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.MailService;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.dropoff.*;
+import io.github.mortuusars.mortaar.bugger.Bugger;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -27,9 +30,12 @@ public interface Courier {
           context -> MailDropOffResult.returned(context.getMail())
     );
 
+    CourierProperties getCourierProperties();
+
     Optional<Delivery> getCurrentDelivery();
 
-    CourierOrigin getOrigin();
+    @NotNull
+    CourierOrigin getCourierOrigin();
 
     default boolean isDelivering() {
         return getCurrentDelivery().isPresent();
@@ -55,7 +61,7 @@ public interface Courier {
                 delivery.end();
                 endDelivery(level, delivery);
                 if (Bugger.isEnabled()) {
-                    String type = getOrigin().isService() ? "Service delivery" : "Delivery";
+                    String type = getCourierOrigin().isService() ? "Service delivery" : "Delivery";
                     LOGGER.info("{} '{} > {}' is finished.", type, delivery.getSender(), delivery.getRecipient());
                 }
             } else {
@@ -86,9 +92,14 @@ public interface Courier {
     }
 
     default int getPhaseDuration(ServerLevel level, Delivery delivery, DeliveryPhase phase) {
+        return Math.max(1, (int) (getBasePhaseDuration(level, delivery, phase) * Config.Server.DELIVERY_PHASE_DURATION_MODIFIER.get()));
+    }
+
+    default int getBasePhaseDuration(ServerLevel level, Delivery delivery, DeliveryPhase phase) {
         return switch (phase) {
             case STARTED, FINISHED -> 5;
-            case DEPARTING_SENDER, APPROACHING_RECIPIENT, DEPARTING_RECIPIENT, APPROACHING_SENDER -> 100;
+            case DEPARTING_SENDER, APPROACHING_RECIPIENT, DEPARTING_RECIPIENT, APPROACHING_SENDER ->
+                  Mth.ceil(120 * (Config.Server.DELIVERY_ASCEND_DISTANCE.get() / 16f));
             case TRAVELING_FROM_SENDER_TO_HUB, TRAVELING_FROM_HUB_TO_SENDER -> delivery.getRoute().getSenderToHubDuration().ticks();
             case TRAVELING_FROM_HUB_TO_RECIPIENT, TRAVELING_FROM_RECIPIENT_TO_HUB ->
                   delivery.getRoute().getRecipientToHubDuration().ticks();
@@ -137,7 +148,7 @@ public interface Courier {
             return true;
         }
 
-        delivery.updateRoute(level);
+        delivery.updateRoute(level, this);
         return false;
     }
 
@@ -152,14 +163,14 @@ public interface Courier {
             return true;
         }
 
-        if (getOrigin().isService() && shouldTerminateServiceDeliveryEarly(level, delivery)) {
-            LOGGER.debug("Terminating service delivery [{}] early.", delivery.getId());
+        if (shouldTerminateAndDespawnEarly(level, delivery)) {
+            LOGGER.debug("Terminating delivery [{}] and despawning the courier early.", delivery.getId());
             delivery.beginPhase(DeliveryPhase.FINISHED);
             return true;
         }
 
         if (service.getDeliveryManager().canDeliverTo(delivery.getSender())) {
-            delivery.updateRoute(level);
+            delivery.updateRoute(level, this);
         }
 
         return false;
@@ -180,6 +191,7 @@ public interface Courier {
                       .ifPresent(player -> {
                           if (player instanceof ServerPlayer serverPlayer) {
                               Envelope.CriteriaTriggers.MAIL_DELIVERED.get().trigger(serverPlayer, delivery);
+                              //TODO: If offline - accumulate and award when logged in
                               player.awardStat(Envelope.Stats.MAIL_DELIVERIES.get());
                           }
                       });
@@ -199,12 +211,16 @@ public interface Courier {
     }
 
     /**
-     * Whether a service delivery should be ended early (when dispatching return),
+     * Whether a delivery should be ended early (when dispatching return),
      * to save on processing and avoid spawning the courier when it doesn't deliver anything.
      * <br>
      * This can cause side effects, if some logic depends on courier completing specific phase, even if empty.
      */
-    default boolean shouldTerminateServiceDeliveryEarly(ServerLevel level, Delivery delivery) {
-        return delivery.getMail().isEmpty();
+    default boolean shouldTerminateAndDespawnEarly(ServerLevel level, Delivery delivery) {
+        if (!delivery.getMail().isEmpty()) {
+            return false;
+        }
+
+        return getCourierOrigin().isService();
     }
 }

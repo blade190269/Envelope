@@ -23,8 +23,8 @@ import java.util.*;
  */
 public class DeliveryRoute {
     public static final Codec<DeliveryRoute> CODEC = RecordCodecBuilder.create(i -> i.group(
-          AddressLocation.CODEC.fieldOf("sender_location").forGetter(DeliveryRoute::getSenderLocation),
-          AddressLocation.CODEC.fieldOf("recipient_location").forGetter(DeliveryRoute::getRecipientLocation),
+          AddressLocation.CODEC.optionalFieldOf("sender_location", AddressLocation.DEFAULT).forGetter(DeliveryRoute::getSenderLocation),
+          AddressLocation.CODEC.optionalFieldOf("recipient_location", AddressLocation.DEFAULT).forGetter(DeliveryRoute::getRecipientLocation),
           BlockPos.CODEC.optionalFieldOf("sender_pos").forGetter(DeliveryRoute::getSenderPos),
           BlockPos.CODEC.optionalFieldOf("sender_ascend_pos").forGetter(DeliveryRoute::getSenderAscendPos),
           TravelDuration.CODEC.optionalFieldOf("sender_to_hub_duration", TravelDuration.DEFAULT).forGetter(DeliveryRoute::getSenderToHubDuration),
@@ -67,7 +67,7 @@ public class DeliveryRoute {
         this.recipientPos = recipientPos;
     }
 
-    public static DeliveryRoute build(ServerLevel level, Address sender, Address recipient) {
+    public static DeliveryRoute build(ServerLevel level, Address sender, Address recipient, Courier courier) {
         MailService mailService = MailService.of(level);
 
         AddressLocation senderLocation = mailService.getLocationOf(sender);
@@ -77,14 +77,16 @@ public class DeliveryRoute {
         Optional<BlockPos> recipientPos = recipientLocation.getPosition();
         Optional<BlockPos> hubPos = getHubPosition(senderLocation, recipientLocation);
 
+        double courierTravelSpeed = courier.getCourierProperties().travelSpeed();
+
         return new DeliveryRoute(
               senderLocation,
               recipientLocation,
               senderPos,
               senderLocation.ascendTowards(level, hubPos),
-              TravelDuration.basedOnDistance(senderLocation.getDistanceTo(level, hubPos)),
+              TravelDuration.basedOnDistance(senderLocation.getDistanceTo(level, hubPos), courierTravelSpeed),
               hubPos,
-              TravelDuration.basedOnDistance(recipientLocation.getDistanceTo(level, hubPos)),
+              TravelDuration.basedOnDistance(recipientLocation.getDistanceTo(level, hubPos), courierTravelSpeed),
               recipientLocation.ascendTowards(level, hubPos),
               recipientPos);
     }

@@ -2,15 +2,13 @@ package io.github.mortuusars.envelope.client.gui.screen;
 
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.client.gui.Sprites;
 import io.github.mortuusars.envelope.client.gui.widget.textbox.TextBox;
 import io.github.mortuusars.envelope.client.gui.widget.textbox.text.FormattedString;
-import io.github.mortuusars.envelope.client.util.Minecrft;
-import io.github.mortuusars.envelope.integration.jei.JeiCompatibleScreen;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.serverbound.LetterEditC2SP;
-import io.github.mortuusars.envelope.util.ItemAndStack;
+import io.github.mortuusars.mortaar.client.Minecrft;
+import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundLetterEditPacket;
 import io.github.mortuusars.envelope.world.item.LetterAndQuillItem;
+import io.github.mortuusars.mortaar.client.gui.Sprites;
+import io.github.mortuusars.mortaar.util.ItemAndStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +25,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class LetterEditScreen extends Screen implements JeiCompatibleScreen {
+public class LetterEditScreen extends Screen {
     public static final ResourceLocation TEXTURE = Envelope.resource("textures/gui/letter_and_quill.png");
     public static final WidgetSprites FOLD_BUTTON_SPRITES = Sprites.threeStates(Envelope.resource("letter_and_quill/fold_button"));
 
@@ -145,15 +143,6 @@ public class LetterEditScreen extends Screen implements JeiCompatibleScreen {
         String text = textBox.getEditor().getText().toString();
 
         int slot = this.hand == InteractionHand.MAIN_HAND ? Minecrft.player().getInventory().selected : Inventory.SLOT_OFFHAND;
-        Packets.sendToServer(new LetterEditC2SP(slot, text, fold));
-    }
-
-    // --
-
-    @Override
-    public boolean shouldBlockJeiInput() {
-        // Always block JEI input, as this screen does not have jei showing,
-        // but hotkeys such as Ctrl + O will still hide JEI if pressed.
-        return true;
+        new ServerboundLetterEditPacket(slot, text, fold).sendToServer();
     }
 }

@@ -1,0 +1,194 @@
+package io.github.mortuusars.envelope.test.cases;
+
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
+import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.envelope.world.item.component.ServiceLetterMeaning;
+import io.github.mortuusars.envelope.world.item.component.mail.DeliveryInfo;
+import io.github.mortuusars.mortaar.Platform;
+import io.github.mortuusars.mortaar.bugger.test.BuggerTests;
+import io.github.mortuusars.mortaar.bugger.test.Test;
+import io.github.mortuusars.envelope.world.inventory.StackIngredient;
+import io.github.mortuusars.envelope.world.mail.MailService;
+import io.github.mortuusars.envelope.world.mail.address.type.BlockAddress;
+import net.minecraft.Util;
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Unit;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+public class StackIngredientTests extends BuggerTests {
+    public StackIngredientTests() {
+        equality();
+        itemMatching();
+        tagMatching();
+        componentMatching();
+        matchingItemFromJson();
+        matchingTagFromJson();
+        matchingItemWithComponentsFromJson();
+        matchingItemWithComponentsStrictFromJson();
+    }
+
+    private void equality() {
+        StackIngredient ingredient = new StackIngredient(Items.FEATHER, 3, DataComponentPredicate.builder()
+              .expect(DataComponents.FIRE_RESISTANT, Unit.INSTANCE)
+              .build());
+
+        StackIngredient ingredient2 = new StackIngredient(Items.FEATHER, 3, DataComponentPredicate.builder()
+              .expect(DataComponents.FIRE_RESISTANT, Unit.INSTANCE)
+              .build());
+
+        add("StackIngredient_EqualsIfSame", Test.isTrue(player -> ingredient.equals(ingredient2)));
+        add("StackIngredient_NotEqualsIfDifferent", Test.isFalse(player -> ingredient.equals(new StackIngredient(Items.EMERALD, 23))));
+    }
+
+    private void itemMatching() {
+        StackIngredient ingredient = new StackIngredient(Items.FEATHER, 3);
+
+        add("StackIngredient_ItemMatches_WhenSameCount", Test.isTrue(player -> ingredient.test(new ItemStack(Items.FEATHER, 3))));
+        add("StackIngredient_ItemMatches_WhenMoreThanCount", Test.isTrue(player -> ingredient.test(new ItemStack(Items.FEATHER, 23))));
+        add("StackIngredient_ItemMatches_WithRandomComponents", Test.isTrue(player -> ingredient.test(Util.make(() -> {
+            ItemStack stack = new ItemStack(Items.FEATHER, 3);
+            stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+            return stack;
+        }))));
+
+        add("StackIngredient_ItemMatches_FailsWhenItemIsDifferent", Test.isFalse(player -> ingredient.test(new ItemStack(Items.WRITTEN_BOOK, 3))));
+        add("StackIngredient_ItemMatches_FailsWhenCountIsLesser", Test.isFalse(player -> ingredient.test(new ItemStack(Items.FEATHER, 1))));
+    }
+
+    private void tagMatching() {
+        StackIngredient ingredient = new StackIngredient(ItemTags.LOGS, 12);
+
+        add("StackIngredient_TagMatches_WithSameCount", Test.isTrue(player -> ingredient.test(new ItemStack(Items.OAK_LOG, 12))));
+        add("StackIngredient_TagMatches_MoreThanCount", Test.isTrue(player -> ingredient.test(new ItemStack(Items.OAK_LOG, 30))));
+        add("StackIngredient_TagMatches_WithRandomComponents", Test.isTrue(player -> ingredient.test(Util.make(() -> {
+            ItemStack stack = new ItemStack(Items.OAK_LOG, 12);
+            stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+            return stack;
+        }))));
+
+        add("StackIngredient_TagMatches_FailsWhenItemIsDifferent", Test.isFalse(player -> ingredient.test(new ItemStack(Items.WRITTEN_BOOK, 20))));
+        add("StackIngredient_TagMatches_FailsWhenCountIsLesser", Test.isFalse(player -> ingredient.test(new ItemStack(Items.OAK_LOG, 5))));
+    }
+
+    private void componentMatching() {
+        StackIngredient ingredient = new StackIngredient(Items.FEATHER, 3,
+              DataComponentPredicate.builder()
+                    .expect(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable())
+                    .expect(DataComponents.FIRE_RESISTANT, Unit.INSTANCE)
+                    .build());
+
+        ItemStack stack = new ItemStack(Items.FEATHER, 3);
+        stack.set(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable());
+        stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+        add("StackIngredient_ComponentMatches", Test.isTrue(player -> ingredient.test(stack)));
+
+        ItemStack stack2 = stack.copy();
+        stack2.remove(Envelope.DataComponents.MAIL_DELIVERY_INFO);
+        add("StackIngredient_ComponentMatches_failsWhenMissing", Test.isFalse(player -> ingredient.test(stack2)));
+    }
+
+    private void matchingItemFromJson() {
+        add("StackIngredient_MatchesItemFromJson",
+              Test.isTrue(player -> decodeFromJson("{\"item\":\"minecraft:emerald\"}").test(new ItemStack(Items.EMERALD))));
+        add("StackIngredient_MatchesItemFromJson_failsWhenCountIsLesser",
+              Test.isFalse(player -> decodeFromJson("{\"item\":\"minecraft:emerald\",\"count\":5}").test(new ItemStack(Items.EMERALD))));
+    }
+
+    private void matchingItemWithComponentsFromJson() {
+        String json = """
+              {
+                "item": "minecraft:emerald",
+                "count": 3,
+                "components": {
+                  "minecraft:fire_resistant": {},
+                  "envelope:mail_delivery_info": {
+                      "sender": {
+                          "type": "service",
+                          "definition": "envelope:mail_service"
+                      }
+                  },
+                  "envelope:mail_address_tag": {
+                      "type": "block",
+                      "id": "Mortuusars Laboratory"
+                  }
+                }
+              }
+              """;
+        add("StackIngredient_MatchesItemWithComponentsFromJson",
+              Test.isTrue(player -> {
+                  ItemStack stack = new ItemStack(Items.EMERALD, 3);
+                  stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+                  stack.set(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable());
+                  stack.set(Envelope.DataComponents.MAIL_ADDRESS_TAG, new BlockAddress("Mortuusars Laboratory"));
+                  return decodeFromJson(json).test(stack);
+              }));
+    }
+
+    private void matchingItemWithComponentsStrictFromJson() {
+        String json = """
+              {
+                "item": "minecraft:emerald",
+                "count": 3,
+                "components": {
+                  "minecraft:fire_resistant": {},
+                  "envelope:mail_delivery_info": {
+                      "sender": {
+                          "type": "service",
+                          "definition": "envelope:mail_service"
+                      }
+                  },
+                  "envelope:mail_address_tag": {
+                      "type": "block",
+                      "id": "Mortuusars Laboratory"
+                  }
+                },
+                "strict": true
+              }
+              """;
+        add("StackIngredient_MatchesItemWithComponentsStrictFromJson",
+              Test.isTrue(player -> {
+                  ItemStack stack = new ItemStack(Items.EMERALD, 3);
+                  stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+                  stack.set(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable());
+                  stack.set(Envelope.DataComponents.MAIL_ADDRESS_TAG, new BlockAddress("Mortuusars Laboratory"));
+                  return decodeFromJson(json).test(stack);
+              }));
+
+        add("StackIngredient_MatchesItemWithComponentsStrictFromJson_Fails_with_less",
+              Test.isFalse(player -> {
+                  ItemStack stack = new ItemStack(Items.EMERALD, 3);
+                  stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+                  stack.set(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable());
+                  return decodeFromJson(json).test(stack);
+              }));
+
+        add("StackIngredient_MatchesItemWithComponentsStrictFromJson_Fails_with_additional",
+              Test.isFalse(player -> {
+                  ItemStack stack = new ItemStack(Items.EMERALD, 3);
+                  stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+                  stack.set(Envelope.DataComponents.MAIL_DELIVERY_INFO, DeliveryInfo.create().sender(MailService.of(Platform.getCurrentServerOrThrow().overworld()).getAddress()).immutable());
+                  stack.set(Envelope.DataComponents.MAIL_ADDRESS_TAG, new BlockAddress("Mortuusars Laboratory"));
+                  stack.set(Envelope.DataComponents.SERVICE_LETTER_MEANING, new ServiceLetterMeaning(ResourceLocation.parse("asd:123")));
+                  return decodeFromJson(json).test(stack);
+              }));
+    }
+
+    private void matchingTagFromJson() {
+        add("StackIngredient_MatchesTagFromJson",
+              Test.isTrue(player -> decodeFromJson("{\"item\":\"#minecraft:planks\"}").test(new ItemStack(Items.BIRCH_PLANKS))));
+        add("StackIngredient_MatchesTagFromJson_FailsWhenCountIsLesser",
+              Test.isFalse(player -> decodeFromJson("{\"item\":\"#minecraft:planks\",\"count\":5}").test(new ItemStack(Items.BIRCH_PLANKS))));
+    }
+
+    private StackIngredient decodeFromJson(String json) {
+        JsonObject obj = GsonHelper.parse(json);
+        return StackIngredient.CODEC.parse(Platform.getCurrentServerOrThrow().registryAccess().createSerializationContext(JsonOps.INSTANCE), obj)
+              .getOrThrow();
+    }
+}

@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.envelope.Envelope;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -18,16 +17,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 public final class SealSymbol {
     public static final Codec<SealSymbol> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
-          ResourceLocation.CODEC.fieldOf("texture").forGetter(SealSymbol::textureId)
+          ResourceLocation.CODEC.fieldOf("sprite").forGetter(SealSymbol::sprite)
     ).apply(i, SealSymbol::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SealSymbol> DIRECT_STREAM_CODEC = StreamCodec.composite(
-          ResourceLocation.STREAM_CODEC, SealSymbol::textureId,
+          ResourceLocation.STREAM_CODEC, SealSymbol::sprite,
           SealSymbol::new
     );
 
@@ -52,40 +50,33 @@ public final class SealSymbol {
     public static final Map<String, ResourceKey<SealSymbol>> EMBLEMS = new HashMap<>();
 
     public static final ResourceKey<SealSymbol> APPLE = emblemKey("apple");
-    public static final ResourceKey<SealSymbol> AXE = emblemKey("axe");
-    public static final ResourceKey<SealSymbol> BLOCK = emblemKey("block");
+    public static final ResourceKey<SealSymbol> CUBE = emblemKey("cube");
     public static final ResourceKey<SealSymbol> BOOK = emblemKey("book");
     public static final ResourceKey<SealSymbol> CREEPER = emblemKey("creeper");
-    public static final ResourceKey<SealSymbol> EMERALD = emblemKey("emerald");
     public static final ResourceKey<SealSymbol> HEART = emblemKey("heart");
-    public static final ResourceKey<SealSymbol> HOE = emblemKey("hoe");
-    public static final ResourceKey<SealSymbol> LETTER = emblemKey("letter"); // Do not confuse with LETTERS
-    public static final ResourceKey<SealSymbol> PICKAXE = emblemKey("pickaxe");
+    public static final ResourceKey<SealSymbol> LETTER_AND_QUILL = emblemKey("letter_and_quill");
+    public static final ResourceKey<SealSymbol> VILLAGER = emblemKey("villager");
+    public static final ResourceKey<SealSymbol> SKULL_AND_BONES = emblemKey("skull_and_bones");
     public static final ResourceKey<SealSymbol> SHOVEL = emblemKey("shovel");
-    public static final ResourceKey<SealSymbol> SKELETON = emblemKey("skeleton");
-    public static final ResourceKey<SealSymbol> SKELETON_SMIRK = emblemKey("skeleton_smirk");
+    public static final ResourceKey<SealSymbol> PICKAXE = emblemKey("pickaxe");
+    public static final ResourceKey<SealSymbol> AXE = emblemKey("axe");
+    public static final ResourceKey<SealSymbol> HOE = emblemKey("hoe");
     public static final ResourceKey<SealSymbol> SWORD = emblemKey("sword");
     public static final ResourceKey<SealSymbol> SWORDS = emblemKey("swords");
-    public static final ResourceKey<SealSymbol> VILLAGER = emblemKey("villager");
+    public static final ResourceKey<SealSymbol> CLOUD_DEPOSITORY = emblemKey("cloud_depository");
 
     public static final ResourceKey<SealSymbol> DEFAULT = CREEPER;
 
     // --
 
-    private final ResourceLocation texture;
-    private final ResourceLocation textureFull;
+    private final ResourceLocation sprite;
 
-    public SealSymbol(ResourceLocation texture) {
-        this.texture = texture;
-        this.textureFull = texture.withPath(path -> "textures/" + path + ".png");
+    public SealSymbol(ResourceLocation sprite) {
+        this.sprite = sprite;
     }
 
-    public ResourceLocation textureId() {
-        return texture;
-    }
-
-    public ResourceLocation texture() {
-        return textureFull;
+    public ResourceLocation sprite() {
+        return sprite;
     }
 
     public static ResourceKey<SealSymbol> firstCharOrDefault(String string) {
@@ -109,16 +100,6 @@ public final class SealSymbol {
             return DEFAULT;
         }
         return firstCharOrDefault(player.getScoreboardName());
-    }
-
-    // --
-
-    public static Optional<Holder.Reference<SealSymbol>> get(HolderLookup.Provider registries, ResourceKey<SealSymbol> key) {
-        return registries.lookupOrThrow(Envelope.Registries.SEAL_SYMBOL).get(key);
-    }
-
-    public static Holder<SealSymbol> getOrThrow(HolderLookup.Provider registries, ResourceKey<SealSymbol> key) {
-        return registries.lookupOrThrow(Envelope.Registries.SEAL_SYMBOL).getOrThrow(key);
     }
 
     // --

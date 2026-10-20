@@ -26,10 +26,7 @@ Ascends and descends are the only parts of a courier's flight that happen in the
 - If the chunk becomes loaded again - courier will return to the world
 - When a courier finishes delivery in an unloaded chunk - it will be spawned next time that chunk is loaded
 
-<center style={{ backgroundColor: "#7F7F7F15", borderRadius: "10px", paddingBottom: "4px"}}>
-    <Asset location="envelope:misc/delivery/delivery_route" width={1698} />
-    <div style={{ marginTop: "6px"}}>*Route schematic and courier visibility*</div>
-</center>
+![Route schematic and courier visibility](@envelope:misc/delivery/delivery_route){width=1000 center}
 
 ## Mail Hub
 Couriers do not fly straight from A to B. They must go through a virtual point called Mail Hub.
@@ -80,10 +77,7 @@ Simultaneously, buyer's [payback package](@envelope:payback_package) will be sen
 
 <Callout variant="info">[Payback package](@envelope:payback_package) is converted into a regular [package](@envelope:package) when sent to the seller.</Callout>
 
-<center style={{ paddingBottom: "4px"}}>
-    <Asset location="envelope:misc/delivery/delivery_payback.gif" width={600} style={{ borderRadius: "10px" }}/>
-    <div style={{ marginTop: "6px"}}>*Payback delivery*</div>
-</center>
+![Payback delivery](@envelope:misc/delivery/delivery_payback.gif){width=600 center}
 
 Player can cancel a payback request by sending a [payback tag](@envelope:payback_tag) to <Asset location="envelope:gui/address_mail_service" width={20} /> **Mail Service**.\
 Last request will be cancelled and mail will return to the sender.

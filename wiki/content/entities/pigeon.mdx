@@ -14,36 +14,15 @@ When a pigeon stays in [the Nether](@minecraft:the_nether) for 15 seconds, it wi
 ## Variants
 There are currently 4 natural pigeon variants in the mod:
 
-<center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem", display: "flex" }}>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_gray" width={84} />
-        <div style={{ marginTop: "6px"}}>Gray</div>
-    </div>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_brown" width={84} />
-        <div style={{ marginTop: "6px"}}>Brown</div>
-    </div>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_white" width={84} />
-        <div style={{ marginTop: "6px"}}>White</div>
-    </div>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_passenger" width={84} />
-        <div style={{ marginTop: "6px"}}>Passenger</div>
-    </div>
-</center>
+| <Asset location="envelope:pigeon/pigeon_gray" width={84} /> | <Asset location="envelope:pigeon/pigeon_brown" width={84} /> | <Asset location="envelope:pigeon/pigeon_white" width={84} /> | <Asset location="envelope:pigeon/pigeon_passenger" width={84} /> |
+|:---:|:---:|:---:|:---:|
+| Gray | Brown | White | Passenger |
 
-And 2 special variants:
-<center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem", display: "flex" }}>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_charred" width={84} />
-        <div style={{ marginTop: "6px"}}>Charred</div>
-    </div>
-    <div style={{ marginLeft: "12px", marginRight: "12px"}}>
-        <Asset location="envelope:pigeon/pigeon_archimedes" width={84} />
-        <div style={{ marginTop: "6px"}}>Archimedes</div>
-    </div>
-</center>
+And 3 special variants:
+
+| <Asset location="envelope:pigeon/pigeon_charred" width={84} /> | <Asset location="envelope:pigeon/pigeon_archimedes" width={84} /> | <Asset location="envelope:pigeon/pigeon_ghost" width={84} /> |
+|:---:|:---:|:---:|
+| Charred | Archimedes | Ghost |
 
 ### Common
 
@@ -62,8 +41,9 @@ They also spawn in a village, similar to [cat spawning](https://minecraft.wiki/w
 Pigeons can also be found near [dovecotes](@envelope:dovecote).
 
 ### Special
-**Charred** variant is created when a [Charred Pigeon](@envelope:charred_pigeon) converts into regular pigeon.\
-**Archimedes** has 1 in 20 chance to spawn when player blows up a *zombie, pillager, piglin or wandering trader*, granting a hidden advancement.
+<Asset location="envelope:pigeon/pigeon_face_charred" width={16} /> **Charred** is created when a [Charred Pigeon](@envelope:charred_pigeon) converts into regular pigeon.\
+<Asset location="envelope:pigeon/pigeon_face_archimedes" width={16} /> **Archimedes** has 1 in 20 chance to spawn when player blows up a *zombie, pillager, piglin or wandering trader*, granting a hidden advancement.\
+<Asset location="envelope:pigeon/pigeon_face_ghost" width={16} /> **Ghost** has 50% chance to spawn when a Villager is converted into a Zombie Villager on a full-moon night. *On Halloween, they spawn in villages at night with a 50% chance.*
 
 ## Behavior
 Pigeons roam the Overworld avoiding hazards. A pigeon flees for a short time when harmed.
@@ -73,38 +53,24 @@ Pigeons follow players holding <abbr title="Any item in #envelope:pigeon_food ta
 [Cats](@minecraft:cat), [ocelots](@minecraft:ocelot) and [foxes](@minecraft:fox) pursue and attack pigeons. Pigeons will also try to flee when predator is nearby.
 
 ### Breeding
+![Baby and parent](@envelope:pigeon/pigeon_baby){width=320 right}
 
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        When pigeons are given <abbr title="Any item in #envelope:pigeon_food tag">seeds</abbr>, they enter love mode. Breeding creates a baby pigeon, and the parents cannot breed again for 5 minutes.
+When pigeons are given <abbr title="Any item in #envelope:pigeon_food tag">seeds</abbr>, they enter love mode. Breeding creates a baby pigeon, and the parents cannot breed again for 5 minutes.
 
-        Variant of the baby is chosen randomly from one of the parents with a *50/50* chance.
+Variant of the baby is chosen randomly from one of the parents with a *50/50* chance.
 
-        <Callout variant="info">Special variants cannot be inherited from parents.\
-        If parent with a special variant is chosen - variant from common pool will be selected instead.</Callout>
-    </div>
+> [!NOTE]
+> Special variants cannot be inherited from parents.\
+> If parent with a special variant is chosen - variant from common pool will be selected instead.
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:pigeon/pigeon_baby" width={350} style={{ borderRadius: "10px" }} />
-        <div style={{ marginTop: "6px"}}>*Baby and parent*</div>
-    </center>
-</div>
+### Eating {clear}
+![Nitwit feeding](@envelope:pigeon/nitwit_feeding.gif){width=320 right}
 
-### Eating
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        Pigeons look for <abbr title="Any item in #envelope:pigeon_food tag">seeds</abbr> dropped on the ground and eat them. They can eat a lot of seeds, so be careful.
+Pigeons look for <abbr title="Any item in #envelope:pigeon_food tag">seeds</abbr> dropped on the ground and eat them. They can eat a lot of seeds, so be careful.
 
-        Nitwit villagers will occasionally throw some seeds for nearby pigeons.
-    </div>
+Nitwit villagers will occasionally throw some seeds for nearby pigeons.
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:pigeon/nitwit_feeding.gif" width={350} style={{ borderRadius: "10px" }} />
-        <div style={{ marginTop: "6px"}}>*Nitwit feeding*</div>
-    </center>
-</div>
-
-### Living in Pigeonholes
+### Living in Pigeonholes {clear}
 Pigeons live in [pigeonholes](@envelope:oak_pigeonhole) like bees in [beehives](@minecraft:beehive).
 They will enter the block occasionally and spend some time in it. They will also prefer to stay inside at night, in rain, or when tired after delivery.
 
@@ -116,49 +82,33 @@ If a pigeon spends 3 in-game days without resting in any pigeonhole, it will for
 Pigeonhole clears pigeon's tired status when it exits the block, unless exiting due to emergency.
 
 ## Delivery
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        Main purpose of a pigeon is to [deliver](delivery) mail.\
-        Pigeons nearby a [mailbox](@envelope:mailbox) will fly to it when the hatch is open, eat food and start a delivery process.
+![Pigeon with mail](@envelope:pigeon/pigeon_delivering){width=200 right}
 
-        <Callout variant="warning">
-        Pigeon cannot start a delivery when **leashed**, **tired**, **at night** or in **rain** or **thunder**.\
-        \- After delivery is started, however, it will continue to the end regardless of time of day or weather.
-        </Callout>
+Main purpose of a pigeon is to [deliver](delivery) mail.\
+Pigeons nearby a [mailbox](@envelope:mailbox) will fly to it when the hatch is open, eat food and start a delivery process.
 
+When delivering, pigeon's usual behavior will be overriden and it will follow a defined order of actions:\
+**pick up mail -> fly to the destination -> drop off mail -> return home -> drop off reply (if any) -> finish**\
+*([delivery](delivery) page explains this in more detail)*
 
-        When delivering, pigeon's usual behavior will be overriden and it will follow a defined order of actions:\
-        **pick up mail -> fly to the destination -> drop off mail -> return home -> drop off reply (if any) -> finish**\
-        *([delivery](delivery) page explains this in more detail)*
+After finishing a delivery, pigeon will return to its usual behavior and will be tired for 5 minutes.\
+Tired pigeons cannot start another delivery, fly slightly slower and seek a pigeonhole to rest in.
 
-        After finishing a delivery, pigeon will return to its usual behavior and will be tired for 5 minutes.\
-        Tired pigeons cannot start another delivery, fly slightly slower and seek a pigeonhole to rest in.
-    </div>
+> [!WARNING]
+> Pigeon cannot start a delivery when **leashed**, **tired**, **at night** or in **rain** or **thunder**.\
+> \- After delivery is started, however, it will continue to the end regardless of time of day or weather.
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:pigeon/pigeon_delivering" width={200} />
-        <div style={{ marginTop: "6px"}}>*Pigeon with mail*</div>
-    </center>
-</div>
+### Service
+![Service pigeon](@envelope:pigeon/pigeon_service){width=200 right}
 
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        ### Service
-        In addition to the regular pigeons (mobs found in the world), there is also a **Service** pigeon.
+In addition to the regular pigeons (mobs found in the world), there is also a **Service** pigeon.
 
-        Service pigeons are the ones spawned by the game (service addresses, commands, etc.), for the delivery only.\
-        They will despawn after delivery is finished.
+Service pigeons are the ones spawned by the game (service addresses, commands, etc.), for the delivery only.\
+They will despawn after delivery is finished.
 
-        Service pigeons can spawn in any natural [variant](#variants-and-spawning).
-    </div>
+Service pigeons can spawn in any natural [variant](#variants-and-spawning).
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:pigeon/pigeon_service" width={200} />
-        <div style={{ marginTop: "6px"}}>*Service pigeon*</div>
-    </center>
-</div>
-
-## Drops
+## Drops {clear}
 ### Breeding
 Upon successful breeding, <img src="https://minecraft.wiki/images/Experience_Orb_Value_3-6.png" width={20}/>1–7
 [experience](https://minecraft.wiki/w/Experience) orbs are dropped.

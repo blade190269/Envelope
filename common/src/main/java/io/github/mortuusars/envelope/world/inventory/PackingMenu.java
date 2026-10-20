@@ -103,6 +103,7 @@ public class PackingMenu extends AbstractInHandContainerMenu {
         }
 
         ItemStack result = createPackingResult();
+        result.remove(Envelope.DataComponents.OPEN);
 
         getItemInHand().shrink(1);
 
@@ -110,7 +111,7 @@ public class PackingMenu extends AbstractInHandContainerMenu {
             player.drop(result, false);
         }
 
-        player.level().playSound(null, player, SoundEvents.ARMOR_EQUIP_GENERIC.value(), SoundSource.PLAYERS,
+        player.level().playSound(null, player, Envelope.SoundEvents.PACKAGE_PACK.get(), SoundSource.PLAYERS,
               1f, player.level().getRandom().nextFloat() * 0.3f + 0.85f);
         player.swing(getHand());
         player.awardStat(Envelope.Stats.PACKAGES_CREATED.get());
@@ -120,7 +121,7 @@ public class PackingMenu extends AbstractInHandContainerMenu {
     protected @NotNull ItemStack createPackingResult() {
         ItemStack result = new ItemStack(Envelope.Items.PACKAGE.get());
         result.set(Envelope.DataComponents.PACKAGE_CONTENTS, new PackageContents(getContainer()));
-        result.set(Envelope.DataComponents.MAIL_RECIPIENT, presetAddress);
+        result.set(Envelope.DataComponents.MAIL_ADDRESS_TAG, presetAddress);
         return result;
     }
 
@@ -142,6 +143,10 @@ public class PackingMenu extends AbstractInHandContainerMenu {
     public void removed(@NotNull Player player) {
         if (!isPacked()) {
             clearContainer(player, getContainer());
+        }
+
+        if (getItemInHand().remove(Envelope.DataComponents.OPEN) != null) {
+            player.resetAttackStrengthTicker();
         }
 
         super.removed(player);

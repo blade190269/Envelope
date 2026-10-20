@@ -2,6 +2,7 @@
   "replace": false,
   "entries": [
     "envelope:abandoned_mineshaft",
-    "envelope:pillager_outpost"
+    "envelope:pillager_outpost",
+    "envelope:ruined_portal"
   ]
 }

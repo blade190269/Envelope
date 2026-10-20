@@ -110,8 +110,19 @@ subprojects {
         }
 
         // Sable
-        maven {
-            url = "https://maven.ryanhcode.dev/releases"
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = "https://maven.ryanhcode.dev/releases/"
+                }
+            }
+            filter {
+                includeGroup "dev.ryanhcode.sable-companion"
+                includeGroup "dev.ryanhcode.sable"
+                includeGroup "dev.simulated_team.simulated"
+                includeGroup "dev.eriksonn.aeronautics"
+                includeGroup "dev.ryanhcode.offroad"
+            }
         }
 
         // moddedmc.wiki, etc.
@@ -135,7 +146,7 @@ subprojects {
         silentMojangMappingsLicense()
         runs {
             client {
-                vmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=fatjar'
+                vmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=fatjar', '-Dfabric-tag-conventions-v2.missingTagTranslationWarning=VERBOSE'
             }
         }
     }

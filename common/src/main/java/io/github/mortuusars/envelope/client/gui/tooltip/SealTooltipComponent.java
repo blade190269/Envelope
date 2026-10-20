@@ -2,12 +2,14 @@ package io.github.mortuusars.envelope.client.gui.tooltip;
 
 import io.github.mortuusars.envelope.EnvelopeClient;
 import io.github.mortuusars.envelope.world.item.component.seal.Seal;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FastColor;
 import org.joml.Matrix4f;
 
 public class SealTooltipComponent implements ClientTooltipComponent {
@@ -19,12 +21,14 @@ public class SealTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public int getWidth(Font font) {
-        return 35 + font.width(seal.signature());
+        return 37 + font.width(seal.signature());
     }
 
     @Override
     public int getHeight() {
-        return 32;
+        return seal.lock()
+              .map(lock -> lock.isLocked(Minecrft.level()) ? 35 : 34) // +1 pixel to make some room for lock tentacles
+              .orElse(34);
     }
 
     @Override
@@ -35,19 +39,22 @@ public class SealTooltipComponent implements ClientTooltipComponent {
     @Override
     public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
         // Signature:
-        x += 34;
-        y += 11;
-        int color = seal.material().value().impressionPalette().highlight().tint();
-        int outlineColor = seal.material().value().impressionPalette().shadow().tint();
+        x += 36;
+        y += 12;
+        int mainColor = FastColor.ARGB32.lerp(0.25f, seal.material().value().impressionPalette().highlight().tint(), 0xFFFFFFFF);
+        int outlineColor = FastColor.ARGB32.lerp(0.25f, seal.material().value().impressionPalette().side().tint(), 0xFF7F7F7F);
+        int shadowColor = FastColor.ARGB32.lerp(0.25f, seal.material().value().impressionPalette().shadow().tint(), 0xFF333333);
         text(seal.signature(), font, x - 1, y, outlineColor, matrix, buffer);
         text(seal.signature(), font, x - 1, y - 1, outlineColor, matrix, buffer);
         text(seal.signature(), font, x, y - 1, outlineColor, matrix, buffer);
         text(seal.signature(), font, x + 1, y - 1, outlineColor, matrix, buffer);
         text(seal.signature(), font, x + 1, y, outlineColor, matrix, buffer);
-        text(seal.signature(), font, x + 1, y + 1, outlineColor, matrix, buffer);
         text(seal.signature(), font, x, y + 1, outlineColor, matrix, buffer);
         text(seal.signature(), font, x - 1, y + 1, outlineColor, matrix, buffer);
-        text(seal.signature(), font, x, y, color, matrix, buffer);
+
+        text(seal.signature(), font, x + 1, y + 1, shadowColor, matrix, buffer);
+
+        text(seal.signature(), font, x, y, mainColor, matrix, buffer);
     }
 
     private void text(Component text, Font font, int x, int y, int color, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {

@@ -2,9 +2,11 @@ package io.github.mortuusars.envelope.world.mail.address.type;
 
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.service.ServiceAddressDefinition;
+import io.github.mortuusars.mortaar.resources.Resource;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -32,6 +34,15 @@ public final class ServiceAddress implements Address {
           ByteBufCodecs.holderRegistry(Envelope.Registries.SERVICE_ADDRESS_DEFINITION), ServiceAddress::getDefinitionHolder,
           ServiceAddress::new
     );
+
+    public static final ResourceKey<ServiceAddressDefinition> MAIL_SERVICE =
+          ResourceKey.create(Envelope.Registries.SERVICE_ADDRESS_DEFINITION, Envelope.resource("mail_service"));
+    public static final ResourceKey<ServiceAddressDefinition> AUTOMATED_SUPPLY_SERVICE =
+          ResourceKey.create(Envelope.Registries.SERVICE_ADDRESS_DEFINITION, Envelope.resource("automated_supply_service"));
+    public static final ResourceKey<ServiceAddressDefinition> CLOUD_DEPOSITORY =
+          ResourceKey.create(Envelope.Registries.SERVICE_ADDRESS_DEFINITION, Envelope.resource("cloud_depository"));
+    public static final ResourceKey<ServiceAddressDefinition> EQUINE_ASSURANCE_BUREAU =
+          ResourceKey.create(Envelope.Registries.SERVICE_ADDRESS_DEFINITION, Envelope.resource("equine_assurance_bureau"));
 
     private final Holder<ServiceAddressDefinition> definition;
 
@@ -62,6 +73,10 @@ public final class ServiceAddress implements Address {
         return getDefinition().name().copy();
     }
 
+    public boolean isHidden() {
+        return getDefinitionHolder().is(Envelope.Tags.ServiceAddresses.HIDDEN);
+    }
+
     // --
 
     @SuppressWarnings("deprecation")
@@ -84,19 +99,24 @@ public final class ServiceAddress implements Address {
 
     // --
 
-    public static ServiceAddress getOrThrow(HolderLookup.Provider registries, ResourceKey<ServiceAddressDefinition> key) {
-        return new ServiceAddress(getHolderOrThrow(registries, key));
+    public static boolean isEnabled(Holder<ServiceAddressDefinition> definition) {
+        if (definition.is(CLOUD_DEPOSITORY)) {
+            return Config.Server.SPEC.isLoaded() && Config.Server.SERVICE_CLOUD_DEPOSITORY_ENABLED.get();
+        }
+        return true;
     }
 
-    public static Optional<ServiceAddress> get(HolderLookup.Provider registries, ResourceKey<ServiceAddressDefinition> key) {
-        return getHolder(registries, key).map(ServiceAddress::new);
+    public static boolean isEnabled(ServiceAddress address) {
+        return isEnabled(address.getDefinitionHolder());
     }
 
-    public static Holder.Reference<ServiceAddressDefinition> getHolderOrThrow(HolderLookup.Provider registries, ResourceKey<ServiceAddressDefinition> key) {
-        return registries.lookupOrThrow(Envelope.Registries.SERVICE_ADDRESS_DEFINITION).getOrThrow(key);
+    // --
+
+    public static ServiceAddress getOrThrow(ResourceKey<ServiceAddressDefinition> key, HolderLookup.Provider registries) {
+        return new ServiceAddress(Resource.getOrThrow(key, registries));
     }
 
-    public static Optional<Holder.Reference<ServiceAddressDefinition>> getHolder(HolderLookup.Provider registries, ResourceKey<ServiceAddressDefinition> key) {
-        return registries.lookupOrThrow(Envelope.Registries.SERVICE_ADDRESS_DEFINITION).get(key);
+    public static Optional<ServiceAddress> get(ResourceKey<ServiceAddressDefinition> key, HolderLookup.Provider registries) {
+        return Resource.get(key, registries).map(ServiceAddress::new);
     }
 }

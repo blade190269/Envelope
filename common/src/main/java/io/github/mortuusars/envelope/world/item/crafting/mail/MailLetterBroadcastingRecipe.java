@@ -4,9 +4,9 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.util.EnvelopeCodecs;
 import io.github.mortuusars.envelope.world.item.component.LetterContent;
 import io.github.mortuusars.envelope.world.item.component.PackageContents;
+import io.github.mortuusars.envelope.world.item.component.ServiceLetterMeaning;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.MailService;
 import io.github.mortuusars.envelope.world.mail.address.Address;
@@ -14,6 +14,7 @@ import io.github.mortuusars.envelope.world.mail.address.type.BlockAddress;
 import io.github.mortuusars.envelope.world.mail.address.type.ServiceAddress;
 import io.github.mortuusars.envelope.world.mail.address.type.PlayerAddress;
 import io.github.mortuusars.envelope.world.mail.delivery.Delivery;
+import io.github.mortuusars.mortaar.serialization.Codecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -29,14 +30,21 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final ServiceLetterMeaning LETTER_MEANING_BROADCAST_REPORT =
+          new ServiceLetterMeaning(Envelope.resource("mail_service/broadcast_report"));
+
     private final NonNullList<Ingredient> ingredients;
-    private final ItemStack result = Mail.createLetter(Component.empty())
-          .set(DataComponents.ITEM_NAME, Component.translatable("letter.envelope.broadcast_report.name"))
-          .get();
+    private final ItemStack result = Mail.of(Envelope.Items.SERVICE_LETTER)
+          .name(Component.translatable("letter.envelope.broadcast_report.name"))
+          .serviceLetterMeaning(LETTER_MEANING_BROADCAST_REPORT)
+          .itemStack();
+    private final Optional<Component> info = Optional.of(Component.translatable("recipe.envelope.mailing.mail_service.letter_broadcasting.info"));
 
     public MailLetterBroadcastingRecipe(ServiceAddress address, NonNullList<Ingredient> ingredients) {
         super(address);
@@ -56,6 +64,11 @@ public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
     @Override
     public boolean isOneCraftPerDelivery() {
         return true; // Prevent spamming and spawning tons of couriers
+    }
+
+    @Override
+    public Optional<Component> getInfo() {
+        return info;
     }
 
     @Override
@@ -98,7 +111,7 @@ public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
 
             return Mail.of(assemble(input, registries))
                   .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(reportText))
-                  .get();
+                  .itemStack();
         } else if (defaultAddresses.isEmpty()
               || (defaultAddresses.size() == 1 && defaultAddresses.values().stream().findFirst().get().equals(input.sender()))) {
             Component reportText = Component.empty()
@@ -113,12 +126,13 @@ public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
 
             return Mail.of(assemble(input, registries))
                   .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(reportText))
-                  .get();
+                  .itemStack();
         } else {
-            ItemStack broadcastedLetter = Mail.createLetter(content)
+            ItemStack broadcastedLetter = Mail.of(Envelope.Items.LETTER)
+                  .letterContent(content)
                   .set(DataComponents.CUSTOM_NAME, inputLetter.get(DataComponents.CUSTOM_NAME))
                   .sender(input.sender())
-                  .get();
+                  .itemStack();
 
             int count = 0;
 
@@ -148,7 +162,7 @@ public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
 
             return Mail.of(assemble(input, registries))
                   .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(reportText))
-                  .get();
+                  .itemStack();
         }
     }
 
@@ -157,7 +171,7 @@ public class MailLetterBroadcastingRecipe extends CustomMailRecipe {
               ServiceAddress.DEFINITION_CODEC
                     .fieldOf("address")
                     .forGetter(MailLetterBroadcastingRecipe::getAddress),
-              EnvelopeCodecs.recipeIngredients(PackageContents.SLOTS, Envelope.RecipeTypes.MAILING.get())
+              Codecs.recipeIngredients(PackageContents.SLOTS, Envelope.RecipeTypes.MAILING.get())
                     .fieldOf("ingredients")
                     .forGetter(MailLetterBroadcastingRecipe::getIngredients)
         ).apply(i, MailLetterBroadcastingRecipe::new));

@@ -1,12 +1,9 @@
 package io.github.mortuusars.envelope.world.inventory;
 
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.clientbound.MailboxMenuMailRemovedS2CP;
-import io.github.mortuusars.envelope.network.packet.clientbound.MailboxMenuSetMailS2CP;
+import io.github.mortuusars.envelope.network.packet.clientbound.ClientboundMailboxMenuMailRemovedPacket;
+import io.github.mortuusars.envelope.network.packet.clientbound.ClientboundMailboxMenuSetMailPacket;
 import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlockEntity;
-import io.github.mortuusars.envelope.world.item.component.Id;
-import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.address.type.BlockAddress;
 import io.netty.buffer.ByteBuf;
@@ -26,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class MailboxMenu extends AbstractContainerMenu {
@@ -43,6 +39,7 @@ public class MailboxMenu extends AbstractContainerMenu {
     protected final MailboxBlockEntity blockEntity;
 
     protected List<ItemStack> mail;
+    protected List<MailInSlot> mailView;
     protected boolean hasNewMail;
 
     protected MailboxMenu(@Nullable MenuType<?> menuType, int id, Inventory playerInventory,
@@ -58,16 +55,22 @@ public class MailboxMenu extends AbstractContainerMenu {
         this.blockEntity = be;
         setMail(mail);
 
-        addSlot(new Slot(be, MailboxBlockEntity.SLOT_FOOD, 201, 37) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return be.canPlaceItem(MailboxBlockEntity.SLOT_FOOD, stack);
-            }
-        });
         addSlot(new Slot(be, MailboxBlockEntity.SLOT_MAIL, 222, 37) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return be.canPlaceItem(MailboxBlockEntity.SLOT_MAIL, stack);
+            }
+        });
+        addSlot(new Slot(be, MailboxBlockEntity.SLOT_PIGEON_FOOD, 194, 21) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return be.canPlaceItem(MailboxBlockEntity.SLOT_PIGEON_FOOD, stack);
+            }
+        });
+        addSlot(new Slot(be, MailboxBlockEntity.SLOT_BAT_FOOD, 194, 53) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return be.canPlaceItem(MailboxBlockEntity.SLOT_BAT_FOOD, stack);
             }
         });
         addPlayerSlots(playerInventory, 140, 88);
@@ -140,13 +143,22 @@ public class MailboxMenu extends AbstractContainerMenu {
         }
     }
 
-    public List<ItemStack> getMail() {
-        return mail;
+    public List<MailInSlot> getMail() {
+        return mailView;
     }
 
     public void setMail(List<ItemStack> mail) {
-        this.mail = new ArrayList<>(mail.reversed());
+        this.mail = new ArrayList<>(mail);
+        createMailView();
         setHasNewMail(false);
+    }
+
+    protected void createMailView() {
+        this.mailView = new ArrayList<>();
+        for (int slot = 0; slot < this.mail.size(); slot++) {
+            ItemStack stack = this.mail.get(slot);
+            mailView.addFirst(new MailInSlot(stack, slot));
+        }
     }
 
     public boolean hasNewMail() {
@@ -217,21 +229,22 @@ public class MailboxMenu extends AbstractContainerMenu {
         }
 
         if (player.level() instanceof ServerLevel serverLevel) {
-            setCarried(extractMail(serverLevel, index));
+            setCarried(extractMail(serverLevel, getMail().get(index).slot()));
         }
 
         return true;
     }
 
     protected boolean moveMailToInventory(Player player, int index) {
-        ItemStack mail = getMail().get(index).copy();
+        MailInSlot mailInSlot = getMail().get(index);
+        ItemStack mail = mailInSlot.mail().copy();
 
         if (!PlayerInventoryUtil.canAddWholeStack(player, mail)) {
             return false;
         }
 
         if (player.level() instanceof ServerLevel serverLevel) {
-            ItemStack taken = extractMail(serverLevel, index);
+            ItemStack taken = extractMail(serverLevel, mailInSlot.slot());
             if (!taken.isEmpty()) {
                 player.getInventory().add(taken);
             }
@@ -256,10 +269,16 @@ public class MailboxMenu extends AbstractContainerMenu {
         return true;
     }
 
-    protected ItemStack extractMail(ServerLevel level, int index) {
-        return Optional.ofNullable(Mail.getId(getMail().get(index)))
-              .map(id -> getBlockEntity().removeMail(id))
-              .orElse(ItemStack.EMPTY);
+    protected ItemStack extractMail(ServerLevel level, int slot) {
+        return getBlockEntity().removeMail(slot);
+    }
+
+    public void onMailRemoved(int slot) {
+        mail.remove(slot);
+        createMailView();
+        if (player instanceof ServerPlayer serverPlayer) {
+            new ClientboundMailboxMenuMailRemovedPacket(slot).sendToClient(serverPlayer);
+        }
     }
 
     // --
@@ -276,12 +295,14 @@ public class MailboxMenu extends AbstractContainerMenu {
         if (id == REFRESH_MAIL_BUTTON_ID && player instanceof ServerPlayer serverPlayer) {
             List<ItemStack> mail = getBlockEntity().getAllMail();
             setMail(mail);
-            Packets.sendToClient(new MailboxMenuSetMailS2CP(mail), serverPlayer);
+            new ClientboundMailboxMenuSetMailPacket(mail).sendToClient(serverPlayer);
             return true;
         }
 
         return false;
     }
+
+    // --
 
     public static List<ServerPlayer> playersWithMenu(ServerLevel level, @Nullable BlockAddress address) {
         return level.players().stream()
@@ -293,14 +314,10 @@ public class MailboxMenu extends AbstractContainerMenu {
         playersWithMenu(level, address).forEach(pl -> action.accept(pl, ((MailboxMenu) pl.containerMenu)));
     }
 
-    public void onMailRemoved(Id id) {
-        getMail().removeIf(m -> id.equals(Mail.getId(m)));
-        if (player instanceof ServerPlayer serverPlayer) {
-            Packets.sendToClient(new MailboxMenuMailRemovedS2CP(id), serverPlayer);
-        }
-    }
-
     // --
+
+    public record MailInSlot(ItemStack mail, int slot) {
+    }
 
     public enum MailAction {
         PICK_UP,

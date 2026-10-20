@@ -2,10 +2,10 @@ package io.github.mortuusars.envelope.world.entity.ai;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.mortuusars.envelope.util.bugger.Bugger;
+import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.Position;
 import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlockEntity;
-import io.github.mortuusars.envelope.world.entity.Pigeon;
+import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -60,21 +60,17 @@ public class MailboxHandler {
 
     // --
 
-    public void tick(Pigeon pigeon, Level level) {
+    public void tick(PhysicalCourier courier, Level level) {
         if (locateCooldown > 0) {
             locateCooldown--;
         }
 
-        if (level instanceof ServerLevel && pigeon.tickCount % 20 == 0) {
-            if (!isMailboxValid(level, pigeon.blockPosition())) {
+        if (level instanceof ServerLevel && courier.asEntity().tickCount % 20 == 0) {
+            if (targetPos != null && !isMailboxValid(level, courier)) {
                 setTargetPos(null);
             }
-            Bugger.PIGEON_MAILBOX_HANDLER.send(pigeon.getId(), this);
+            Envelope.BuggerData.COURIER_MAILBOX_HANDLER.send(courier.asEntity().getId(), this);
         }
-    }
-
-    public boolean canStartDelivery(Pigeon pigeon) {
-        return !pigeon.isTired();
     }
 
     // --
@@ -87,10 +83,10 @@ public class MailboxHandler {
         return Optional.empty();
     }
 
-    public boolean isMailboxValid(Level level, BlockPos entityPos) {
+    public boolean isMailboxValid(Level level, PhysicalCourier courier) {
         @Nullable BlockPos currentPos = getTargetPos();
         if (currentPos == null) return false;
-        if (Position.distanceToSqr(level, currentPos, entityPos.getCenter()) > 32 * 32) return false;
+        if (Position.distanceToSqr(level, currentPos, courier.asEntity().blockPosition().getCenter()) > 48 * 48) return false;
         return level.getBlockEntity(currentPos) instanceof MailboxBlockEntity blockEntity
               && blockEntity.isAvailableForPickup();
     }

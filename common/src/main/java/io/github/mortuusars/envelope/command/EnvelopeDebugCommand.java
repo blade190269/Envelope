@@ -5,52 +5,84 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
-import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.util.bugger.test.BuggerTests;
-import io.github.mortuusars.envelope.util.bugger.test.TestResults;
-import io.github.mortuusars.envelope.util.bugger.test.cases.CourierDeliveryTests;
-import io.github.mortuusars.envelope.util.bugger.test.cases.MailCraftingRecipeTests;
-import io.github.mortuusars.envelope.util.bugger.test.cases.MailCraftingTests;
-import io.github.mortuusars.envelope.util.bugger.test.cases.StackIngredientTests;
-import io.github.mortuusars.envelope.world.item.component.LetterContent;
-import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.MailService;
+import io.github.mortuusars.envelope.world.mail.delivery.PhysicalCourier;
+import io.github.mortuusars.envelope.world.mail.delivery.background.BackgroundCourier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceOrTagKeyArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.commands.LocateCommand;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class EnvelopeDebugCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> commands() {
         return Commands.literal("debug")
+              .then(Commands.literal("terminate_all_deliveries")
+                    .executes(EnvelopeDebugCommand::terminateAllDeliveries))
               .then(Commands.literal("expire_all_awaiting_payback")
                     .executes(EnvelopeDebugCommand::timeoutAllPaybackMail))
-              .then(Commands.literal("run_tests")
-                    .executes(EnvelopeDebugCommand::runBuggerTests))
               .then(Commands.literal("test")
                     .executes(EnvelopeDebugCommand::test));
+    }
+
+    // --
+
+    private static boolean terminateAllDeliveriesRequiresConfirmation = true;
+
+    private static int terminateAllDeliveries(CommandContext<CommandSourceStack> context) {
+        if (terminateAllDeliveriesRequiresConfirmation) {
+            terminateAllDeliveriesRequiresConfirmation = false;
+            context.getSource().sendSuccess(() -> Component.literal(
+                        "Do you really want to stop all deliveries, despawning the couriers and voiding their mail?"), true);
+            context.getSource().sendSuccess(() -> Component.literal("[Kill Them All!]")
+                  .withStyle(Style.EMPTY
+                        .withColor(ChatFormatting.RED)
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/envelope debug terminate_all_deliveries"))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click")))), true);
+        } else {
+            terminateAllDeliveriesRequiresConfirmation = true;
+
+            ServerLevel level = context.getSource().getLevel();
+
+            int count = 0;
+
+            for (BackgroundCourier courier : level.getEnvelopeMailService().getBackgroundDelivery().getActiveCouriers()) {
+                courier.setRemoved();
+                count++;
+            }
+
+            for (LivingEntity entity : level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
+                  e -> e instanceof PhysicalCourier courier && courier.isDelivering())) {
+                if (entity instanceof Mob mob && mob.isNoAi()) {
+                    continue;
+                }
+                entity.discard();
+                count++;
+            }
+
+            if (count == 0) {
+                context.getSource().sendSuccess(() -> Component.literal("No deliveries to terminate."), true);
+            } else {
+                int finalCount = count;
+                context.getSource().sendSuccess(() -> Component.literal("Terminated '" + finalCount + "' " + (finalCount > 1 ? "deliveries." : "delivery.")), true);
+            }
+        }
+
+        return 0;
     }
 
     private static int timeoutAllPaybackMail(CommandContext<CommandSourceStack> context) {
@@ -63,34 +95,6 @@ public class EnvelopeDebugCommand {
                   returnedCount + " mail awaiting payback."), true);
         } else {
             context.getSource().sendFailure(Component.literal("No mail awaiting payback is returned."));
-        }
-
-        return 0;
-    }
-
-    private static int runBuggerTests(CommandContext<CommandSourceStack> context) {
-        TestResults testResults = new BuggerTests()
-              .add(new StackIngredientTests(context.getSource().getServer()))
-              .add(new CourierDeliveryTests(context.getSource().getServer()))
-              .add(new MailCraftingRecipeTests(context.getSource().getServer()))
-              .add(new MailCraftingTests(context.getSource().getServer()))
-              .run(count -> context.getSource().sendSuccess(() ->
-                    Component.literal("Running " + count + " bugger tests."), true));
-
-        context.getSource().sendSuccess(() -> Component.literal("Bugger tests finished:"), true);
-
-        if (testResults.failed().isEmpty()) {
-            context.getSource().sendSuccess(() -> Component.literal("All tests are passed!")
-                  .withStyle(ChatFormatting.GREEN), true);
-        } else {
-            context.getSource().sendSuccess(() -> Component.literal("Passed: " + testResults.passed().size() + "\n"), true);
-            context.getSource().sendSuccess(() -> Component.literal("Failed: " + testResults.failed().size() + ":")
-                  .withStyle(ChatFormatting.RED), true);
-
-            testResults.failed().forEach(failedTest -> {
-                context.getSource().sendSuccess(() -> Component.literal(" " + failedTest.name() + ": " + failedTest.error())
-                      .withStyle(ChatFormatting.RED), true);
-            });
         }
 
         return 0;

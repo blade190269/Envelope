@@ -9,67 +9,93 @@ public abstract class Config {
     public static abstract class Server {
         public static final ModConfigSpec SPEC;
 
-        // Pigeon
+        // -- Pigeon
         public static final ModConfigSpec.BooleanValue PIGEON_SPAWNS_NATURALLY;
         public static final ModConfigSpec.BooleanValue PIGEON_SPAWNS_IN_VILLAGE;
         public static final ModConfigSpec.IntValue PIGEON_MIN_TICKS_INSIDE_PIGEONHOLE;
         public static final ModConfigSpec.IntValue PIGEON_MIN_TICKS_OUTSIDE_PIGEONHOLE;
-        public static final ModConfigSpec.IntValue PIGEON_TIRED_AFTER_DELIVERY_TICKS;
+        public static final ModConfigSpec.BooleanValue PIGEON_EATS_SEEDS;
+        public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS;
+        public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS_NITWIT_ONLY;
         public static final ModConfigSpec.BooleanValue PIGEON_HUNTED_BY_CAT;
         public static final ModConfigSpec.BooleanValue PIGEON_HUNTED_BY_OCELOT;
         public static final ModConfigSpec.BooleanValue PIGEON_HUNTED_BY_FOX;
-        public static final ModConfigSpec.DoubleValue PIGEON_DAMAGE_EVASION_CHANCE_WHILE_DELIVERING;
-        public static final ModConfigSpec.BooleanValue PIGEON_EATS_SEEDS;
         public static final ModConfigSpec.BooleanValue PIGEON_CONVERT_INTO_CHARRED;
         public static final ModConfigSpec.IntValue PIGEON_CONVERT_INTO_CHARRED_TICKS;
+        public static final ModConfigSpec.DoubleValue PIGEON_ARCHIMEDES_CHANCE;
+        public static final ModConfigSpec.DoubleValue PIGEON_GHOST_CHANCE;
+        public static final ModConfigSpec.BooleanValue PIGEON_GHOST_HALLOWEEN;
+        public static final ModConfigSpec.DoubleValue PIGEON_DELIVERY_TRAVEL_SPEED;
+        public static final ModConfigSpec.IntValue PIGEON_DELIVERY_TIRED_TICKS;
 
-        // Charred Pigeon
+        // -- Charred Pigeon
         public static final ModConfigSpec.BooleanValue CHARRED_PIGEON_SPAWNS_NATURALLY;
         public static final ModConfigSpec.DoubleValue CHARRED_PIGEON_MAIL_CHANCE;
         public static final ModConfigSpec.DoubleValue CHARRED_PIGEON_IGNITE_SECONDS;
         public static final ModConfigSpec.BooleanValue CHARRED_PIGEON_CONVERT_INTO_REGULAR;
         public static final ModConfigSpec.IntValue CHARRED_PIGEON_CONVERT_INTO_REGULAR_TICKS;
 
-        // Pigeonhole
+        // -- Bat
+        public static final ModConfigSpec.BooleanValue BAT_EMPLOYED_AT_MAIL_SERVICE;
+        public static final ModConfigSpec.BooleanValue BAT_SUMMONED_TO_MAILBOX_IF_NONE_NEARBY;
+        public static final ModConfigSpec.BooleanValue BAT_MAILBOX_SUMMON_IGNORES_DOMOBSPAWNING;
+        public static final ModConfigSpec.IntValue BAT_EMPLOY_COOLDOWN;
+        public static final ModConfigSpec.IntValue BAT_EMPLOY_INTERVAL;
+        public static final ModConfigSpec.IntValue BAT_MAX_DELIVERIES;
+        public static final ModConfigSpec.DoubleValue BAT_DELIVERY_TRAVEL_SPEED;
+
+        // -- Pigeonhole
         public static final ModConfigSpec.DoubleValue PIGEONHOLE_WASTE_INCREASE_CHANCE;
         public static final ModConfigSpec.DoubleValue PIGEONHOLE_WASTE_INCREASE_CHANCE_AFTER_DELIVERY;
         public static final ModConfigSpec.BooleanValue PIGEONHOLE_DISPENSER_WASTE_SCOOPING;
 
-        // Mailbox
+        // -- Mailbox
         public static final ModConfigSpec.IntValue MAILBOX_ADDRESS_EXPERIENCE_LEVELS_COST;
 
-        // Letter
+        // -- Letter
         public static final ModConfigSpec.BooleanValue LETTER_PAUSE;
         public static final ModConfigSpec.BooleanValue LETTER_BURNING;
         public static final ModConfigSpec.BooleanValue FOX_LETTER_TATTERING;
 
-        // Package
+        // -- Package
         public static final ModConfigSpec.BooleanValue PACKAGE_SNEAK_QUICK_UNPACK;
         public static final ModConfigSpec.DoubleValue PACKAGE_PAPER_BOX_RETURN_CHANCE;
         public static final ModConfigSpec.DoubleValue PAYBACK_PACKAGE_BOX_RETURN_CHANCE;
 
-        // Delivery
-        public static final ModConfigSpec.IntValue DELIVERY_DEFAULT_DISTANCE;
-        public static final ModConfigSpec.DoubleValue DELIVERY_COURIER_TRAVEL_SPEED;
-        public static final ModConfigSpec.IntValue DELIVERY_TRAVEL_DURATION_DISTANCE_CAP;
-        public static final ModConfigSpec.BooleanValue DELIVERY_SPAWNING_RESPECTS_DOMOBSPAWNING_RULE;
+        // -- Seal
+        public static final ModConfigSpec.IntValue SEAL_REMOVE_DURATION;
+        public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_ENABLED;
+        public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_CONSUMABLE;
+        public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_STAMP_CREATES_LOCK;
+        public static final ModConfigSpec.BooleanValue SOULBOUND_SEAL_OWNER_BYPASSES_LOCK;
 
-        // Payback
+        // -- Delivery
+        public static final ModConfigSpec.IntValue DELIVERY_ASCEND_DISTANCE;
+        public static final ModConfigSpec.IntValue DELIVERY_DEFAULT_DISTANCE;
+        public static final ModConfigSpec.IntValue DELIVERY_TRAVEL_DURATION_DISTANCE_CAP;
+        public static final ModConfigSpec.DoubleValue DELIVERY_PHASE_DURATION_MODIFIER;
+        public static final ModConfigSpec.BooleanValue DELIVERY_SPAWNING_IGNORES_DOMOBSPAWNING_RULE;
+        public static final ModConfigSpec.DoubleValue DELIVERY_COURIER_DAMAGE_EVASION_CHANCE;
+
+        // -- Payback
         public static final ModConfigSpec.IntValue PAYBACK_REQUEST_DURATION_SHORT;
         public static final ModConfigSpec.IntValue PAYBACK_REQUEST_DURATION_MEDIUM;
         public static final ModConfigSpec.IntValue PAYBACK_REQUEST_DURATION_LONG;
 
-        // Service Addresses
+        // -- Service Addresses
+
+        // Mail Service
+        public static final ModConfigSpec.BooleanValue MAIL_SERVICE_COURIER_DEATH_NOTICE;
+
+        // Cloud Depository
+        public static final ModConfigSpec.BooleanValue SERVICE_CLOUD_DEPOSITORY_ENABLED;
+        public static final ModConfigSpec.BooleanValue SERVICE_CLOUD_DEPOSITORY_ONLY_PLAYERS;
+        public static final ModConfigSpec.IntValue SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_STARTING_CAPACITY;
+        public static final ModConfigSpec.IntValue SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_MAX_CAPACITY;
+        public static final ModConfigSpec.IntValue SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_CAPACITY_PER_EXPANSION;
+
         // Equine Assurance Bureau
         public static final ModConfigSpec.BooleanValue SERVICE_EQUINE_BUREAU_NOTICE_SENDING_ENABLED;
-
-        // Misc
-        public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS;
-        public static final ModConfigSpec.BooleanValue VILLAGER_FEEDING_PIGEONS_NITWIT_ONLY;
-        public static final ModConfigSpec.DoubleValue ARCHIMEDES_CHANCE;
-
-        // Debug
-        public static final ModConfigSpec.BooleanValue DEBUG;
 
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -90,9 +116,17 @@ public abstract class Config {
                 PIGEON_MIN_TICKS_OUTSIDE_PIGEONHOLE = builder
                       .comment("Minimum time (in ticks) that Pigeon will spend outside of a Pigeonhole.")
                       .defineInRange("min_ticks_outside_pigeonhole", 2400, 100, Integer.MAX_VALUE);
-                PIGEON_TIRED_AFTER_DELIVERY_TICKS = builder
-                      .comment("Time (in ticks) for which Pigeon will be tired after finishing a delivery.")
-                      .defineInRange("ticks_tired_after_delivery", 6000, 0, Integer.MAX_VALUE);
+
+                PIGEON_EATS_SEEDS = builder
+                      .comment("Pigeon searches for nearby dropped seeds (#envelope:pigeon_food) and eats them.")
+                      .define("eats_seeds", true);
+                VILLAGER_FEEDING_PIGEONS = builder
+                      .comment("Villagers will feed nearby pigeons by throwing them seeds.",
+                            "Requires 'pigeon.eats_seeds' config option to be enabled.", "Default: true")
+                      .define("villager_feeding_pigeons", true);
+                VILLAGER_FEEDING_PIGEONS_NITWIT_ONLY = builder
+                      .comment("Only Nitwits can feed pigeons.", "Default: true")
+                      .define("villager_feeding_pigeons_only_nitwits", true);
 
                 PIGEON_HUNTED_BY_CAT = builder
                       .comment("Cat will hunt and kill pigeons.", "Default: true")
@@ -104,21 +138,29 @@ public abstract class Config {
                       .comment("Fox will hunt and kill pigeons.", "Default: true")
                       .define("hunted_by_fox", true);
 
-                PIGEON_DAMAGE_EVASION_CHANCE_WHILE_DELIVERING = builder
-                      .comment("Chance to evade damage while delivering. `#envelope:bypasses_pigeon_delivery_evasion` tag can be used to control which damage types will not be affected.")
-                      .defineInRange("damage_evasion_chance_while_delivering", 0.0, 0.0, 1.0);
-
-                PIGEON_EATS_SEEDS = builder
-                      .comment("Pigeon searches for nearby dropped seeds (envelope:pigeon_food) and eats them.")
-                      .define("eats_seeds", true);
-
                 PIGEON_CONVERT_INTO_CHARRED = builder
                       .comment("Pigeon will convert into a Charred Pigeon when it stays in the ultrawarm dimension for some time.", "Default: true")
                       .define("convert_into_charred", true);
-
                 PIGEON_CONVERT_INTO_CHARRED_TICKS = builder
                       .comment("Time (in ticks) Pigeon needs to stay in the ultrawarm dimension to convert into Charred Pigeon.")
                       .defineInRange("convert_into_charred_ticks", 300, 0, Integer.MAX_VALUE);
+
+                PIGEON_ARCHIMEDES_CHANCE = builder
+                      .comment("Chance of an Archimedes spawning when 'envelope:spawns_archimedes' mob is killed by 'envelope:spawns_archimedes' damage type (player explosion by default).")
+                      .defineInRange("archimedes_chance", 0.05, 0, 1);
+                PIGEON_GHOST_CHANCE = builder
+                      .comment("Chance of a Ghost Pigeon spawning nearby when a Villager is converted into a Zombie Villager on a full moon night.", "Default: true")
+                      .defineInRange("ghost_spawn_chance", 0.5, 0.0, 1.0);
+                PIGEON_GHOST_HALLOWEEN = builder
+                      .comment("On Halloween, Ghost Pigeon will spawn in villages at night and as a service courier.", "Default: true")
+                      .define("ghost_on_halloween", true);
+
+                PIGEON_DELIVERY_TRAVEL_SPEED = builder
+                      .comment("Speed (in blocks per second) while in traveling (background) phases of a delivery.")
+                      .defineInRange("delivery_travel_speed", 25.0, 0.1, 9999.0);
+                PIGEON_DELIVERY_TIRED_TICKS = builder
+                      .comment("Time (in ticks) for which Pigeon will be tired after finishing a delivery.")
+                      .defineInRange("ticks_tired_after_delivery", 6000, 0, Integer.MAX_VALUE);
 
                 builder.pop();
             }
@@ -127,7 +169,7 @@ public abstract class Config {
                 builder.push("charred_pigeon");
                 CHARRED_PIGEON_SPAWNS_NATURALLY = builder
                       .comment("Charred Pigeons can spawn naturally in '#envelope:allows_charred_pigeon_spawns' biomes.",
-                            " Default: true")
+                            "Default: true")
                       .define("spawns_naturally", true);
                 CHARRED_PIGEON_MAIL_CHANCE = builder
                       .comment("Chance of a Charred Pigeon carrying mail when spawned.")
@@ -143,6 +185,36 @@ public abstract class Config {
                 CHARRED_PIGEON_CONVERT_INTO_REGULAR_TICKS = builder
                       .comment("Time (in ticks) Charred Pigeon needs to stay outside of the ultrawarm dimension to convert into a regular Pigeon.")
                       .defineInRange("convert_into_regular_ticks", 300, 0, Integer.MAX_VALUE);
+                builder.pop();
+            }
+
+            {
+                builder.push("bat");
+                BAT_EMPLOYED_AT_MAIL_SERVICE = builder
+                      .comment("At night, Bat works at mail service as a service courier.",
+                            "When the courier passes through mail hub - it will switch between Pigeon and Bat depending on the time of day.",
+                            "Default: true")
+                      .define("employed_at_mail_service", true);
+                BAT_SUMMONED_TO_MAILBOX_IF_NONE_NEARBY = builder
+                      .comment("If there is no regular Bat nearby, a service one will be summoned (spawned) instead.", "Default: true")
+                      .define("summoned_to_mailbox", true);
+                BAT_MAILBOX_SUMMON_IGNORES_DOMOBSPAWNING = builder
+                      .comment("Bat summoning ignores doMobSpawning rule.", "Default: true")
+                      .define("summoned_to_mailbox_ignores_domobspawning_rule", true);
+                BAT_EMPLOY_COOLDOWN = builder
+                      .comment("Cooldown (in ticks) to wait from previous employment before attempting to employ another Bat at the same Mailbox.")
+                      .defineInRange("employ_cooldown", 600, 1, Integer.MAX_VALUE);
+                BAT_EMPLOY_INTERVAL = builder
+                      .comment("Maximum time (in ticks) between Bat employment attempts.",
+                            "The actual employ time is randomized within this interval.")
+                      .defineInRange("employ_interval", 400, 1, Integer.MAX_VALUE);
+                BAT_MAX_DELIVERIES = builder
+                      .comment("Maximum number of deliveries a single bat can do before leaving.",
+                            "This will only apply when delivery had a reply, as the bat will despawn early if it's not carrying anything back.")
+                      .defineInRange("max_deliveries", 3, 1, 999);
+                BAT_DELIVERY_TRAVEL_SPEED = builder
+                      .comment("Speed (in blocks per second) while in traveling (background) phases of a delivery.")
+                      .defineInRange("delivery_travel_speed", 50.0, 0.1, 9999.0);
                 builder.pop();
             }
 
@@ -166,6 +238,8 @@ public abstract class Config {
                 MAILBOX_ADDRESS_EXPERIENCE_LEVELS_COST = builder
                       .comment("Levels of experience needed to set or change the address.")
                       .defineInRange("address_experience_levels_cost", 3, 0, 128);
+
+
                 builder.pop();
             }
 
@@ -201,20 +275,48 @@ public abstract class Config {
             }
 
             {
+                builder.push("seal");
+                SEAL_REMOVE_DURATION = builder
+                      .comment("How much time (in ticks) player needs to use a sealed item before the seal is removed.")
+                      .defineInRange("seal_remove_duration", 10, 0, 9999);
+                SOULBOUND_SEAL_STAMP_ENABLED = builder
+                      .comment("Soulbound Seal Stamp item is enabled. If set to false, item will not be craftable and usable.", "Default: true")
+                      .define("soulbound_seal_stamp_enabled", true);
+                SOULBOUND_SEAL_STAMP_CONSUMABLE = builder
+                      .comment("Soulbound Seal Stamp will have durability which will decrease on each seal application.",
+                            "If durability reaches 0 - Soulbound Seal Stamp will be converted into a regular Seal Stamp.")
+                      .define("soulbound_seal_stamp_consumable", true);
+                SOULBOUND_SEAL_STAMP_CREATES_LOCK = builder
+                      .comment("Soulbound Seal Stamp will create a seal lock when the item is sealed.",
+                            "Seal lock keeps the item in owner's inventory when they die, and prevents other players from removing the seal until the owner dies.")
+                      .define("soulbound_seal_stamp_creates_lock", true);
+                SOULBOUND_SEAL_OWNER_BYPASSES_LOCK = builder
+                      .comment("Owner (sealer) can remove locked seal (created by Soulbound Seal Stamp or commands) regardless of its lock status.")
+                      .define("soulbound_seal_owner_bypasses_lock", true);
+                builder.pop();
+            }
+
+            {
                 builder.push("delivery");
+                DELIVERY_ASCEND_DISTANCE = builder
+                      .comment("Distance (in blocks) above and to the side of the mailbox where the courier disappears (transitions to the traveling phase).")
+                      .defineInRange("ascend_distance", 24, 1, 64);
                 DELIVERY_DEFAULT_DISTANCE = builder
-                      .comment("Default distance (in blocks) that will be used if distance between two addresses cannot be determined (recipient does not exist, for example).")
+                      .comment("Default distance (in blocks) that will be used if distance between two addresses cannot be determined.")
                       .defineInRange("default_distance", 1500, 1, Integer.MAX_VALUE);
-                DELIVERY_COURIER_TRAVEL_SPEED = builder
-                      .comment("Courier speed (in blocks per second) while in traveling (background) phases.")
-                      .defineInRange("courier_travel_speed", 20.0, 0.01, 9999.0);
                 DELIVERY_TRAVEL_DURATION_DISTANCE_CAP = builder
-                      .comment("Distance (in blocks) after which travel duration stops increasing and stays at maximum value.")
+                      .comment("Distance (in blocks) after which travel duration stops increasing.")
                       .defineInRange("travel_duration_distance_cap", 5000, 1, Integer.MAX_VALUE);
-                DELIVERY_SPAWNING_RESPECTS_DOMOBSPAWNING_RULE = builder
-                      .comment("Delivering pigeons will not spawn when 'doMobSpawning' rule is set to 'false'.",
-                            "Default: false (spawn anyway)")
-                      .define("spawning_respects_domobspawning_rule", false);
+                DELIVERY_PHASE_DURATION_MODIFIER = builder
+                      .comment("Global modifier on the delivery phase duration.")
+                      .defineInRange("phase_duration_modifier", 1.0, 0.0, 999.0);
+                DELIVERY_SPAWNING_IGNORES_DOMOBSPAWNING_RULE = builder
+                      .comment("Delivering couriers will spawn regardless of 'doMobSpawning' gamerule.",
+                            "Default: true")
+                      .define("spawning_ignores_domobspawning_rule", true);
+                DELIVERY_COURIER_DAMAGE_EVASION_CHANCE = builder
+                      .comment("Chance to evade damage while delivering. `#envelope:bypasses_courier_delivery_evasion` tag can be used to control which damage types will not be affected.")
+                      .defineInRange("courier_damage_evasion_chance", 0.0, 0.0, 1.0);
                 builder.pop();
             }
 
@@ -234,6 +336,35 @@ public abstract class Config {
 
             {
                 builder.push("service_addresses");
+
+                {
+                    builder.push("mail_service");
+                    MAIL_SERVICE_COURIER_DEATH_NOTICE = builder
+                          .comment("Courier Death Notice letter will be sent to the origin mailbox when the courier dies while delivering.", "Default: true")
+                          .define("courier_death_notice", true);
+                    builder.pop();
+                }
+
+                {
+                    builder.push("cloud_depository");
+                    SERVICE_CLOUD_DEPOSITORY_ENABLED = builder
+                          .comment("Cloud Depository accepts mail into storage. Setting this to 'false' will prevent the depository from accepting items and requests and hide the address from Address Tag and JEI", "Default: true")
+                          .define("enabled", true);
+                    SERVICE_CLOUD_DEPOSITORY_ONLY_PLAYERS = builder
+                          .comment("Cloud Depository only serves players.", "Default: true")
+                          .define("only_players", true);
+                    SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_STARTING_CAPACITY = builder
+                          .comment("Starting storage capacity of an account.")
+                          .defineInRange("account_storage_starting_capacity", 8, 1, 999);
+                    SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_MAX_CAPACITY = builder
+                          .comment("Maximum storage capacity of an account. Should be larger than 'account_storage_starting_capacity'.")
+                          .defineInRange("account_storage_max_capacity", 128, 1, 999);
+                    SERVICE_CLOUD_DEPOSITORY_ACCOUNT_STORAGE_CAPACITY_PER_EXPANSION = builder
+                          .comment("Storage capacity added per one expansion request.")
+                          .defineInRange("account_storage_capacity_per_expansion", 8, 1, 999);
+                    builder.pop();
+                }
+
                 {
                     builder.push("equine_assurance_bureau");
                     SERVICE_EQUINE_BUREAU_NOTICE_SENDING_ENABLED = builder
@@ -241,29 +372,6 @@ public abstract class Config {
                           .define("notice_sending_enabled", true);
                     builder.pop();
                 }
-                builder.pop();
-            }
-
-            {
-                builder.push("misc");
-                VILLAGER_FEEDING_PIGEONS = builder
-                      .comment("Villagers will feed nearby pigeons by throwing them seeds.",
-                            "Requires 'pigeon.eats_seeds' config option to be enabled.", "Default: true")
-                      .define("villager_feeding_pigeons", true);
-                VILLAGER_FEEDING_PIGEONS_NITWIT_ONLY = builder
-                      .comment("Only Nitwits can feed pigeons.", "Default: true")
-                      .define("villager_feeding_pigeons_only_nitwits", true);
-                ARCHIMEDES_CHANCE = builder
-                      .comment("Chance of an Archimedes spawning when 'envelope:spawns_archimedes' mob is killed by 'envelope:spawns_archimedes' damage type (player explosion by default).")
-                      .defineInRange("archimedes_chance", 0.05, 0, 1);
-                builder.pop();
-            }
-
-            {
-                builder.push("debug");
-                DEBUG = builder
-                      .comment("Enable debug features. Will negatively impact performance. Don't enable unless it's needed.")
-                      .define("debug_mode", false);
                 builder.pop();
             }
 
@@ -281,7 +389,7 @@ public abstract class Config {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
             LOOT = builder
-                  .comment("Envelope will add its items to various loot chests, etc. Use datapack if you need finer control. This is basically a kill switch.", "Default: true")
+                  .comment("Envelope will add its items to various loot chests, etc. Use a datapack if you need finer control. This is basically a kill switch.", "Default: true")
                   .define("loot", true);
 
             SPEC = builder.build();
@@ -291,11 +399,20 @@ public abstract class Config {
     public static class Client {
         public static final ModConfigSpec SPEC;
 
+        public static final ModConfigSpec.BooleanValue HIDE_DEFAULT_SEAL_STAMP_DIE_TOOLTIP_OUTSIDE_OF_INVENTORY;
+
+        // Integration
+
         // JEI
         public static final ModConfigSpec.BooleanValue JEI_SERVICE_ADDRESS_INGREDIENT;
+        public static final ModConfigSpec.BooleanValue JEI_INFORMATION;
 
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+            HIDE_DEFAULT_SEAL_STAMP_DIE_TOOLTIP_OUTSIDE_OF_INVENTORY = builder
+                  .comment("When hovering over a Seal Stamp item outside of player inventory or menu (in JEI, for example) - default die (first letter of player name) will be hidden from tooltip.")
+                  .define("hide_default_seal_stamp_die_outside_of_inventory", true);
 
             {
                 builder.push("integration");
@@ -306,6 +423,9 @@ public abstract class Config {
                                 "Changing the value requires relogging into the world or /reload to take effect.",
                                 " Default: true.")
                           .define("service_address_ingredient", true);
+                    JEI_INFORMATION = builder
+                          .comment("Add information about some items and ingredients", "Default: true")
+                          .define("information", true);
                     builder.pop();
                 }
                 builder.pop();

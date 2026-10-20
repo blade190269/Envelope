@@ -6,11 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.integration.sable.ContraptionTargets;
-import io.github.mortuusars.envelope.util.Ticks;
-import io.github.mortuusars.envelope.util.bugger.Bugger;
 import io.github.mortuusars.envelope.world.Position;
 import io.github.mortuusars.envelope.world.block.PigeonholeBlockEntity;
 import io.github.mortuusars.envelope.world.entity.Pigeon;
+import io.github.mortuusars.mortaar.util.Ticks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 public class PigeonholeHandler {
     public static final int MAX_BLACKLISTED_TARGETS = 3;
     public static final int DEFAULT_LOCATE_COOLDOWN = 100;
-    public static final int FORGET_HOME_TIME = Ticks.IN_GAME_DAY * 3;
+    public static final int FORGET_HOME_TIME = Ticks.PER_IN_GAME_DAY * 3;
 
     public static final Codec<PigeonholeHandler> CODEC = RecordCodecBuilder.create(i -> i.group(
           BlockPos.CODEC.optionalFieldOf("target_pos").forGetter(o -> Optional.ofNullable(o.getTargetPos())),
@@ -145,7 +144,7 @@ public class PigeonholeHandler {
                 if (getTargetPos() != null && !pigeon.isDelivering() && !isPigeonholeValid(level, pigeon.blockPosition())) {
                     setTargetPos(null);
                 }
-                Bugger.PIGEON_PIGEONHOLE_HANDLER.send(pigeon.getId(), this);
+                Envelope.BuggerData.PIGEON_PIGEONHOLE_HANDLER.send(pigeon.getId(), this);
             }
         }
     }

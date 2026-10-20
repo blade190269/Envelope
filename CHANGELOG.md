@@ -1,5 +1,133 @@
 # Changelog
 
+## 0.8.0 - Echoes In The Dark - 2026-10-20
+
+### New Features
+Courier Bat
+- **Mail** can now be delivered at night using the **Bat**
+  - **Bat** delivers mail **2 times faster** than a **Pigeon**
+- Added slot for bat food (**Spider Eye**) to the **Mailbox**
+- If no bats are nearby, one will be **spawned** for delivery
+  - Spawned bats will despawn after delivery
+- Service deliveries (created by the game) will use bats at night
+  - When the courier passes through the mail hub (virtual point) - it will be changed to time-appropriate one (if day changes to night or night to day while delivery is in progress)
+- Added **The Pigeons and the Bats** advancement
+
+Seal
+- Added **Soulbound Seal Stamp**
+  - Obtained by crafting any **Seal Stamp** with an **Echo Shard**
+  - Sealing an item with it creates a **Soulbound Seal**, which will prevent the item from dropping when sealer dies, and another players from opening it until the sealer dies
+  - Has 8 uses and will return back to original stamp when depleted
+- Added **16** colors of **seals** and **Seal Stamps** to apply them
+- Added **Gold** seal material for Patreon supporters
+- Added Seal Stamp with `cube` die recipe to **Mail Service** - requires a **Grass Block**
+- Added `skull_and_bones` symbol
+
+Services
+- Added **Cloud Depository** service address:
+  - Remote storage that accepts and stores sealed items until a **Withdrawal Request** is sent to it
+- Added **Spider Eye** -> **Pumpkin Seeds** mailing recipe to **Mail Service**
+- Added **2x Block of Copper** -> **Oxidized Copper** recipe to **Mail Service**
+- Added **6x Red Wool** -> **Paper Box** recipe to **Mail Service**
+
+Misc
+- Added Ghost Pigeon variant
+  - Has a chance to spawn when a Villager is converted into a Zombie Villager on a full moon night
+  - On Halloween: spawns in village at night; can appear as a service courier
+- Added **Service Letter**:
+  - Crafting a **Letter and Quill** with specific items will create a letter with "**meaning**" that various systems can understand and respond to
+- Added **Tattered Letter** item (previously was just a data component on the **Letter**)
+- Added original recipient to the delivered mail tooltip (To: [address])
+- Added dedicated creative-mode tab for Envelope items
+- Added **Collapsed Mail Hub Explorer Map** to **Ruined Portal** chest
+- Scooping waste from **Pigeonhole** now has a 50% chance to drop a **Feather**
+- Added particles to **Pigeonhole** waste scooping
+- Added a way to copy **Address Tag** and **Payback Tag** contents into another tag by applying it in inventory
+- Added visual indicator to application target items when carrying (picked up with mouse) an applicable item (Address Tag, Payback Tag and Seal Stamp)
+- Added "opened" models to **Paper Box**, **Package**, **Payback Box** and **Payback Package** items when player opens their interfaces
+- Added **Letter**, **Package**, **Bird** and **Bat** symbols to **Chalk** mod when installed alongside it
+- Added Ukrainian localization
+
+JEI Integration
+- Added information about service addresses and some other items
+- Added information to a couple of mailing recipes
+- Added aliases to some items and ingredients for easier searching
+- Address in mailing recipes is now clickable and will show usages when clicked
+- Updated how service address ingredient renders
+
+### Changes and Fixes
+Seal
+- Changed sealing sound
+- Changed **Seal Stamp** recipe to require a **Honeycomb** and any wooden planks, instead of two wooden slabs
+- Redesigned or refreshed all seal symbol textures
+- Changed seal symbols:
+  - `letter` -> `letter_and_quill`
+  - `block` -> `cube`
+- Default die (first letter of player name) will not show up in Seal Stamp's tooltip if outside of inventory or menu (in JEI for example)
+- Removed seal symbols: `skeleton`, `skeleton_smirk`, `emerald`, `default`.
+
+Misc
+- **Book and Quill** and **Letter and Quill** mailing recipes no longer require a **Slimeball**
+- Updated all item textures
+- Updated mod icon
+- Small update to placed letter textures
+- Sealed Package is no longer placeable as a block
+- Advancement **It's Filthy In There** is no longer hidden
+- Increased Pigeon delivery travel speed (when in background) from 20 to 25
+  - Existing configs would need to be updated or regenerated for this change to apply after updating from previous version
+- Courier appear/disappear (poof) particles now visible at higher distances
+- When the courier finishes a delivery, it will play its ambient sound
+- Slightly increased courier mailbox mail pickup range
+- Increased courier ascend distance from 16 to 24 blocks (position above the mailbox where it disappears)
+- Small improvements to applicator items (Address Tag, Payback Tag and Seal Stamp) r-click application behavior
+- Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent)
+- Fixed **Mailbox** block not breaking properly if it has mail inside
+- Fixed mail not delivering to the player address in some cases when letter casing in address definition didn't match player name exactly
+- [NeoForge] Mailbox now has an ItemHandler capability, making it compatible with most modded logistic blocks (like Create's Chute, Funnel, etc.)
+- Fixed crash when mailbox on a Sable sublevel with `/sable forceload` is loaded
+  - Stored mail will **not** load correctly; Avoid using `/sable forceload` when mailbox is present on a sublevel or don't use mailboxes on force-loaded sublevels until [this issue](https://github.com/ryanhcode/sable/issues/1633) is resolved
+- Fixed crashing with recent JEI versions (above 19.52.0.421)
+
+### Technical Changes
+Config
+- Added config options related to bats
+- Added `delivery.phase_duration_modifier` and `delivery.ascend_distance` options to server config
+- Added `hide_default_seal_stamp_die_outside_of_inventory` option to client config
+
+Item components
+- `envelope:seal` definition now has an optional `lock` field
+- Added `player_uuid` to the `envelope:seal` item component.
+- `envelope:address` has been replaced with `envelope:address_tag_address`
+- `envelope:mail_recipient` has been replaced with `envelope:mail_address_tag`
+- `envelope:mail_payback_request` has been replaced with `envelope:mail_payback_tag`
+- `envelope:mail_sender`, `envelope:mail_delivery_log` and `envelope:mail_returned` have been replaced with a single `envelope:mail_delivery_info` component
+- `envelope:mail_id` has been removed
+
+Commands
+- Added `/envelope mail broadcast` command
+- Added `/envelope seal_lock create|unlock|list` command that can be used to create arbitrary locks for quests, etc.
+  - Created lock also needs to be set in the item's seal to work
+- Added `/envelope debug terminate_all_deliveries` command
+- `/envelope send` have been changed to `/envelope mail send`
+- `/envelope mail send` command now fails when recipient is not found
+- `/envelope mail send` now has an additional "recipient" parameter, allowing to specify the target without changing sendable item components (a bit easier to type)
+
+Misc
+- Bundled **Mortaar** library with the mod
+  - Mortaar is a library mod that will be used to aid in mod development and reduce code duplication
+  - As a player, you will not see any difference, apart from an additional mod entry in the mod menu
+- Moved seal-related textures from `textures/seal` to `textures/gui/sprites/seal` folder to allow for animations with .mcmeta files
+- Changed field `texture` to `sprite` in  `envelope:seal_material` and `envelope:seal_symbol` definitions
+- Added `service_addresses.mail_service.courier_death_notice` server config option
+- Replaced single `delivery.courier_travel_speed` config option with separate `delivery_travel_speed` for pigeons and bats
+- Replaced `pigeon.damage_evasion_chance_while_delivering` config option with `delivery.courier_damage_evasion_chance`
+- Replaced `#envelope:bypasses_pigeon_delivery_evasion` damage type tag with `#envelope:bypasses_courier_delivery_evasion`
+- Changed `delivery.spawning_respects_domobspawning_rule` config option to `delivery.spawning_ignores_domobspawning_rule`
+- Minor changes, moves and renames of some config options
+  - This might cause some of the settings to reset, if they have been changed
+- Replaced vanilla sound events with custom ones
+- Replaced leftover hardcoded text lines with translatable components
+
 ## 0.7.5 - 2026-08-15
 - Added Every Compat (Wood Good) support for pigeonholes (implemented by [_**Dadamalda**_](https://github.com/DadamaldaDad))
 - Updated localization files.

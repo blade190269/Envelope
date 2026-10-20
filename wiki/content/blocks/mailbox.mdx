@@ -17,12 +17,9 @@ Mailbox will have a **hanging** shape when placed while looking at a side of ano
 ## Usage
 
 ### Interface
-Using the mailbox opens its interface, where current address, inbox area, pigeon food slot and slot for sending mail can be seen.
+Using the mailbox opens its interface, where current address, inbox area, courier food slots and slot for sending mail can be seen.
 
-<center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem" }}>
-    <Asset location="envelope:gui/mailbox" width={610} />
-    <div style={{ marginTop: "6px"}}>*Mailbox interface*</div>
-</center>
+![Mailbox interface](@envelope:gui/mailbox){width=630 center}
 
 #### Default address
 A button in the mailbox interface near the current address can be pressed to set this mailbox as player's **default address**.\
@@ -35,13 +32,16 @@ If the player does not currently have a default address, the button will flash, 
 ### Sending mail
 Three things are needed to start a [delivery](@envelope:delivery):
 - [Mailable](@envelope:mail) item with an [address tag](@envelope:address_tag) applied to it
-- Food for the [pigeon](@envelope:pigeon) (accepts any seeds)
-- A [pigeon](@envelope:pigeon)
+- Food for the [pigeon](@envelope:pigeon) (accepts any seeds) or [bat](@minecraft:bat) ([spider eye](@minecraft:spider_eye))
+- A [pigeon](@envelope:pigeon) or [bat](@minecraft:bat)
 
-Placing mail in the sending slot and seeds in the food slot will open the front hatch of a mailbox. Nearby pigeons,
-that are not tired will fly to the mailbox, consume the food, pick up the mail and start the [delivery process](@envelope:delivery).
+Placing mail in the sending slot and items in one of the food slots will open the front hatch of a mailbox, if time of day matches the food.\
+If the hatch is open, nearby couriers will fly to the mailbox, consume the food, pick up the mail and start the [delivery process](@envelope:delivery).
 
-Front hatch will be automatically closed when either the mail or food is missing.
+Front hatch will be automatically closed when either the mail or food for the current time of day is missing.
+
+> [!NOTE]
+> At night, if [spider eye](@minecraft:spider_eye) is present in the mailbox, a service [bat](@minecraft:bat) will be spawned if no regular bats are nearby.
 
 ### Receiving mail
 When mail is delivered to a mailbox, it will be stored in an inbox. Mailbox can hold up to 512 item stacks of mail.

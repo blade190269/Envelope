@@ -1,17 +1,17 @@
 package io.github.mortuusars.envelope.world.item;
 
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.Platform;
-import io.github.mortuusars.envelope.client.util.Minecrft;
+import io.github.mortuusars.mortaar.Platform;
 import io.github.mortuusars.envelope.util.Colors;
-import io.github.mortuusars.envelope.world.GameTime;
 import io.github.mortuusars.envelope.world.inventory.PaybackPackageMenu;
 import io.github.mortuusars.envelope.world.item.component.PaybackSubject;
+import io.github.mortuusars.mortaar.util.GameTime;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -56,7 +56,7 @@ public class PaybackPackageItem extends Item {
             return;
         }
 
-        long remainingTicks = subject.expiresAt() - Minecrft.level().getGameTime();
+        long remainingTicks = subject.expiresAt() - Platform.getServer().map(s -> s.overworld().getGameTime()).orElse(0L);
         if (remainingTicks < 1) {
             components.add(Component.translatable("gui.envelope.payback.expired").withColor(Colors.TOOLTIP_RED));
         } else {
@@ -75,6 +75,7 @@ public class PaybackPackageItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player instanceof ServerPlayer serverPlayer) {
+            stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
             SimpleMenuProvider menuProvider = new SimpleMenuProvider(
                   (id, inventory, pl) -> new PaybackPackageMenu(id, inventory, hand), stack.getHoverName());
             Platform.openMenu(serverPlayer, menuProvider, buffer -> buffer.writeEnum(hand));

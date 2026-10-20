@@ -23,49 +23,36 @@ Packages can be received by mail as a result of a service crafting or from anoth
 
 ## Usage
 ### Opening
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        Packages can effectively condense 6 slots of items into single slot, thus they are quite handy as a cheap, single-use backpack.
+![Package interface](@envelope:gui/package){width=352 right}
 
-        <Callout variant="info">When a package is created, items cannot be added or taken out without fully breaking it.</Callout>
+Packages can effectively condense 6 slots of items into single slot, thus they are quite handy as a cheap, single-use backpack.
 
-        Using the item in hand will open an interface where stored items can be seen and removed from their slots.
+> [!NOTE]
+> When a package is created, items cannot be added or taken out without fully breaking it.
 
-        Player can open and close the interface however many times they want, but removing any item will trigger a "break-ready" state,
-        which will be indicated in GUI by red color. Closing the interface in this state will destroy the package
-        and remove all contained items from it, placing them in player's inventory, or dropping them on the ground if no space is available.
+Using the item in hand will open an interface where stored items can be seen and removed from their slots.
 
-        <Callout>Using the item while sneaking will destroy the package without opening the interface.
-        Stored items will be placed in player's inventory or dropped, same as they do when opened through the interface.</Callout>
+Player can open and close the interface however many times they want, but removing any item will trigger a "break-ready" state,
+which will be indicated in GUI by red color. Closing the interface in this state will destroy the package
+and remove all contained items from it, placing them in player's inventory, or dropping them on the ground if no space is available.
 
-        Unpacking a package has a 50% chance to return a [paper box](@envelope:paper_box).
-    </div>
+> [!NOTE]
+> Using the item while sneaking will destroy the package without opening the interface.\
+> Stored items will be placed in player's inventory or dropped, same as they do when opened through the interface.
 
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:gui/package" width={380} />
-        <div style={{ marginTop: "6px"}}>*Package interface*</div>
-    </center>
-</div>
+Unpacking a package has a 50% chance to return a [paper box](@envelope:paper_box).
 
 ### Placing
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
+![Package interface](@envelope:block/package){width=216 right}
 
-        When used on the block while sneaking, package will be placed as a block.
+When used on the block while sneaking, package will be placed as a block.
 
-        Breaking a placed package will drop intact package item, with items inside.\
-        Breaking it while sneaking will destroy the package and drop stored items on the ground.
+Breaking a placed package will drop intact package item, with items inside.\
+Breaking it while sneaking will destroy the package and drop stored items on the ground.
 
-        ### Automation
-        [Dispenser](https://minecraft.wiki/w/Dispenser) can place packages and
-        a [piston](https://minecraft.wiki/w/Piston) can destroy it when pushing, dropping the items.
-    </div>
-
-    <center style={{ marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:block/package" width={216} style={{ borderRadius: "10px" }} />
-        <div style={{ marginTop: "6px"}}>*Placed Package*</div>
-    </center>
-</div>
+### Automation
+[Dispenser](https://minecraft.wiki/w/Dispenser) can place packages and
+a [piston](https://minecraft.wiki/w/Piston) can destroy it when pushing, dropping the items.
 
 ### Sealing
 Package can be sealed with a [seal stamp](@envelope:seal_stamp), creating a [sealed package](@envelope:sealed_package).

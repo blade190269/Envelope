@@ -1,26 +1,32 @@
 package io.github.mortuusars.envelope.world.item.mail;
 
 import io.github.mortuusars.envelope.Envelope;
+import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.world.inventory.ContainerUtils;
 import io.github.mortuusars.envelope.world.item.PackageItem;
 import io.github.mortuusars.envelope.world.item.component.*;
+import io.github.mortuusars.envelope.world.item.component.mail.DeliveryInfo;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryLog;
 import io.github.mortuusars.envelope.world.item.component.mail.log.DeliveryRecord;
+import io.github.mortuusars.envelope.world.item.tooltip.MailAddressTagTooltip;
 import io.github.mortuusars.envelope.world.mail.address.Address;
+import io.github.mortuusars.mortaar.world.item.tooltip.CompositeTooltip;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Unit;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.SeededContainerLoot;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class Mail {
@@ -39,11 +45,11 @@ public final class Mail {
     // -- Address
 
     public static Optional<Address> getSender(ItemStack stack) {
-        return Optional.ofNullable(stack.get(Envelope.DataComponents.MAIL_SENDER));
+        return DeliveryInfo.of(stack).sender();
     }
 
     public static @NotNull Address getSenderOrElse(ItemStack stack, Address orElse) {
-        return stack.getOrDefault(Envelope.DataComponents.MAIL_SENDER, orElse);
+        return getSender(stack).orElse(orElse);
     }
 
     public static @NotNull Address getSenderOrUnknown(ItemStack stack) {
@@ -51,15 +57,15 @@ public final class Mail {
     }
 
     public static void setSender(@NotNull ItemStack stack, @Nullable Address sender) {
-        stack.set(Envelope.DataComponents.MAIL_SENDER, sender);
+        DeliveryInfo.of(stack).mutable().sender(sender).immutableApplyTo(stack);
     }
 
     public static Optional<Address> getRecipient(ItemStack stack) {
-        return Optional.ofNullable(stack.get(Envelope.DataComponents.MAIL_RECIPIENT));
+        return Optional.ofNullable(stack.get(Envelope.DataComponents.MAIL_ADDRESS_TAG));
     }
 
     public static @NotNull Address getRecipientOrElse(ItemStack stack, Address orElse) {
-        return stack.getOrDefault(Envelope.DataComponents.MAIL_RECIPIENT, orElse);
+        return stack.getOrDefault(Envelope.DataComponents.MAIL_ADDRESS_TAG, orElse);
     }
 
     public static @NotNull Address getRecipientOrUnknown(ItemStack stack) {
@@ -67,44 +73,25 @@ public final class Mail {
     }
 
     public static ItemStack setRecipient(@NotNull ItemStack stack, @Nullable Address recipient) {
-        stack.set(Envelope.DataComponents.MAIL_RECIPIENT, recipient);
-        return stack;
-    }
-
-    // -- Id
-
-    public static boolean hasId(ItemStack stack) {
-        return stack.has(Envelope.DataComponents.MAIL_ID);
-    }
-
-    public static @Nullable Id getId(ItemStack stack) {
-        return stack.get(Envelope.DataComponents.MAIL_ID);
-    }
-
-    public static Id getOrCreateId(ItemStack stack, Level level) {
-        return stack.update(Envelope.DataComponents.MAIL_ID, Id.create(level), UnaryOperator.identity());
-    }
-
-    public static ItemStack setId(ItemStack stack, Id id) {
-        stack.set(Envelope.DataComponents.MAIL_ID, id);
+        stack.set(Envelope.DataComponents.MAIL_ADDRESS_TAG, recipient);
         return stack;
     }
 
     // -- Payback
 
     public static ItemStack setPaybackRequest(@NotNull ItemStack stack, @Nullable PaybackRequest request) {
-        stack.set(Envelope.DataComponents.MAIL_PAYBACK_REQUEST, request);
+        stack.set(Envelope.DataComponents.MAIL_PAYBACK_TAG, request);
         return stack;
     }
 
     // -- Returned
 
     public static boolean isReturned(ItemStack stack) {
-        return stack.has(Envelope.DataComponents.MAIL_RETURNED);
+        return DeliveryInfo.of(stack).isReturned();
     }
 
     public static ItemStack setReturned(ItemStack stack, boolean returned) {
-        stack.set(Envelope.DataComponents.MAIL_RETURNED, returned ? Unit.INSTANCE : null);
+        DeliveryInfo.of(stack).mutable().returned(returned).immutableApplyTo(stack);
         return stack;
     }
 
@@ -124,22 +111,19 @@ public final class Mail {
     // -- Log
 
     public static DeliveryLog getLog(ItemStack stack) {
-        return stack.getOrDefault(Envelope.DataComponents.MAIL_DELIVERY_LOG, DeliveryLog.EMPTY);
+        return DeliveryInfo.of(stack).log();
     }
 
     public static ItemStack setLog(ItemStack stack, DeliveryLog log) {
-        stack.set(Envelope.DataComponents.MAIL_DELIVERY_LOG, log);
-        return stack;
+        return DeliveryInfo.of(stack).mutable().setLog(log).immutableApplyTo(stack);
     }
 
     public static ItemStack writeToLog(ItemStack stack, DeliveryRecord record) {
-        stack.update(Envelope.DataComponents.MAIL_DELIVERY_LOG, DeliveryLog.EMPTY, log -> log.append(record));
-        return stack;
+        return DeliveryInfo.of(stack).mutable().updateLog(log -> log.append(record)).immutableApplyTo(stack);
     }
 
     public static ItemStack writeToLog(ItemStack stack, DeliveryRecord... records) {
-        stack.update(Envelope.DataComponents.MAIL_DELIVERY_LOG, DeliveryLog.EMPTY, log -> log.append(records));
-        return stack;
+        return DeliveryInfo.of(stack).mutable().updateLog(log -> log.append(records)).immutableApplyTo(stack);
     }
 
     // --
@@ -147,10 +131,7 @@ public final class Mail {
     public static ItemStack removePreviousDeliveryData(ItemStack mail) {
         if (mail.isEmpty()) return ItemStack.EMPTY;
 
-        mail.remove(Envelope.DataComponents.MAIL_ID);
-        mail.remove(Envelope.DataComponents.MAIL_SENDER);
-        mail.remove(Envelope.DataComponents.MAIL_DELIVERY_LOG);
-        mail.remove(Envelope.DataComponents.MAIL_RETURNED);
+        mail.remove(Envelope.DataComponents.MAIL_DELIVERY_INFO);
 
         return mail;
     }
@@ -158,8 +139,8 @@ public final class Mail {
     public static ItemStack removeAllDeliveryData(ItemStack mail) {
         if (mail.isEmpty()) return ItemStack.EMPTY;
 
-        mail.remove(Envelope.DataComponents.MAIL_RECIPIENT);
-        mail.remove(Envelope.DataComponents.MAIL_PAYBACK_REQUEST);
+        mail.remove(Envelope.DataComponents.MAIL_ADDRESS_TAG);
+        mail.remove(Envelope.DataComponents.MAIL_PAYBACK_TAG);
         return removePreviousDeliveryData(mail);
     }
 
@@ -167,8 +148,9 @@ public final class Mail {
         if (mail.isEmpty()) return ItemStack.EMPTY;
 
         if (!isReturned(mail)) {
-            mail.remove(Envelope.DataComponents.MAIL_RECIPIENT);
-            mail.remove(Envelope.DataComponents.MAIL_PAYBACK_REQUEST);
+            DeliveryInfo.of(mail).mutable().recipient(mail.get(Envelope.DataComponents.MAIL_ADDRESS_TAG)).immutableApplyTo(mail);
+            mail.remove(Envelope.DataComponents.MAIL_ADDRESS_TAG);
+            mail.remove(Envelope.DataComponents.MAIL_PAYBACK_TAG);
         }
 
         return mail;
@@ -180,14 +162,12 @@ public final class Mail {
         return new MailBuilder<>(stack);
     }
 
-    public static MailBuilder<?> createLetter(Component text) {
-        return new MailBuilder<>(Envelope.Items.LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text));
+    public static MailBuilder<?> of(ItemLike item) {
+        return of(new ItemStack(item));
     }
 
-    public static MailBuilder<?> createLetter(LetterContent content) {
-        return new MailBuilder<>(Envelope.Items.LETTER.get())
-              .set(Envelope.DataComponents.LETTER_CONTENT, content);
+    public static MailBuilder<?> of(Supplier<? extends ItemLike> item) {
+        return of(new ItemStack(item.get()));
     }
 
     public static MailBuilder<?> createPackage(PackageContents contents) {
@@ -197,6 +177,16 @@ public final class Mail {
 
     public static MailBuilder<?> createPackage(ResourceKey<LootTable> lootTable) {
         return new MailBuilder<>(Envelope.Items.PACKAGE.get())
+              .set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(lootTable, 0L));
+    }
+
+    public static MailBuilder<?> createSealedPackage(PackageContents contents) {
+        return new MailBuilder<>(Envelope.Items.SEALED_PACKAGE.get())
+              .set(Envelope.DataComponents.PACKAGE_CONTENTS, contents);
+    }
+
+    public static MailBuilder<?> createSealedPackage(ResourceKey<LootTable> lootTable) {
+        return new MailBuilder<>(Envelope.Items.SEALED_PACKAGE.get())
               .set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(lootTable, 0L));
     }
 
@@ -213,7 +203,7 @@ public final class Mail {
         List<ItemStack> packages = new ArrayList<>();
         items.removeIf(stack -> {
             if (stack.getItem() instanceof PackageItem) {
-                packages.add(Mail.of(stack).apply(builder).get());
+                packages.add(Mail.of(stack).apply(builder).itemStack());
                 return true;
             }
             return false;
@@ -222,48 +212,10 @@ public final class Mail {
         List<ItemStack> packedPackages = ContainerUtils.split(ContainerUtils.compact(items), PackageContents.SLOTS)
               .stream()
               .map(PackageContents::new)
-              .map(contents -> Mail.createPackage(contents).apply(builder).get())
+              .map(contents -> Mail.createPackage(contents).apply(builder).itemStack())
               .toList();
 
         return Stream.concat(packages.stream(), packedPackages.stream()).toList();
-
-//        Container container = ContainerUtils.compact(items);
-//
-//        for (int i = 0; i < container.getContainerSize(); i += PackageContents.SLOTS) {
-//            List<ItemStack> contents = new ArrayList<>();
-//            for (int slot = 0; slot < PackageContents.SLOTS; slot++) {
-//                int index = i + slot;
-//                contents.add()
-//
-//            }
-//
-//            ItemStack stack = container.getItem(i);
-//
-//
-//        }
-//
-//
-//        SimpleContainer container = new SimpleContainer(PackageContents.SLOTS);
-//
-//        while (!items.isEmpty()) {
-//            SimpleContainer finalContainer = container;
-//
-//            items.removeIf(stack -> {
-//                if (stack.getItem() instanceof PackageItem) {
-//                    packages.add(Mail.of(stack).apply(builder).get());
-//                    return true;
-//                }
-//                return finalContainer.addItem(stack).isEmpty();
-//            });
-//
-//            if (!container.isEmpty()) {
-//                ItemStack pkg = Mail.createPackage(new PackageContents(container)).apply(builder).get();
-//                packages.add(pkg);
-//                container = new SimpleContainer(PackageContents.SLOTS);
-//            }
-//        }
-
-//        return packages;
     }
 
     public static MailBuilder<?> createPaybackBox(PaybackSubject subject) {
@@ -285,9 +237,49 @@ public final class Mail {
             stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             player.playSound(SoundEvents.SHEEP_SHEAR, 0.75f, 1f);
         } else {
-            player.playSound(SoundEvents.COMPARATOR_CLICK, 0.75f, 1f);
+            player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 0.75f, 1f);
         }
 
         return true;
+    }
+
+    public static Optional<TooltipComponent> modifyTooltipImage(ItemStack stack, Optional<TooltipComponent> original) {
+        if (stack.is(Envelope.Tags.Items.MAILABLE)) {
+            return CompositeTooltip.of(
+                  original,
+                  Optional.ofNullable(stack.get(Envelope.DataComponents.MAIL_ADDRESS_TAG)).map(MailAddressTagTooltip::new),
+                  Optional.ofNullable(stack.get(Envelope.DataComponents.MAIL_PAYBACK_TAG))
+            );
+        }
+
+        return original;
+    }
+
+    public static void appendTooltipLines(ItemStack stack, Consumer<Component> consumer,
+                                          Item.TooltipContext context, Player player, TooltipFlag tooltipFlag) {
+        DeliveryInfo deliveryInfo = DeliveryInfo.of(stack);
+        if (!deliveryInfo.isEmpty()) {
+            if (Screen.hasShiftDown() && !deliveryInfo.log().isEmpty()) {
+                consumer.accept(Component.translatable("gui.envelope.delivery_log"));
+                for (DeliveryRecord record : deliveryInfo.log().records()) {
+                    consumer.accept(record.getDisplayComponent());
+                }
+            } else {
+                deliveryInfo.sender().ifPresent(sender -> {
+                    consumer.accept(Component.translatable("gui.envelope.mail.from", sender.format().asSender().toComponent())
+                          .withStyle(ChatFormatting.GRAY));
+                });
+
+                deliveryInfo.recipient().ifPresent(recipient -> {
+                    consumer.accept(Component.translatable("gui.envelope.mail.to", recipient.format().asRecipient().toComponent())
+                          .withStyle(ChatFormatting.GRAY));
+                });
+
+                if (deliveryInfo.isReturned()) {
+                    consumer.accept(Component.translatable("gui.envelope.mail.returned")
+                          .withColor(Colors.TOOLTIP_RED));
+                }
+            }
+        }
     }
 }

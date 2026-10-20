@@ -1,0 +1,13 @@
+{
+  "type": "envelope:mail_crafting",
+  "address": "envelope:mail_service",
+  "ingredients": [
+    {
+      "item": "minecraft:spider_eye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:pumpkin_seeds"
+  }
+}

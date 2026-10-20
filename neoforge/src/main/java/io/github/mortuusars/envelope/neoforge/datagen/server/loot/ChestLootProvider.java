@@ -4,7 +4,7 @@ import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.world.item.component.LetterContent;
 import io.github.mortuusars.envelope.world.item.component.seal.SealSymbol;
 import io.github.mortuusars.envelope.world.mail.address.type.ServiceAddress;
-import io.github.mortuusars.envelope.world.mail.service.ServiceAddresses;
+import io.github.mortuusars.mortaar.resources.Resource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -13,18 +13,20 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
+import net.minecraft.world.item.EitherHolder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.SeededContainerLoot;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.ExplorationMapFunction;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +58,7 @@ public class ChestLootProvider implements LootTableSubProvider {
               )
         );
 
-        MutableComponent automatedSupplyService = ServiceAddress.getOrThrow(registries, ServiceAddresses.AUTOMATED_SUPPLY_SERVICE).format().toComponent();
+        MutableComponent automatedSupplyService = ServiceAddress.getOrThrow(ServiceAddress.AUTOMATED_SUPPLY_SERVICE, registries).format().toComponent();
 
         output.accept(
               Envelope.LootTables.COLLAPSED_MAIL_HUB_STORAGE_MAIL,
@@ -111,15 +113,15 @@ public class ChestLootProvider implements LootTableSubProvider {
                     .add(LootItem.lootTableItem(Items.PAPER).setWeight(1).apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 6.0F))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get()).setWeight(2).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get())
-                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, SealSymbol.getOrThrow(registries, SealSymbol.HEART))))
+                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, new EitherHolder<>(Resource.getOrThrow(SealSymbol.HEART, registries)))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get())
-                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, SealSymbol.getOrThrow(registries, SealSymbol.CREEPER))))
+                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, new EitherHolder<>(Resource.getOrThrow(SealSymbol.CREEPER, registries)))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get())
-                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, SealSymbol.getOrThrow(registries, SealSymbol.LETTER))))
+                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, new EitherHolder<>(Resource.getOrThrow(SealSymbol.LETTER_AND_QUILL, registries)))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get())
-                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, SealSymbol.getOrThrow(registries, SealSymbol.SWORDS))))
+                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, new EitherHolder<>(Resource.getOrThrow(SealSymbol.SWORDS, registries)))))
                     .add(LootItem.lootTableItem(Envelope.Items.SEAL_STAMP.get())
-                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, SealSymbol.getOrThrow(registries, SealSymbol.VILLAGER))))
+                          .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.SEAL_STAMP_DIE, new EitherHolder<>(Resource.getOrThrow(SealSymbol.VILLAGER, registries)))))
               )
         );
 
@@ -211,9 +213,9 @@ public class ChestLootProvider implements LootTableSubProvider {
                           .add(LootItem.lootTableItem(Envelope.Items.PAPER_BOX.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
                           .add(EmptyLootItem.emptyItem().setWeight(2)))
                     .withPool(LootPool.lootPool()
-                          .add(letter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_1")).apply(tattered()))
-                          .add(letter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_2")).apply(tattered()))
-                          .add(letter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_3")).apply(tattered()))
+                          .add(tatteredLetter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_1")))
+                          .add(tatteredLetter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_2")))
+                          .add(tatteredLetter(Component.translatable("letter.envelope.abandoned_mineshaft.journal_page.name"), Component.translatable("letter.envelope.abandoned_mineshaft.journal_page_3")))
                           .add(EmptyLootItem.emptyItem().setWeight(16))
                     ));
 
@@ -225,15 +227,31 @@ public class ChestLootProvider implements LootTableSubProvider {
                           .add(LootItem.lootTableItem(Envelope.Items.PAPER_BOX.get()).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
                           .add(EmptyLootItem.emptyItem().setWeight(2)))
                     .withPool(LootPool.lootPool()
-                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_1")).apply(tattered()))
-                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_2")).apply(tattered()))
-                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_3")).apply(tattered()))
-                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_4")).apply(tattered()))
+                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_1")))
+                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_2")))
+                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_3")))
+                          .add(illagerLetter(Component.translatable("letter.envelope.pillager_outpost.report.name"), Component.translatable("letter.envelope.pillager_outpost.report_4")))
                           .add(EmptyLootItem.emptyItem().setWeight(16))
                     ));
+
+        output.accept(
+              Envelope.LootTables.RUINED_PORTAL_INJECT,
+              LootTable.lootTable()
+                    .withPool(LootPool.lootPool()
+                          .setRolls(ConstantValue.exactly(1.0F))
+                          .add(LootItem.lootTableItem(Items.MAP)
+                                .apply(ExplorationMapFunction.makeExplorationMap()
+                                      .setDestination(Envelope.Tags.Structures.ON_COLLAPSED_MAIL_HUB_EXPLORER_MAPS)
+                                      .setMapDecoration(MapDecorationTypes.RED_X)
+                                      .setZoom((byte) 1)
+                                      .setSkipKnownStructures(false))
+                                .apply(SetNameFunction.setName(Component.translatable("envelope.filled_map.collapsed_mail_hub"), SetNameFunction.Target.ITEM_NAME)))
+                          .add(EmptyLootItem.emptyItem())));
     }
 
     // --
+
+    //TODO: refactor with static methods that chain (letter("asd").name("123").illager())?
 
     protected LootPoolSingletonContainer.Builder<?> letter(@Nullable MutableComponent name, @NotNull MutableComponent text) {
         LootPoolSingletonContainer.Builder<?> builder = LootItem.lootTableItem(Envelope.Items.LETTER.get())
@@ -246,8 +264,19 @@ public class ChestLootProvider implements LootTableSubProvider {
         return builder;
     }
 
+    protected LootPoolSingletonContainer.Builder<?> tatteredLetter(@Nullable MutableComponent name, @NotNull MutableComponent text) {
+        LootPoolSingletonContainer.Builder<?> builder = LootItem.lootTableItem(Envelope.Items.TATTERED_LETTER.get())
+              .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text)));
+
+        if (name != null) {
+            builder.apply(SetComponentsFunction.setComponent(DataComponents.ITEM_NAME, name));
+        }
+
+        return builder;
+    }
+
     protected LootPoolSingletonContainer.Builder<?> illagerLetter(@Nullable MutableComponent name, @NotNull MutableComponent text) {
-        LootPoolSingletonContainer.Builder<?> builder = LootItem.lootTableItem(Envelope.Items.LETTER.get())
+        LootPoolSingletonContainer.Builder<?> builder = LootItem.lootTableItem(Envelope.Items.TATTERED_LETTER.get())
               .apply(SetComponentsFunction.setComponent(Envelope.DataComponents.LETTER_CONTENT, new LetterContent(text
                     .withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))));
 
@@ -257,9 +286,5 @@ public class ChestLootProvider implements LootTableSubProvider {
         }
 
         return builder;
-    }
-
-    private static LootItemConditionalFunction.@NotNull Builder<?> tattered() {
-        return SetComponentsFunction.setComponent(Envelope.DataComponents.LETTER_TATTERED, Unit.INSTANCE);
     }
 }

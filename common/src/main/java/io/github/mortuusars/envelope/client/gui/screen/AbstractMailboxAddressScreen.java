@@ -2,7 +2,7 @@ package io.github.mortuusars.envelope.client.gui.screen;
 
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.client.util.Minecrft;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.util.EnvelopeSymbols;
 import io.github.mortuusars.envelope.util.validation.CachedValidator;
@@ -16,7 +16,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +46,7 @@ public abstract class AbstractMailboxAddressScreen extends AddressTagScreen {
     protected String getInitialAddressValue() {
         return existingAddress
               .map(Address::getString)
-              .orElseGet(() -> Optional.ofNullable(player.getItemInHand(hand).get(Envelope.DataComponents.ADDRESS))
+              .orElseGet(() -> Optional.ofNullable(player.getItemInHand(hand).get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS))
                     .map(Address::getString)
                     .orElse(""));
     }

@@ -1,12 +1,13 @@
 package io.github.mortuusars.envelope.world.item;
 
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.Platform;
 import io.github.mortuusars.envelope.world.inventory.PaybackPackingMenu;
 import io.github.mortuusars.envelope.world.item.component.PaybackSubject;
+import io.github.mortuusars.mortaar.Platform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
@@ -43,11 +44,12 @@ public class PaybackBoxItem extends Item {
 
     public boolean openPackingGui(Player player, InteractionHand hand, ItemStack stack) {
         @Nullable PaybackSubject subject = stack.get(Envelope.DataComponents.PAYBACK_SUBJECT);
-        if (subject == null || subject.mail().isEmpty() || !subject.mail().has(Envelope.DataComponents.MAIL_PAYBACK_REQUEST)) {
+        if (subject == null || subject.mail().isEmpty() || !subject.mail().has(Envelope.DataComponents.MAIL_PAYBACK_TAG)) {
             return false;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
+            stack.set(Envelope.DataComponents.OPEN, Unit.INSTANCE);
             Platform.openMenu(serverPlayer, new SimpleMenuProvider((id, inventory, pl) ->
                         new PaybackPackingMenu(id, inventory, hand), stack.getHoverName()),
                   buffer -> buffer.writeEnum(hand));

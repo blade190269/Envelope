@@ -3,12 +3,13 @@ package io.github.mortuusars.envelope.world.item;
 import io.github.mortuusars.envelope.Envelope;
 import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.world.block.mailbox.MailboxBlock;
+import io.github.mortuusars.envelope.world.item.component.PaybackRequest;
 import io.github.mortuusars.envelope.world.item.mail.Mail;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.clientbound.OpenAddressTagScreenS2CP;
+import io.github.mortuusars.envelope.network.packet.clientbound.ClientboundOpenAddressTagScreenPacket;
 import io.github.mortuusars.envelope.world.mail.MailService;
+import io.github.mortuusars.mortaar.world.item.ApplicatorItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -37,7 +39,7 @@ public class AddressTagItem extends Item implements ApplicatorItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        @Nullable Address address = stack.get(Envelope.DataComponents.ADDRESS);
+        @Nullable Address address = stack.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS);
         if (address != null) {
             tooltipComponents.add(address.format()
                   .withIcon()
@@ -48,44 +50,77 @@ public class AddressTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
-        ItemStack target = slot.getItem();
-
-        if (action != ClickAction.SECONDARY
-              || !slot.allowModification(player)
-              || !target.is(Envelope.Tags.Items.MAILABLE)) {
+    public boolean canBeAppliedTo(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
+        if (!slot.allowModification(player)) {
             return false;
         }
 
-        @Nullable Address address = stack.get(Envelope.DataComponents.ADDRESS);
-        @Nullable Address recipient = Mail.getRecipient(target).orElse(null);
-        if (Objects.equals(address, recipient)) {
-            return true; // Do nothing
+        if (slot.getItem().is(Envelope.Tags.Items.MAILABLE)) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS),
+                  slot.getItem().get(Envelope.DataComponents.MAIL_ADDRESS_TAG));
         }
 
-        if (address != null && stack.getCount() < target.getCount()) {
-            player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 1, 1);
+        if (slot.getItem().is(Envelope.Items.ADDRESS_TAG.get())) {
+            return !Objects.equals(
+                  carried.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS),
+                  slot.getItem().get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS));
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        ItemStack target = slot.getItem();
+
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
+
+        @Nullable Address address = stack.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS);
+
+        if (target.is(Envelope.Tags.Items.MAILABLE)) {
+            @Nullable Address recipient = Mail.getRecipient(target).orElse(null);
+            if (Objects.equals(address, recipient)) {
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
+                return true;
+            }
+
+            if (address != null && stack.getCount() < target.getCount()) {
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
+                return true;
+            }
+
+            ItemStack result = target.copy();
+            Mail.setRecipient(result, address);
+            Mail.removePreviousDeliveryData(result);
+
+            if (!slot.mayPlace(result)) {
+                player.playSound(Envelope.SoundEvents.UI_ACTION_BLOCKED.get(), 1, 1);
+                return true;
+            }
+
+            slot.setByPlayer(result);
+
+            if (address != null && !player.isCreative()) {
+                stack.shrink(target.getCount());
+            }
+
+            player.playSound(Envelope.SoundEvents.TAG_APPLY.get(), 1, 1);
+
             return true;
         }
 
-        ItemStack result = target.copy();
-        Mail.setRecipient(result, address);
-        Mail.removePreviousDeliveryData(result);
-
-        if (!slot.mayPlace(result)) {
-            player.playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 1, 1);
+        // Copy address from carried item to target, but only if addresses are different (to not block usual stack splitting behavior)
+        if (target.is(Envelope.Items.ADDRESS_TAG.get())
+              && !Objects.equals(address, target.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS))) {
+            target.set(Envelope.DataComponents.ADDRESS_TAG_ADDRESS, address);
+            player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 1, 1);
             return true;
         }
 
-        slot.setByPlayer(result);
-
-        if (address != null) {
-            stack.shrink(target.getCount());
-        }
-
-        player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC.value(), 1, 1);
-
-        return true;
+        return false;
     }
 
     @Override
@@ -99,18 +134,21 @@ public class AddressTagItem extends Item implements ApplicatorItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            AllAddresses knownAddresses = MailService.of(serverPlayer.serverLevel()).getKnownAddresses();
-            Packets.sendToClient(new OpenAddressTagScreenS2CP(usedHand, knownAddresses), serverPlayer);
-            player.getCooldowns().addCooldown(this, 6);
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (player.isSecondaryUseActive()) {
+            @Nullable Address removedAddress = player.getItemInHand(hand).remove(Envelope.DataComponents.ADDRESS_TAG_ADDRESS);
+            if (removedAddress != null) {
+                player.playSound(Envelope.SoundEvents.UI_WRITE.get(), 0.35f, 1);
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+            }
         }
 
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
-    }
+        if (player instanceof ServerPlayer serverPlayer) {
+            AllAddresses knownAddresses = MailService.of(serverPlayer.serverLevel()).getKnownAddresses();
+            new ClientboundOpenAddressTagScreenPacket(hand, knownAddresses).sendToClient(serverPlayer);
+            player.getCooldowns().addCooldown(this, 5);
+        }
 
-    @Override
-    public boolean shouldRenderTooltipWhileCarrying(Level level, ItemStack carried, ItemStack hovered) {
-        return true;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }
 }

@@ -2,16 +2,16 @@ package io.github.mortuusars.envelope.client.gui.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.client.gui.Sprites;
 import io.github.mortuusars.envelope.client.gui.widget.AddressBoxSuggestions;
-import io.github.mortuusars.envelope.client.util.Minecrft;
+import io.github.mortuusars.envelope.world.mail.address.type.ServiceAddress;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.envelope.util.Colors;
 import io.github.mortuusars.envelope.world.mail.address.Address;
 import io.github.mortuusars.envelope.world.mail.address.AddressFormatter;
 import io.github.mortuusars.envelope.world.mail.address.AllAddresses;
-import io.github.mortuusars.envelope.network.Packets;
-import io.github.mortuusars.envelope.network.packet.serverbound.AddressTagApplyC2SP;
+import io.github.mortuusars.envelope.network.packet.serverbound.ServerboundAddressTagApplyPacket;
 import io.github.mortuusars.envelope.world.mail.address.type.BlockAddress;
+import io.github.mortuusars.mortaar.client.gui.Sprites;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -55,7 +55,7 @@ public class AddressTagScreen extends Screen {
         this.hand = hand;
         this.tag = Minecrft.player().getItemInHand(hand).copy(); // Copying to not cause client/server desync if edits are canceled.
         this.knownAddresses = knownAddresses;
-        this.existingAddress = Optional.ofNullable(tag.get(Envelope.DataComponents.ADDRESS));
+        this.existingAddress = Optional.ofNullable(tag.get(Envelope.DataComponents.ADDRESS_TAG_ADDRESS));
     }
 
     @Override
@@ -125,7 +125,7 @@ public class AddressTagScreen extends Screen {
               knownAddresses.blocks(),
               knownAddresses.players(),
               knownAddresses.services().stream()
-                    .filter(address -> !address.getDefinitionHolder().is(Envelope.Tags.ServiceAddresses.HIDDEN))
+                    .filter(address -> ServiceAddress.isEnabled(address) && !address.isHidden())
                     .collect(Collectors.toSet()));
     }
 
@@ -141,8 +141,8 @@ public class AddressTagScreen extends Screen {
 
     protected void updateItem() {
         getOrCreateAddressFromCurrentValue().ifPresentOrElse(
-              value -> tag.set(Envelope.DataComponents.ADDRESS, value),
-              () -> tag.remove(Envelope.DataComponents.ADDRESS));
+              value -> tag.set(Envelope.DataComponents.ADDRESS_TAG_ADDRESS, value),
+              () -> tag.remove(Envelope.DataComponents.ADDRESS_TAG_ADDRESS));
     }
 
     // -- Events
@@ -152,23 +152,14 @@ public class AddressTagScreen extends Screen {
         matchedKnownAddress = knownAddresses.byName(addressId);
         updateItem();
 
-//        boolean showSuggestion = matchedKnownAddress.isPresent() || text.isBlank();
-//        @Nullable String suggestion = !showSuggestion ? getAutocompleteSuggestion(text) : null;
-//        currentSuggestion = suggestion;
-//        if (suggestion != null && !suggestion.equalsIgnoreCase(addressBox.getValue())) {
-//            addressBox.setSuggestion(suggestion.substring(addressBox.getValue().length()));
-//        } else {
-//            addressBox.setSuggestion(suggestion);
-//        }
-
         suggestions.update();
     }
 
     protected boolean confirm() {
         if (!isCurrentIdSameAsExistingAddress()) {
-            Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1f));
+            Minecrft.get().getSoundManager().play(SimpleSoundInstance.forUI(Envelope.SoundEvents.UI_WRITE.get(), 1f));
             int slot = this.hand == InteractionHand.MAIN_HAND ? Minecrft.player().getInventory().selected : Inventory.SLOT_OFFHAND;
-            Packets.sendToServer(new AddressTagApplyC2SP(slot, getOrCreateAddressFromCurrentValue()));
+            new ServerboundAddressTagApplyPacket(slot, getOrCreateAddressFromCurrentValue()).sendToServer();
         }
         close();
         return true;

@@ -2,7 +2,7 @@ package io.github.mortuusars.envelope.world.item.component.seal;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.mortuusars.envelope.util.TintColor;
+import io.github.mortuusars.mortaar.util.color.TintColor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -26,5 +26,5 @@ public record ShadingPalette(TintColor base, TintColor highlight, TintColor shad
           ShadingPalette::new
     );
 
-    public static final ShadingPalette IRON_DIE = new ShadingPalette(0xFF9A9CA1, 0xFFDFE0E3, 0xFF5D6068, 0xFFC4C5C8);
+    public static final ShadingPalette IRON_DIE = new ShadingPalette(0xFFA0A3A9, 0xFFE5E6E8, 0xFF6C717B, 0xFFC4C5C8);
 }

@@ -3,7 +3,7 @@ package io.github.mortuusars.envelope.world.entity;
 import com.mojang.logging.LogUtils;
 import io.github.mortuusars.envelope.Config;
 import io.github.mortuusars.envelope.Envelope;
-import io.github.mortuusars.envelope.util.bugger.Bugger;
+import io.github.mortuusars.mortaar.bugger.Bugger;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -164,6 +164,10 @@ public class CharredPigeon extends Monster implements Enemy {
 
         spawnParticle();
 
+        if (isNoAi()) {
+            return;
+        }
+
         if (Config.Server.CHARRED_PIGEON_CONVERT_INTO_REGULAR.get() && level() instanceof ServerLevel serverLevel) {
             if (canConvert()) {
                 timeInSafeDimension++;
@@ -191,7 +195,7 @@ public class CharredPigeon extends Monster implements Enemy {
     }
 
     public boolean canConvert() {
-        return !level().dimensionType().ultraWarm() && !isNoAi();
+        return !level().dimensionType().ultraWarm();
     }
 
     public void convert(ServerLevel serverLevel) {
