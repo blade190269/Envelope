@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8 - Echoes In The Dark - UNRELEASED
+## 0.8.0 - Echoes In The Dark - 2026-10-20
 
 ### New Features
 Courier Bat
