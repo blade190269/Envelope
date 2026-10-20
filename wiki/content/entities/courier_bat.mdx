@@ -1,0 +1,19 @@
+---
+id: envelope:courier_bat
+icon: envelope:entity/courier_bat
+title: Courier Bat
+---
+
+**Courier bat** is a [bat](@minecraft:bat) that delivers mail at night.
+
+It's a separate entity type that has its properties and logic altered to support deliveries.
+
+## Spawning
+If a regular [bat](@minecraft:bat) is nearby a [mailbox](@envelope:mailbox) and all requirements for delivery is met,
+it will be converted into a courier bat that will navigate to the mailbox and start a delivery, similar to [pigeons](@envelope:pigeon).\
+After delivery, it will be converted back into a regular bat.
+
+Alternatively, if no regular bats are nearby, a courier bat will spawn nearby.\
+Spawned bats are "service" couriers - they will not persist after delivery.
+
+Mail service also uses bats for service deliveries at night.

@@ -10,37 +10,46 @@ infobox:
 
 **Services** are virtual recipients that can receive and handle mail.
 
-## List of services
-Envelope currently has 3 services:
+Envelope currently has these services:
 
-### Mail Service
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        <Asset location="envelope:gui/address_mail_service" width={20} /> **Mail Service** is a special address that is used for mail infrastructure related correspondence.
+## <Asset location="envelope:gui/address_mail_service" width={22} /> Mail Service
+![Courier Death Notice](@envelope:service/courier_death_notice){width=367 right}
 
-        It has several mailing recipes:
-        - [Letter](letter) broadcasting
-        - [Seal stamps](seal_stamp) with unique dies
-        - [Lost mail](lost_mail)
-        - [Payback tag](payback_tag)
-        - [Payback](delivery#payback) request cancelling
+Special address that is used for mail infrastructure related correspondence.
 
-        Mail Service also sends a Courier Death Notice to the sender's mailbox, when a courier dies while delivering.
-    </div>
+It has several mailing recipes:
+- [Letter](letter) broadcasting
+- [Payback](delivery#payback) request cancelling
+- [Seal stamps](seal_stamp) with unique dies
+- [Lost mail](lost_mail)
+- [Payback tag](payback_tag)
+- and a couple more
 
-    <center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:service/courier_death_notice" width={367} />
-        <div style={{ marginTop: "6px"}}>*Courier Death Notice*</div>
-    </center>
-</div>
+Mail Service also sends a Courier Death Notice to the sender's mailbox, when a courier dies while delivering.
 
-### Automated Supply Service
-<Asset location="envelope:gui/address_service" width={20} /> **Automated Supply Service** is a purely crafting oriented address.\
+## <Asset location="envelope:gui/address_service" width={22} /> Automated Supply Service
+Purely crafting oriented address.\
 It has various recipes like [rotten flesh](@minecraft:rotten_flesh) to [leather](@minecraft:leather), [saddle](@minecraft:saddle),
-[name tag](@minecraft:name_tag), alternative [book and quill](@minecraft:writable_book) and [letter and quill](@envelope:letter_and_quill), etc.
+[name tag](@minecraft:name_tag), [book and quill](@minecraft:writable_book) [letter and quill](@envelope:letter_and_quill), etc.
 
-### Equine Assurance Bureau
-<Asset location="envelope:gui/address_service" width={20} /> **Equine Assurance Bureau** sends spam letters asking players for a [block of gold](@minecraft:gold_block).
+## <Asset location="envelope:gui/address_cloud_depository" width={22} /> Cloud Depository
+Special address that acts as a remote storage. It uses [seals](@envelope:seal_stamp) for account identification.
+
+When an item is sent to it - it's deposited into storage.\
+To retrieve the last deposited item, a **Withdrawal Request** can be sent.
+
+It has 8 storage slots by default, with the ability to expand it to 128.\
+To expand the storage, an **Expansion Request** can be sent, which will increase the slots by 8.
+
+**Status Request** can be sent to receive the information about current state of the storage.
+
+> [!TIP]
+> Cloud Depository supports a keying system of sorts.\
+> If a deposited item has been renamed in an anvil,
+it can be retrieved directly by sending a **Withdrawal Request** renamed to the same name.
+
+## <Asset location="envelope:gui/address_service" width={22} /> Equine Assurance Bureau
+Sends spam letters asking players for a [block of gold](@minecraft:gold_block).
 
 Spam letter has a chance of being sent when player tames an animal.\
 Horse-like mobs have a 100% chance to trigger it, other animals only 20%.\
@@ -59,43 +68,38 @@ Sending a [block of gold](@minecraft:gold_block) to Equine Assurance Bureau will
 When typed correctly, address icon in the tag interface will change to the 'service': <Asset location="envelope:gui/address_service" width={20}/>
 </Callout>
 
+<br/>
+
 ## Mailing
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        All service addresses support mail crafting recipes by default.
+![Mailing recipes shown in [JEI](https://www.curseforge.com/minecraft/mc-mods/jei)](@envelope:service/mailing){width=367 right}
 
-        Sending a package with items to an address will produce a result if matching recipe is found.\
-        Multiple crafting operations can be done with a single package.
+All service addresses support mail crafting recipes by default.
 
-        If some if the items were unprocessed, they will be returned using the sender's courier and crafting results will arrive with a service courier.
+Sending a package with items to an address will produce a result if matching recipe is found.\
+Multiple crafting operations can be done with a single package.
 
-        ### Recipe Definition
-        Mailing recipes are defined similarly to the vanilla shapeless recipes:
-        ```json envelope:mailing/mail_service/payback_tag.json
-        {
-          "type": "envelope:mail_crafting",
-          "address": "envelope:mail_service",
-          "ingredients": [
-            {
-              "item": "envelope:address_tag"
-            },
-            {
-              "tag": "c:dyes/red"
-            }
-          ],
-          "result": {
-            "count": 1,
-            "id": "envelope:payback_tag"
-          }
-        }
-        ```
-    </div>
+If some if the items were unprocessed, they will be returned using the sender's courier and crafting results will arrive with a service courier.
 
-    <center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:service/mailing" width={367} style={{ borderRadius: "10px" }} />
-        <div style={{ marginTop: "6px"}}>*Mailing recipes shown in [JEI](https://www.curseforge.com/minecraft/mc-mods/jei)*</div>
-    </center>
-</div>
+### Recipe Definition {clear}
+Mailing recipes are defined similarly to the vanilla shapeless recipes:
+```json envelope:mailing/mail_service/payback_tag.json
+{
+  "type": "envelope:mail_crafting",
+  "address": "envelope:mail_service",
+  "ingredients": [
+    {
+      "item": "envelope:address_tag"
+    },
+    {
+      "tag": "c:dyes/red"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "envelope:payback_tag"
+  }
+}
+```
 
 ## Definition
 For the game to know about a service, it's definition must be registered.

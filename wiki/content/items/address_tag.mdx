@@ -10,19 +10,14 @@ It's also used to change address of a [mailbox](@envelope:mailbox).
 
 ## Usage
 
-<div style={{ display: "flex", flexWrap: "wrap", width: "100%", alignItems: "flex-start" }}>
-    <div style={{ flex: 1, marginTop: "-20px"}}>
-        ### Address selection
-        Using the item in hand will open interface where player can input an [address](@envelope:address).\
-        Interface will show autocomplete suggestions, which can be selected with mouse or arrow keys and applied by pressing [Tab].
-        <Callout variant="info">Pressing [Ctrl] will toggle the suggestions box, and will show all known addresses when input box is empty.</Callout>
-    </div>
+### Address selection
+![Address Tag interface](@envelope:gui/address_tag){width=455 right}
 
-    <center style={{ alignItems: 'top', marginLeft: "1rem", marginRight: "0.2rem" }}>
-        <Asset location="envelope:gui/address_tag" width={450} style={{ borderRadius: "10px" }} />
-        <div style={{ marginTop: "6px"}}>*Address Tag interface*</div>
-    </center>
-</div>
+Using the item in hand will open interface where player can input an [address](@envelope:address).\
+Interface will show autocomplete suggestions, which can be selected with mouse or arrow keys and applied by pressing [Tab].
+
+> [!NOTE]
+> Pressing `Ctrl` will toggle the suggestions box, and will show all known addresses when input box is empty.
 
 ### Application
 Address tag is applied to a mailable item by picking it up in inventory and right-clicking with it on the target item, similar to a [bundle](https://minecraft.wiki/w/Bundle).\
@@ -30,8 +25,12 @@ Alternatively, address tag can be applied by crafting it together with mailable 
 
 Tag is consumed in the process.
 
+> [!TIP]
+> Address from one address tag can be copied into another by applying it with right-click.
+
 ### Changing mailbox address
 Using it on the [mailbox](@envelope:mailbox) will open the same interface that can be seen when placing a mailbox,
 allowing its address to be changed without breaking the block.
 
-<Callout variant="info">Changing mailbox address also costs 3 levels of experience.</Callout>
+> [!NOTE]
+> Changing mailbox address also costs 3 levels of experience.
