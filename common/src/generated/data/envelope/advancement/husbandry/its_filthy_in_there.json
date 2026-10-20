@@ -9,7 +9,6 @@
     "description": {
       "translate": "advancement.envelope.its_filthy_in_there.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:tnt"
