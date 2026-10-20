@@ -72,7 +72,7 @@ Misc
 - Updated mod icon
 - Small update to placed letter textures
 - Sealed Package is no longer placeable as a block
-- Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent)
+- Advancement **It's Filthy In There** is no longer hidden
 - Increased Pigeon delivery travel speed (when in background) from 20 to 25
   - Existing configs would need to be updated or regenerated for this change to apply after updating from previous version
 - Courier appear/disappear (poof) particles now visible at higher distances
@@ -80,9 +80,10 @@ Misc
 - Slightly increased courier mailbox mail pickup range
 - Increased courier ascend distance from 16 to 24 blocks (position above the mailbox where it disappears)
 - Small improvements to applicator items (Address Tag, Payback Tag and Seal Stamp) r-click application behavior
+- Fixed Payback cancelling recipe not working properly if remainder was present (when more than 1 Payback Tag was sent)
 - Fixed **Mailbox** block not breaking properly if it has mail inside
 - Fixed mail not delivering to the player address in some cases when letter casing in address definition didn't match player name exactly
-- [NeoForge] Mailbox now has an ItemHandler capability, making it compatible with most modded logistic blocks (like Create's Chute, Funnel, etc.)  - Advancement **It's Filthy In There** is no longer hidden
+- [NeoForge] Mailbox now has an ItemHandler capability, making it compatible with most modded logistic blocks (like Create's Chute, Funnel, etc.)
 - Fixed crash when mailbox on a Sable sublevel with `/sable forceload` is loaded
   - Stored mail will **not** load correctly; Avoid using `/sable forceload` when mailbox is present on a sublevel or don't use mailboxes on force-loaded sublevels until [this issue](https://github.com/ryanhcode/sable/issues/1633) is resolved
 - Fixed crashing with recent JEI versions (above 19.52.0.421)
